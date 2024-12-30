@@ -14,7 +14,6 @@ registrationRoutes.post("/create", async (req, res) => {
         error: "Error while generating New UHID or New Patient No",
       });
     }
-    console.log(newUHID);
     const newPatient = new PatientRegn({
       ...req.body,
       UHID: newUHID,

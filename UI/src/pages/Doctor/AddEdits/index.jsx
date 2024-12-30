@@ -34,6 +34,7 @@ import HeaderWithSearch from "../../../components/custom/HeaderWithSearch";
 import { FaPlus } from "react-icons/fa";
 import IconWrapper from "../../../components/custom/IconWrapper";
 import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
+import F_DatePicker from "../../../components/custom/form/F_DatePicker";
 
 const DoctorInformation = ({
   dialogCloseBtn = null,
@@ -130,15 +131,14 @@ const DoctorInformation = ({
               label="Last Name"
             />
 
-            <F_Input
+            <F_DatePicker
               name="dateOfBirth"
               readOnly={readOnly}
               control={control}
               errors={errors}
               type="date"
               rules={{ required: "DOB is required" }}
-              label=""
-              defaultHelperText="Date Of Birth"
+              label="Date Of Birth"
             />
 
             <F_Select

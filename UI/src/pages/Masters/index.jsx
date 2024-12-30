@@ -32,6 +32,7 @@ const Masters = () => {
             id: x,
             label: x,
             minWidth: 170,
+            colorCoded: x === "color",
           };
         }),
         data: selectedMenuCard?.collection ?? [],
@@ -51,6 +52,7 @@ const Masters = () => {
       setTableObj({
         columns: Object.keys(oneObj)?.map((x) => {
           return {
+            colorCoded: x === "color",
             id: x,
             label: x,
             minWidth: 170,

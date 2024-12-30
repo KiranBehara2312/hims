@@ -1,5 +1,17 @@
+const AppointmentSlots = require("../../models/AppointmentSlot");
+
 const AppointmentController = {
-  generateTimeSlots: (startDate, endDate, slotDuration, gapDuration) => {
+  generateTimeSlots: (
+    startDate,
+    endDate,
+    slotDuration,
+    gapDuration,
+    doctor,
+    date,
+    doctorName,
+    doctorDepartment,
+    doctorDesignation
+  ) => {
     let slots = [];
     let currentTime = new Date(startDate);
     currentTime.setSeconds(0, 0); // Ensure seconds and milliseconds are zero for consistency
@@ -29,6 +41,13 @@ const AppointmentController = {
         startTime: formattedStartTime,
         endTime: formattedEndTime,
         slotNo: `S-${slotCounter}`,
+        bookingStatus: "Free",
+        color: "#078307",
+        date,
+        doctor,
+        doctorName,
+        doctorDepartment,
+        doctorDesignation,
       });
       // Move currentTime forward by the slot duration + gap
       currentTime.setMinutes(
@@ -38,6 +57,33 @@ const AppointmentController = {
     }
 
     return slots;
+  },
+  insertCalendarSlots: async (slots) => {
+    try {
+      const lastSlot = await AppointmentSlots.findOne().sort({ _id: -1 });
+
+      let lastCalSlotCode = 1;
+      if (lastSlot && lastSlot.calSlotCode) {
+        lastCalSlotCode = +lastSlot.calSlotCode.split("LS")[1] + 1;
+      }
+      const appointSlotsDocs = await Promise.all(
+        slots.map((x, index) => {
+          const newCalSlotCode = `CALS${(lastCalSlotCode + index)
+            .toString()
+            .padStart(10, "0")}`;
+          const newSlot = {
+            ...x,
+            calSlotCode: newCalSlotCode,
+          };
+
+          return newSlot;
+        })
+      );
+      await AppointmentSlots.insertMany(appointSlotsDocs);
+      console.log("All Appointment Slots inserted successfully!");
+    } catch (error) {
+      console.error("Error inserting Appointment Slots:", error);
+    }
   },
 };
 

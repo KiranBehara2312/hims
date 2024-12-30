@@ -14,6 +14,7 @@ import { VscTypeHierarchy } from "react-icons/vsc";
 import { MdBloodtype, MdOutlineAccessTimeFilled } from "react-icons/md";
 import {
   APP_USER_TYPES,
+  APPOINTMENT_BOOKING_STATUS,
   BLOOD_GROUPS,
   DAILY_SHIFT,
   DOCTOR_DESIGNATIONS,
@@ -95,6 +96,12 @@ const MASTERS_ITEMS = [
     label: "App user Types",
     collection: APP_USER_TYPES,
     icon: <FaUsersCog size={25} />,
+    category: null,
+  },
+  {
+    label: "Appointment Booking Status",
+    collection: APPOINTMENT_BOOKING_STATUS,
+    icon: <VscTypeHierarchy size={25} />,
     category: null,
   },
 ];

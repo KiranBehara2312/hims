@@ -18,6 +18,7 @@ import {
 import { camelToTitle, convertMongoDBDate } from "../../helpers";
 import { alpha } from "@mui/material/styles";
 import MyHeading from "./MyHeading";
+import { FaCircle } from "react-icons/fa";
 
 export default function ({
   columns,
@@ -58,6 +59,8 @@ export default function ({
   const convertDisplayValueBasedOnType = (val) => {
     if (typeof val === "boolean") {
       return val ? "Yes" : "No";
+    } else if (Array.isArray(val)) {
+      return val.join(", ");
     } else {
       return val;
     }
@@ -115,6 +118,13 @@ export default function ({
                           textOverflow: "ellipsis",
                         }}
                       >
+                        {column.colorCoded && (
+                          <FaCircle
+                            color={value}
+                            size={15}
+                            style={{ marginRight: "10px" }}
+                          />
+                        )}
                         {column.type === "date"
                           ? convertMongoDBDate(value)
                           : convertDisplayValueBasedOnType(value)}
@@ -188,7 +198,7 @@ export default function ({
                 }}
                 onClick={() => actionClickHandler(x.privilege, x.modalWidth)}
               >
-                <span style={{ flexBasis: "15%" }}>{x.icon}</span>
+                <span style={{ flexBasis: "17%" }}>{x.icon}</span>
                 <MyHeading variant="caption" text={x.name} />
               </Box>
             );

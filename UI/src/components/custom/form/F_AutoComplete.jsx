@@ -45,14 +45,15 @@ const F_Autocomplete = ({
           <Fragment>
             <Autocomplete
               multiple={multiple}
-              //   value={value}
-              value={value || (multiple ? [] : null)}
+              value={list?.find((x) => value)?.label || (multiple ? [] : null)}
               onChange={(event, newValue) => {
                 onChange(newValue.value);
                 onSelect(newValue.value);
               }}
               options={list}
-              getOptionLabel={(option) => option?.value ?? option.name ?? option ?? ""}
+              getOptionLabel={(option) => {
+                return option?.label ?? option.name ?? option ?? "";
+              }}
               isOptionEqualToValue={(option, val) =>
                 option.value === val || option.name === val
               }
@@ -68,6 +69,11 @@ const F_Autocomplete = ({
                   helperText={errors?.[name]?.message ?? ""}
                   variant="outlined"
                   size="small"
+                  sx={{
+                    "& .MuiInputBase-input": {
+                      fontSize: "13px", 
+                    },
+                  }}
                 />
               )}
               disableClearable={false}

@@ -11,6 +11,8 @@ const F_TimeSelect = ({
   errors = {},
   rules = {},
   readOnly = false,
+  minTime = "",
+  maxTime = "",
   ...props
 }) => {
   return (
@@ -49,6 +51,10 @@ const F_TimeSelect = ({
             }
             disabled={isDisabled}
             slotProps={{
+              htmlInput: {
+                min: minTime,
+                max: maxTime,
+              },
               input: {
                 readOnly: readOnly,
               },

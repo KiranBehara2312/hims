@@ -12,6 +12,8 @@ const F_DatePicker = ({
   rules = {},
   endAdornment = null,
   readOnly = false,
+  minDate = "",
+  maxDate = "",
   ...props
 }) => {
   return (
@@ -50,6 +52,10 @@ const F_DatePicker = ({
             }
             disabled={isDisabled}
             slotProps={{
+              htmlInput: {
+                min: minDate,
+                max: maxDate,
+              },
               input: {
                 endAdornment: endAdornment,
                 readOnly: readOnly,

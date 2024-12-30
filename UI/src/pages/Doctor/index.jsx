@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
-import { FaUserDoctor } from "react-icons/fa6";
+import { FaUserDoctor, FaUserLargeSlash } from "react-icons/fa6";
 import IconWrapper from "../../components/custom/IconWrapper";
 import { Button, Dialog, DialogContent, useTheme } from "@mui/material";
 import {
   FaCalendarAlt,
   FaCalendarCheck,
+  FaCaretSquareRight,
   FaEdit,
   FaEye,
+  FaLock,
+  FaLockOpen,
   FaPlus,
+  FaStethoscope,
   FaTrash,
 } from "react-icons/fa";
 import DoctorInformation from "./AddEdits";
@@ -41,6 +45,49 @@ const ACTIONS = [
     name: "Generate Slots",
     privilege: "GENERATE_SLOTS",
     icon: <IconWrapper defaultColor icon={<FaCalendarCheck size={18} />} />,
+    disabled: false,
+    access: [ADMIN, STAFF],
+    modalWidth: "sm",
+  },
+  {
+    name: "Doctor Availability",
+    privilege: "DOCTOR_AVAILABILITY",
+    icon: <IconWrapper defaultColor icon={<FaStethoscope size={18} />} />,
+    disabled: false,
+    access: [ADMIN, STAFF],
+    modalWidth: "sm",
+  },
+  {
+    name: "Disable/Enable Doctor",
+    privilege: "DISABLE_ENABLE_DOCTOR",
+    icon: (
+      <IconWrapper
+        defaultColor
+        icon={
+          <>
+            <FaUserLargeSlash size={12} /> <FaUserDoctor size={12} />
+          </>
+        }
+      />
+    ),
+    disabled: false,
+    access: [ADMIN],
+    modalWidth: "sm",
+  },
+  {
+    name: "Lock/Unlock Doctor",
+    privilege: "LOCK_UNLOCK_DOCTOR",
+    icon: (
+      <IconWrapper
+        defaultColor
+        icon={
+          <>
+            <FaLock size={13} />
+            <FaLockOpen size={13} />
+          </>
+        }
+      />
+    ),
     disabled: false,
     access: [ADMIN, STAFF],
     modalWidth: "sm",
@@ -219,9 +266,6 @@ const Doctor = () => {
           }}
         />
       )}
-      {/* {showAddDoc.show && (
-        <DoctorInformation setShowAddDoc={setShowAddDoc} docObj={selectedDoc} />
-      )} */}
 
       {showDialog.show && (
         <Dialog maxWidth={showDialog.modalWidth} fullWidth open={true}>

@@ -71,7 +71,6 @@ const Registration = ({
   const formValues = watch();
 
   useEffect(() => {
-    console.log(loggedInUser);
     if (selectedPatient !== null) return;
     const interval = setInterval(() => {
       setValue("registrationDate", formatDate("DD/MM/YYYY HH:mm"));

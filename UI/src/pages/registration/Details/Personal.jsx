@@ -8,6 +8,7 @@ import {
 } from "../../../constants/localDB/MastersDB";
 import F_Input from "../../../components/custom/form/F_Input";
 import F_Select from "../../../components/custom/form/F_Select";
+import F_DatePicker from "../../../components/custom/form/F_DatePicker";
 
 const Personal = ({ control, errors, readOnly = false }) => {
   return (
@@ -58,14 +59,13 @@ const Personal = ({ control, errors, readOnly = false }) => {
           isRequired={true}
           readOnly={readOnly}
         />
-        <F_Input
+        <F_DatePicker
           name="dateOfBirth"
           type="date"
           control={control}
           errors={errors}
           rules={{ required: "Date Of birth is required" }}
-          label=""
-          defaultHelperText="Date Of Birth"
+          label="Date Of Birth"
           isRequired={true}
           readOnly={readOnly}
         />

@@ -4,6 +4,7 @@ import F_Select from "../../../components/custom/form/F_Select";
 import { postData } from "../../../helpers/http";
 import { Box, Typography } from "@mui/material";
 import F_Input from "../../../components/custom/form/F_Input";
+import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
 
 const Doctor = ({
   control,
@@ -133,7 +134,7 @@ const Doctor = ({
           sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
         />
 
-        <F_Select
+        <F_Autocomplete
           control={control}
           name={"doctor"}
           label={"Doctor"}
