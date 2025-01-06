@@ -39,13 +39,17 @@ const F_Autocomplete = ({
       <Controller
         name={name}
         control={control}
-        defaultValue={props?.defaultValue ?? (multiple ? [] : null)}
+        defaultValue={props?.defaultValue ?? (multiple ? [] : '')}
         rules={rules}
         render={({ field: { onChange, ref, value } }) => (
           <Fragment>
             <Autocomplete
               multiple={multiple}
-              value={list?.find((x) => value)?.label || (multiple ? [] : null)}
+              value={
+                list?.find((x) => x.userName === value)?.label ||
+                (multiple ? [] : "")
+              }
+              // value={value}
               onChange={(event, newValue) => {
                 onChange(newValue.value);
                 onSelect(newValue.value);
@@ -71,7 +75,7 @@ const F_Autocomplete = ({
                   size="small"
                   sx={{
                     "& .MuiInputBase-input": {
-                      fontSize: "13px", 
+                      fontSize: "13px",
                     },
                   }}
                 />

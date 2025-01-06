@@ -31,9 +31,12 @@ import { emptyUserDetails } from "../../redux/slices/userDetailsSlice";
 import { FaUserAlt, FaUserCog, FaUserNurse } from "react-icons/fa";
 import MyHeading from "../custom/MyHeading";
 import { FaUserDoctor } from "react-icons/fa6";
+import { formatDate } from "../../helpers";
+import { WEEK_DAYS_LIST } from "../../constants/localDB/MastersDB";
 
 const MyHeader = () => {
   const loggedInUser = useSelector((state) => state.userDetails.user);
+  const [currentDateTime, setCurrentDateTime] = useState(null);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
@@ -50,8 +53,11 @@ const MyHeader = () => {
 
   useEffect(() => {
     let inte = setInterval(() => {
+      const dateWithTime = formatDate("DD/MM/YYYY hh:mm:ss");
+      const day = WEEK_DAYS_LIST[new Date().getDay()]?.label;
       const currentURL = window.location.pathname.split("/pages/")[1];
       setSelectedMenuItem(currentURL);
+      setCurrentDateTime(`${dateWithTime} | ${day}`);
     }, 1000);
     return () => {
       clearInterval(inte);
@@ -161,8 +167,12 @@ const MyHeader = () => {
             {META.PROJECT_TITLE}
           </Typography>
 
+          <MyHeading
+            variant="caption"
+            text={currentDateTime}
+            sx={{ pr: 1, pt: 0.5 }}
+          />
           <IconButton color="inherit" onClick={accountClickHandler}>
-            {/* <MdAccountCircle /> */}
             {getIconByRole(loggedInUser?.role, 25)}
           </IconButton>
         </Toolbar>

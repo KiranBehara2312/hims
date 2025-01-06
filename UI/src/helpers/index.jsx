@@ -29,6 +29,11 @@ const calculateAge = (birthDate = new Date()) => {
     string: `${years}y ${months}m ${days}d`,
   };
 };
+function addDaysToCurrentDate(daysToAdd = 0) {
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + daysToAdd);
+  return currentDate;
+}
 
 const convertMongoDBDate = (isoDateString) => {
   const date = new Date(isoDateString);
@@ -111,5 +116,6 @@ export {
   infoAlert,
   camelToTitle,
   convertMongoDBDate,
-  calculateAge
+  calculateAge,
+  addDaysToCurrentDate,
 };
