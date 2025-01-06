@@ -1,21 +1,33 @@
 import React, { useEffect, useState } from "react";
 import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
 import IconWrapper from "../../components/custom/IconWrapper";
-import { FaCalendarAlt, FaUndo } from "react-icons/fa";
+import { FaCalendarAlt, FaCircle, FaUndo } from "react-icons/fa";
 import NoDataFound from "../../components/shared/NoDataFound";
 import { useForm } from "react-hook-form";
-import { Box, Button, Popover } from "@mui/material";
+import { Box, Button, Dialog, List, ListItem, Popover } from "@mui/material";
 import { postData } from "../../helpers/http";
 import F_Autocomplete from "../../components/custom/form/F_AutoComplete";
 import DoctorInformationCard from "../../components/shared/DoctorInformationCard";
 import F_DatePicker from "../../components/custom/form/F_DatePicker";
-import { addDaysToCurrentDate } from "../../helpers";
+import {
+  addDaysToCurrentDate,
+  infoAlert,
+  successAlert,
+  warnAlert,
+} from "../../helpers";
 import { MAX_NO_OF_DAYS_AHEAD_TO_BOOK_APT } from "../../constants/C_Appointment";
+import {
+  APPOINTMENT_BOOKING_STATUS,
+  WEEK_DAYS_LIST,
+} from "../../constants/localDB/MastersDB";
+import SlotSelection from "./SlotSelection";
 
 const Appointment = () => {
+  const [legendEl, setLegendEl] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [showSlotGenBtn, setShowSlotGenBtn] = useState(false);
+  const [doctorSlots, setDoctorSlots] = useState([]);
   const [showDocPopover, setShowDocPopover] = useState(false);
   const {
     handleSubmit,
@@ -54,8 +66,53 @@ const Appointment = () => {
   const docSelectionHandler = (doc) => {
     const selDoc = doctors.find((x) => x.userName === doc) ?? null;
     setSelectedDoctor(selDoc);
-    setShowDocPopover(false);
   };
+
+  const loadSlotsHandler = async () => {
+    if (formValues.date === "" || formValues.doctor == "") {
+      setShowSlotGenBtn(false);
+      return warnAlert("Date and Doctor are required to fetch slots", {
+        autoClose: 1500,
+      });
+    }
+    const payload = {
+      date: formValues.date,
+      doctor: formValues.doctor,
+    };
+    const response = await postData("/appointment/doctorSlots", payload);
+    if (response?.data?.length > 0) {
+      let slots = response?.data?.map((x) => {
+        return {
+          ...x,
+          slotOrder: x.slotNo?.split("-")[1],
+        };
+      });
+      setDoctorSlots(slots.sort((a, b) => a.slotOrder - b.slotOrder) ?? []);
+    }
+    if (!response.isSlotsAvailable) {
+      setShowSlotGenBtn(true);
+      infoAlert(response.message, { autoClose: 1500 });
+    } else {
+      setShowDocPopover(false);
+      setShowSlotGenBtn(false);
+      successAlert(response.message, { autoClose: 1500 });
+    }
+  };
+
+  const getHeaderText = () => {
+    let headerText = `Appointment `;
+    if (selectedDoctor) {
+      headerText += ` for Dr. ${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`;
+    }
+    if (formValues?.date) {
+      headerText += ` | ${formValues?.date} | ${
+        WEEK_DAYS_LIST[new Date(formValues?.date)?.getDay()]?.label
+      }`;
+    }
+
+    return headerText;
+  };
+
   return (
     <>
       <HeaderWithSearch
@@ -63,17 +120,28 @@ const Appointment = () => {
         headerIcon={
           <IconWrapper defaultColor icon={<FaCalendarAlt size={20} />} />
         }
-        headerText={`Appointment ${selectedDoctor ? "- Dr." : ""}
-        ${selectedDoctor?.firstName ?? ""} ${selectedDoctor?.lastName ?? ""}`}
+        headerText={`${getHeaderText()}`}
         html={
           <>
+            {doctorSlots?.length > 0 && (
+              <Button
+                size="small"
+                type="button"
+                variant="outlined"
+                sx={{ ml: 2 }}
+                onClick={(e) => {
+                  setLegendEl(e.currentTarget);
+                }}
+              >
+                Legend
+              </Button>
+            )}
             <Button
               size="small"
               type="button"
               variant="outlined"
               sx={{ ml: 2 }}
               onClick={(e) => {
-                setAnchorEl(e.currentTarget);
                 setShowDocPopover(true);
               }}
             >
@@ -94,19 +162,7 @@ const Appointment = () => {
           </>
         }
       />
-      <Popover
-        open={showDocPopover}
-        anchorEl={anchorEl}
-        onClose={() => setShowDocPopover(false)}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-      >
+      <Dialog open={showDocPopover} onClose={() => setShowDocPopover(false)}>
         <HeaderWithSearch
           hideSearchBar
           headerText="Choose/Change Doctor"
@@ -172,13 +228,46 @@ const Appointment = () => {
               onSelect={docSelectionHandler}
             />
           </Box>
-          <Button variant="outlined" fullWidth sx={{ mb: 2 }}>
+          <Button
+            variant="outlined"
+            fullWidth
+            sx={{ mb: 2 }}
+            onClick={loadSlotsHandler}
+          >
             Load Slots
           </Button>
+          {showSlotGenBtn && (
+            <Button variant="outlined" fullWidth sx={{ mb: 2 }}>
+              <FaCalendarAlt style={{ paddingRight: "10px" }} />
+              Generate Slots
+            </Button>
+          )}
           <DoctorInformationCard selectedDoctor={selectedDoctor} />
         </Box>
+      </Dialog>
+      <Popover
+        open={Boolean(legendEl)}
+        anchorEl={legendEl}
+        onClose={() => setLegendEl(null)}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+      >
+        {APPOINTMENT_BOOKING_STATUS?.map((x) => {
+          return (
+            <List key={x.color} dense>
+              <ListItem>
+                <FaCircle style={{ color: x.color, paddingRight: "10px" }} />
+                {x.label}
+              </ListItem>
+            </List>
+          );
+        })}
       </Popover>
-      <NoDataFound sx={{ mt: 10 }} />
+
+      {doctorSlots?.length > 0 && <SlotSelection slots={doctorSlots} />}
+      {doctorSlots?.length === 0 && <NoDataFound sx={{ mt: 10 }} />}
     </>
   );
 };

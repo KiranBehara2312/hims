@@ -37,41 +37,42 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
             value={selectedDoctor?.specialization}
           />
           <DisplayData label="Fee" value={selectedDoctor?.fee} />
-          <DisplayData
-            label="Available Days"
-            value={
-              <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
-                {WEEK_DAYS_LIST?.map((x) => {
-                  return (
-                    <Button
-                      size="small"
-                      variant={
-                        selectedDoctor?.availableDays?.includes(x.label)
-                          ? "contained"
-                          : "outlined"
-                      }
-                      key={x.label}
-                      sx={{
-                        height: "25px",
-                        pointerEvents: "none",
-                        textDecoration: selectedDoctor?.availableDays?.includes(
-                          x.label
-                        )
-                          ? ""
-                          : "line-through",
-                      }}
-                    >
-                      <MyHeading
-                        text={x.shortName}
-                        variant="body2"
-                        alignCenter
-                      />
-                    </Button>
-                  );
-                })}
-              </Box>
-            }
-          />
+          <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
+            {WEEK_DAYS_LIST?.map((x) => {
+              return (
+                <Button
+                  size="small"
+                  variant={
+                    selectedDoctor?.availableDays?.includes(x.label)
+                      ? "contained"
+                      : "outlined"
+                  }
+                  key={x.label}
+                  sx={{
+                    height: "25px",
+                    pointerEvents: "none",
+                    textDecoration: selectedDoctor?.availableDays?.includes(
+                      x.label
+                    )
+                      ? ""
+                      : "line-through",
+                  }}
+                >
+                  <MyHeading
+                    text={x.shortName}
+                    sx={{
+                      color: selectedDoctor?.availableDays?.includes(x.label)
+                        ? "white !important"
+                        : "gray !important",
+                    }}
+                    variant="body2"
+                    alignCenter
+                  />
+                </Button>
+              );
+            })}
+          </Box>
+          <DisplayData label="Available Days" value={""} />
           <DisplayData
             label="Available Shift"
             value={selectedDoctor?.shiftTimings}
