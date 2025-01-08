@@ -6,7 +6,7 @@ import { WEEK_DAYS_LIST } from "../../constants/localDB/MastersDB";
 
 const DoctorInformationCard = ({ selectedDoctor = null }) => {
   return (
-    <GlassBG cardStyles={{ width: "calc(100% - 44px)", height: "auto" }}>
+    <GlassBG cardStyles={{ width: "97%", height: "auto" }}>
       {selectedDoctor === null && (
         <>
           <Skeleton variant="text" sx={{ fontSize: "2rem" }} />
@@ -18,66 +18,122 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
         </>
       )}
       {selectedDoctor !== null && (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-          <DisplayData
-            label="Name"
-            value={`Dr.${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`}
+        <>
+          <MyHeading
+            alignCenter
+            text="Doctor Information"
+            variant="h6"
+            sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
           />
-          <DisplayData
-            label="Designation"
-            value={selectedDoctor?.designation}
-          />
-          <DisplayData label="Department" value={selectedDoctor?.department} />
-          <DisplayData
-            label="Qualification"
-            value={selectedDoctor?.qualification}
-          />
-          <DisplayData
-            label="Specialization"
-            value={selectedDoctor?.specialization}
-          />
-          <DisplayData label="Fee" value={selectedDoctor?.fee} />
-          <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
-            {WEEK_DAYS_LIST?.map((x) => {
-              return (
-                <Button
-                  size="small"
-                  variant={
-                    selectedDoctor?.availableDays?.includes(x.label)
-                      ? "contained"
-                      : "outlined"
-                  }
-                  key={x.label}
-                  sx={{
-                    height: "25px",
-                    pointerEvents: "none",
-                    textDecoration: selectedDoctor?.availableDays?.includes(
-                      x.label
-                    )
-                      ? ""
-                      : "line-through",
-                  }}
-                >
-                  <MyHeading
-                    text={x.shortName}
-                    sx={{
-                      color: selectedDoctor?.availableDays?.includes(x.label)
-                        ? "white !important"
-                        : "gray !important",
-                    }}
-                    variant="body2"
-                    alignCenter
-                  />
-                </Button>
-              );
-            })}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 1.5,
+              mt: 1,
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <DisplayData
+              label="Name"
+              value={`Dr.${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`}
+            />
+            <DisplayData
+              label="Designation"
+              value={selectedDoctor?.designation}
+            />
           </Box>
-          <DisplayData label="Available Days" value={""} />
-          <DisplayData
-            label="Available Shift"
-            value={selectedDoctor?.shiftTimings}
-          />
-        </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 1.5,
+              mt: 1,
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <DisplayData
+              label="Department"
+              value={selectedDoctor?.department}
+            />
+            <DisplayData
+              label="Qualification"
+              value={selectedDoctor?.qualification}
+            />
+            <DisplayData
+              label="Specialization"
+              value={selectedDoctor?.specialization}
+            />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 1.5,
+              mt: 1,
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <DisplayData
+              label="Available Shift"
+              value={selectedDoctor?.shiftTimings}
+            />
+            <DisplayData label="Fee" value={selectedDoctor?.fee} />
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 1.5,
+              mt: 3,
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <DisplayData label="Available Days" value={null} />
+            <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
+              {WEEK_DAYS_LIST?.map((x) => {
+                return (
+                  <Button
+                    size="small"
+                    variant={
+                      selectedDoctor?.availableDays?.includes(x.label)
+                        ? "contained"
+                        : "outlined"
+                    }
+                    key={x.label}
+                    sx={{
+                      height: "25px",
+                      pointerEvents: "none",
+                      textDecoration: selectedDoctor?.availableDays?.includes(
+                        x.label
+                      )
+                        ? ""
+                        : "line-through",
+                    }}
+                  >
+                    <MyHeading
+                      text={x.shortName}
+                      sx={{
+                        color: selectedDoctor?.availableDays?.includes(x.label)
+                          ? "white !important"
+                          : "gray !important",
+                      }}
+                      variant="body2"
+                      alignCenter
+                    />
+                  </Button>
+                );
+              })}
+            </Box>
+          </Box>
+        </>
       )}
     </GlassBG>
   );

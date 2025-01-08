@@ -23,6 +23,7 @@ import {
 import SlotSelection from "./SlotSelection";
 import { useDispatch } from "react-redux";
 import { hideLoader, showLoader } from "../../redux/slices/loaderSlice";
+import { MyHeading } from "../../components/custom";
 
 const Appointment = () => {
   const dispatch = useDispatch();
@@ -160,6 +161,7 @@ const Appointment = () => {
               onClick={() => {
                 reset();
                 setSelectedDoctor(null);
+                setDoctorSlots([]);
               }}
             >
               Reset Everything
@@ -167,7 +169,12 @@ const Appointment = () => {
           </>
         }
       />
-      <Dialog open={showDocPopover} onClose={() => setShowDocPopover(false)}>
+      <Dialog
+        open={showDocPopover}
+        maxWidth={"sm"}
+        fullWidth
+        onClose={() => setShowDocPopover(false)}
+      >
         <HeaderWithSearch
           hideSearchBar
           headerText="Choose/Change Doctor"
@@ -190,9 +197,9 @@ const Appointment = () => {
         />
         <Box
           sx={{
-            width: "500px !important",
-            minWidth: "500px !important",
-            maxWidth: "500px !important",
+            width: "560px !important",
+            minWidth: "560px !important",
+            maxWidth: "580px !important",
             p: 1,
           }}
         >
@@ -202,7 +209,8 @@ const Appointment = () => {
               justifyContent: "space-between",
               alignItems: "center",
               gap: 1,
-              maxWidth: "99%",
+              maxWidth: "580px",
+              width: "580px",
             }}
           >
             <F_DatePicker
@@ -263,7 +271,7 @@ const Appointment = () => {
             <List key={x.color} dense>
               <ListItem>
                 <FaCircle style={{ color: x.color, paddingRight: "10px" }} />
-                {x.label}
+                <MyHeading variant="caption" text={x.label} />
               </ListItem>
             </List>
           );

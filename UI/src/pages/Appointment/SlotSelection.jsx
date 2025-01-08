@@ -124,6 +124,7 @@ const SlotSelection = ({ slots = [] }) => {
   };
 
   const actionClickHandler = (action) => {
+    setAnchorPosition(null);
     setSelectedSlot((prev) => {
       return {
         data: prev.data,
@@ -203,7 +204,7 @@ const SlotSelection = ({ slots = [] }) => {
             selectedSlot={selectedSlot?.data}
             action={selectedSlot?.action}
             setShowDialog={setShowDialog}
-            patient={patient ?? null}
+            selectedPatient={patient ?? null}
           />
         );
       default:

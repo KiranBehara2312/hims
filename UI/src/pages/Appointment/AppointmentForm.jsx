@@ -1,12 +1,14 @@
-import { Box } from "@mui/material";
-import React from "react";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
 import IconWrapper from "../../components/custom/IconWrapper";
 import { FaCalendarAlt, FaUser } from "react-icons/fa";
 import F_Input from "../../components/custom/form/F_Input";
 import F_Select from "../../components/custom/form/F_Select";
-import { SALUTATIONS } from "../../constants/localDB/MastersDB";
+import { BLOOD_GROUPS, SALUTATIONS } from "../../constants/localDB/MastersDB";
+import { GlassBG, MyHeading } from "../../components/custom";
+import F_DatePicker from "../../components/custom/form/F_DatePicker";
 
 const DEFAULT_VALUES = {
   firstName: "",
@@ -35,6 +37,7 @@ const AppointmentForm = ({
   selectedPatient = null,
   action = null,
 }) => {
+  const theme = useTheme();
   const {
     handleSubmit,
     control,
@@ -48,9 +51,22 @@ const AppointmentForm = ({
     reValidateMode: "onBlur",
   });
   const formValues = watch();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const CARD_WIDTH = isSmallScreen ? "100%" : "250px";
 
+  useEffect(() => {
+    if (selectedPatient !== null) {
+      Object.entries(selectedPatient)?.map(([key, val], index) => {
+        setValue(key, val, {
+          shouldValidate: true,
+          shouldTouch: true,
+          shouldDirty: true,
+        });
+      });
+    }
+  }, [selectedPatient]);
   return (
-    <Box>
+    <>
       <HeaderWithSearch
         hideSearchBar
         notScrollable
@@ -60,13 +76,14 @@ const AppointmentForm = ({
         headerText={headerText}
         html={<>{dialogCloseBtn}</>}
       />
-      <form>
-        <HeaderWithSearch
-          hideSearchBar
-          headerText="Patient Details"
-          headerIcon={<IconWrapper icon={<FaUser />} defaultColor />}
-        />
-        <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
+      <GlassBG cardStyles={{ width: CARD_WIDTH, m: 1, mt: "50px" }}>
+        <form>
+          <MyHeading
+            alignCenter
+            text="Patient Information"
+            variant="h6"
+            sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+          />
           <F_Select
             control={control}
             // readOnly={readOnly}
@@ -107,9 +124,29 @@ const AppointmentForm = ({
             }}
             label="Last Name"
           />
-        </Box>
-      </form>
-    </Box>
+          <F_DatePicker
+            name="dateOfBirth"
+            control={control}
+            // readOnly={readOnly}
+            errors={errors}
+            rules={{
+              required: "Date Of Birth is required",
+            }}
+            label="Date Of birth"
+          />
+          <F_Select
+            control={control}
+            // readOnly={readOnly}
+            name={"bloodGroup"}
+            label={"Blood Group"}
+            list={BLOOD_GROUPS}
+            rules={{}}
+            isRequired={true}
+            errors={errors}
+          />
+        </form>
+      </GlassBG>
+    </>
   );
 };
 
