@@ -39,7 +39,7 @@ const ACTIONS = [
     icon: <IconWrapper defaultColor icon={<FaCalendarAlt size={18} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
-    modalWidth: "md",
+    modalWidth: "lg",
   },
   {
     name: "View",
@@ -123,7 +123,7 @@ const SlotSelection = ({ slots = [] }) => {
     });
   };
 
-  const actionClickHandler = (action) => {
+  const actionClickHandler = (action, modalWidth) => {
     setAnchorPosition(null);
     setSelectedSlot((prev) => {
       return {
@@ -132,7 +132,7 @@ const SlotSelection = ({ slots = [] }) => {
       };
     });
     setShowDialog({
-      modalWidth: "md",
+      modalWidth: modalWidth ?? "md",
       rerender: false,
       show: true,
     });
@@ -190,7 +190,7 @@ const SlotSelection = ({ slots = [] }) => {
   };
 
   const closeDialog = () => {
-    setShowDialog({ rerender: false, show: false });
+    setShowDialog({ rerender: false, show: false, modalWidth: "md" });
     setSelectedPatient({ action: null, data: null });
   };
 
@@ -238,7 +238,6 @@ const SlotSelection = ({ slots = [] }) => {
                   control={control}
                   errors={errors}
                   rules={{}}
-                  maxWidth="100%"
                   label="UHID / Patient No / Contact No"
                 />
               </Grid>
@@ -332,7 +331,7 @@ const SlotSelection = ({ slots = [] }) => {
             (x, i) => {
               return (
                 <Box
-                  onClick={() => actionClickHandler(x.privilege)}
+                  onClick={() => actionClickHandler(x.privilege, x.modalWidth)}
                   key={i}
                   sx={{
                     display: "flex",

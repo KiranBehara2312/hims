@@ -55,8 +55,15 @@ appointmentRoutes.post("/deleteElapsedSlots", async (req, res) => {
     }
     const expiredSlots = doctorSlots.filter((slot) => {
       const slotDate = new Date(slot.date);
-      slotDate.setHours(0, 0, 0, 0);
-      currentDateTime.setHours(0, 0, 0, 0);
+      const endTimeArr = slot.endTime.split(" ");
+      let hours;
+      let min = +endTimeArr[0].split(":")[1];
+      if (endTimeArr[1] === "pm") {
+        hours = 12 + +endTimeArr[0].split(":")[0];
+      } else {
+        hours = +endTimeArr[0].split(":")[0];
+      }
+      slotDate.setHours(hours ?? 0, min ?? 0, 0, 0);
       return slotDate < currentDateTime;
     });
     if (expiredSlots.length > 0) {

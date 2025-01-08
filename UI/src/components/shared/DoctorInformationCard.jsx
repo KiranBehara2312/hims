@@ -6,7 +6,7 @@ import { WEEK_DAYS_LIST } from "../../constants/localDB/MastersDB";
 
 const DoctorInformationCard = ({ selectedDoctor = null }) => {
   return (
-    <GlassBG cardStyles={{ width: "97%", height: "auto" }}>
+    <GlassBG cardStyles={{ height: "auto" }}>
       {selectedDoctor === null && (
         <>
           <Skeleton variant="text" sx={{ fontSize: "2rem" }} />
@@ -56,17 +56,10 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
             }}
           >
             <DisplayData
-              label="Department"
-              value={selectedDoctor?.department}
+              label="Available Shift"
+              value={selectedDoctor?.shiftTimings}
             />
-            <DisplayData
-              label="Qualification"
-              value={selectedDoctor?.qualification}
-            />
-            <DisplayData
-              label="Specialization"
-              value={selectedDoctor?.specialization}
-            />
+            <DisplayData label="Fee" value={selectedDoctor?.fee} />
           </Box>
 
           <Box
@@ -80,10 +73,17 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
             }}
           >
             <DisplayData
-              label="Available Shift"
-              value={selectedDoctor?.shiftTimings}
+              label="Department"
+              value={selectedDoctor?.department}
             />
-            <DisplayData label="Fee" value={selectedDoctor?.fee} />
+            <DisplayData
+              label="Qualification"
+              value={selectedDoctor?.qualification}
+            />
+            <DisplayData
+              label="Specialization"
+              value={selectedDoctor?.specialization}
+            />
           </Box>
 
           <Box

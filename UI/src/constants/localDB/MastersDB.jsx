@@ -403,6 +403,51 @@ const PAYMENT_STATUSES = [
   },
 ];
 
+const APPT_SOURCE_TYPES = [
+  {
+    label: "Call Center",
+    value: "Call Center",
+  },
+  {
+    label: "Direct Walkin",
+    value: "Direct Walkin",
+  },
+  {
+    label: "Telephone",
+    value: "Telephone",
+  },
+];
+const APPT_VISIT_FOR = [
+  {
+    label: "Consultation",
+    value: "Consultation",
+  },
+  {
+    label: "Counselling",
+    value: "Counselling",
+  },
+  {
+    label: "Cross Consultation",
+    value: "Cross Consultation",
+  },
+  {
+    label: "Dressing",
+    value: "Dressing",
+  },
+  {
+    label: "Opinion",
+    value: "Opinion",
+  },
+  {
+    label: "Review with reports",
+    value: "Review with reports",
+  },
+  {
+    label: "Second Opinion",
+    value: "Second Opinion",
+  },
+];
+
 export {
   GENDER_LIST,
   BLOOD_GROUPS,
@@ -419,4 +464,6 @@ export {
   APP_USER_TYPES,
   DOCTOR_DEPARTMENTS,
   APPOINTMENT_BOOKING_STATUS,
+  APPT_VISIT_FOR,
+  APPT_SOURCE_TYPES,
 };

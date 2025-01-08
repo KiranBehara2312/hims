@@ -11,7 +11,15 @@ import {
 } from "react-icons/fa";
 import NoDataFound from "../../components/shared/NoDataFound";
 import { useForm } from "react-hook-form";
-import { Box, Button, Dialog, List, ListItem, Popover } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  List,
+  ListItem,
+  Popover,
+} from "@mui/material";
 import { postData } from "../../helpers/http";
 import F_Autocomplete from "../../components/custom/form/F_AutoComplete";
 import DoctorInformationCard from "../../components/shared/DoctorInformationCard";
@@ -34,6 +42,7 @@ import { MyHeading } from "../../components/custom";
 import { ADMIN, STAFF } from "../../constants/roles";
 import WorkInProgress from "../../components/shared/WorkInProgress";
 import useConfirmation from "../../hooks/useConfirmation";
+import GenerateSlots from "../Doctor/AddEdits/GenerateSlots";
 
 const ACTIONS = [
   {
@@ -81,6 +90,12 @@ const Appointment = () => {
   const [showSlotGenBtn, setShowSlotGenBtn] = useState(false);
   const [doctorSlots, setDoctorSlots] = useState([]);
   const [showDocPopover, setShowDocPopover] = useState(false);
+  const [selectedHeaderAction, setSelectedHeaderAction] = useState(null);
+  const [showDialog, setShowDialog] = useState({
+    show: false,
+    rerender: false,
+    modalWidth: "md",
+  });
   const {
     handleSubmit,
     control,
@@ -144,6 +159,7 @@ const Appointment = () => {
     }
     dispatch(hideLoader());
     if (!response.isSlotsAvailable) {
+      setDoctorSlots([]);
       setShowSlotGenBtn(true);
       infoAlert(response.message, { autoClose: 1500 });
     } else {
@@ -182,16 +198,26 @@ const Appointment = () => {
   const closeDialog = () => {
     setShowDialog({ rerender: false, show: false });
     setSelectedPatient({ action: null, data: null });
+    setSelectedHeaderAction(null);
   };
 
   const actionClickHandler = (action) => {
     switch (action) {
       case "DELETE_ELAPSED_SLOTS":
-        openDialog(
+        return openDialog(
           "Are you sure you want to delete elapsed slots?",
           deleteElapsedSlotsHandler
         );
-        break;
+      case "GENERATE_SLOTS":
+        return (
+          <GenerateSlots
+            dialogCloseBtn={<CloseBtnHtml />}
+            headerText={`Generate Slots for Dr.${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`}
+            selectedRow={selectedDoctor}
+            action={"GENERATE_SLOTS"}
+            setShowDialog={setShowDialog}
+          />
+        );
       default:
         return (
           <>
@@ -284,7 +310,9 @@ const Appointment = () => {
               onClick={() => {
                 reset();
                 setSelectedDoctor(null);
+                setSelectedHeaderAction(null);
                 setDoctorSlots([]);
+                setShowSlotGenBtn(false);
               }}
             >
               Reset Everything
@@ -320,10 +348,7 @@ const Appointment = () => {
         />
         <Box
           sx={{
-            width: "560px !important",
-            minWidth: "560px !important",
-            maxWidth: "560px !important",
-            p: 1,
+            m: 1.5,
           }}
         >
           <Box
@@ -331,9 +356,7 @@ const Appointment = () => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              gap: 1,
-              maxWidth: "560px",
-              width: "560px",
+              flexDirection: "column",
             }}
           >
             <F_DatePicker
@@ -344,7 +367,6 @@ const Appointment = () => {
               rules={{
                 required: "Date is required",
               }}
-              maxWidth="100%"
               label="Date"
               minDate={new Date().toISOString().split("T")[0]}
               maxDate={
@@ -358,7 +380,6 @@ const Appointment = () => {
               name={"doctor"}
               label={"Doctor"}
               list={doctors}
-              maxWidth="100%"
               rules={{}}
               errors={errors}
               onSelect={docSelectionHandler}
@@ -373,7 +394,15 @@ const Appointment = () => {
             Load Slots
           </Button>
           {showSlotGenBtn && (
-            <Button variant="outlined" fullWidth sx={{ mb: 2 }}>
+            <Button
+              variant="outlined"
+              fullWidth
+              sx={{ mb: 2 }}
+              onClick={() => {
+                setSelectedHeaderAction("GENERATE_SLOTS");
+                setShowDialog({ rerender: false, show: true });
+              }}
+            >
               <FaCalendarAlt style={{ paddingRight: "10px" }} />
               Generate Slots
             </Button>
@@ -414,7 +443,11 @@ const Appointment = () => {
         {ACTIONS?.map((x, i) => {
           return (
             <Box
-              onClick={() => actionClickHandler(x.privilege)}
+              onClick={() => {
+                setSelectedHeaderAction(x.privilege);
+                setShowDialog({ rerender: false, show: true });
+              }}
+              // onClick={() => actionClickHandler(x.privilege)}
               key={i}
               sx={{
                 display: "flex",
@@ -441,6 +474,13 @@ const Appointment = () => {
       {doctorSlots?.length > 0 && <SlotSelection slots={doctorSlots} />}
       {doctorSlots?.length === 0 && <NoDataFound sx={{ mt: 10 }} />}
       {DialogComponent}
+      {showDialog.show && (
+        <Dialog maxWidth={showDialog.modalWidth} fullWidth open={true}>
+          <DialogContent sx={{ m: 1 }}>
+            {actionClickHandler(selectedHeaderAction)}
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

@@ -150,7 +150,7 @@ const GenerateSlots = ({
               maxWidth="100%"
               label="From Time"
               minTime={
-                DAILY_SHIFT?.find((x) => x.value === selectedRow?.shiftTimings)
+                DAILY_SHIFT?.find((x) => x?.value === selectedRow?.shiftTimings)
                   ?.shiftTimingsFrom
               }
             />
@@ -165,7 +165,7 @@ const GenerateSlots = ({
               maxWidth="100%"
               label="To Time"
               maxTime={
-                DAILY_SHIFT?.find((x) => x.value === selectedRow?.shiftTimings)
+                DAILY_SHIFT?.find((y) => y?.value === selectedRow?.shiftTimings)
                   ?.shiftTimingsTo
               }
             />
@@ -216,7 +216,7 @@ const GenerateSlots = ({
             <Alert severity="info" sx={{ mt: 1 }}>
               Doctor is available in{" "}
               {
-                DAILY_SHIFT?.find((x) => x.value === selectedRow?.shiftTimings)
+                DAILY_SHIFT?.find((x) => x?.value === selectedRow?.shiftTimings)
                   ?.label
               }
             </Alert>

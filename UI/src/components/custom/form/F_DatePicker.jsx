@@ -25,8 +25,8 @@ const F_DatePicker = ({
       sx={{
         mt: 0.25,
         mb: 0.25,
-        maxWidth: props.maxWidth ?? "230px",
-        minWidth: props.minWidth ?? "230px",
+        maxWidth: props.maxWidth ?? "100%",
+        minWidth: props.minWidth ?? "100%",
       }}
     >
       <Controller
