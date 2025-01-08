@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
 import IconWrapper from "../../components/custom/IconWrapper";
-import { FaCalendarAlt, FaCircle, FaUndo } from "react-icons/fa";
+import {
+  FaCalendarAlt,
+  FaCalendarPlus,
+  FaCircle,
+  FaNotesMedical,
+  FaTrash,
+  FaUndo,
+} from "react-icons/fa";
 import NoDataFound from "../../components/shared/NoDataFound";
 import { useForm } from "react-hook-form";
 import { Box, Button, Dialog, List, ListItem, Popover } from "@mui/material";
@@ -24,10 +31,51 @@ import SlotSelection from "./SlotSelection";
 import { useDispatch } from "react-redux";
 import { hideLoader, showLoader } from "../../redux/slices/loaderSlice";
 import { MyHeading } from "../../components/custom";
+import { ADMIN, STAFF } from "../../constants/roles";
+import WorkInProgress from "../../components/shared/WorkInProgress";
+import useConfirmation from "../../hooks/useConfirmation";
+
+const ACTIONS = [
+  {
+    name: "Doctor's Instruction",
+    privilege: "DOCTORS_INSTRUCTION",
+    icon: <IconWrapper defaultColor icon={<FaNotesMedical size={18} />} />,
+    disabled: false,
+    access: [ADMIN, STAFF],
+    modalWidth: "md",
+  },
+  {
+    name: "Delete Elapsed Slots",
+    privilege: "DELETE_ELAPSED_SLOTS",
+    icon: <IconWrapper color={"darkred"} icon={<FaTrash size={18} />} />,
+    disabled: false,
+    access: [ADMIN, STAFF],
+    modalWidth: "md",
+  },
+  {
+    name: "Delete Slots",
+    privilege: "DELETE_SLOTS",
+    icon: <IconWrapper color={"darkred"} icon={<FaTrash size={18} />} />,
+    disabled: false,
+    access: [ADMIN, STAFF],
+    modalWidth: "md",
+  },
+  {
+    name: "Generate Extra Slots",
+    privilege: "GENERATE_EXTRA_SLOTS",
+    icon: <IconWrapper defaultColor icon={<FaCalendarPlus size={18} />} />,
+    disabled: false,
+    access: [ADMIN, STAFF],
+    modalWidth: "md",
+  },
+];
 
 const Appointment = () => {
+  const { DialogComponent, openDialog } = useConfirmation();
+
   const dispatch = useDispatch();
   const [legendEl, setLegendEl] = useState(null);
+  const [actionEl, setActionEl] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [showSlotGenBtn, setShowSlotGenBtn] = useState(false);
@@ -105,6 +153,59 @@ const Appointment = () => {
     }
   };
 
+  const closeDocPopover = (event, reason) => {
+    if (reason === "backdropClick") {
+      return; // Do nothing on backdrop click
+    }
+    setShowDocPopover(false);
+  };
+
+  const CloseBtnHtml = () => {
+    return (
+      <Button
+        size="small"
+        type="button"
+        variant="outlined"
+        color="error"
+        sx={{
+          maxWidth: "30px !important",
+          minWidth: "30px !important",
+          width: "30px !important",
+        }}
+        onClick={() => closeDialog()}
+      >
+        X
+      </Button>
+    );
+  };
+
+  const closeDialog = () => {
+    setShowDialog({ rerender: false, show: false });
+    setSelectedPatient({ action: null, data: null });
+  };
+
+  const actionClickHandler = (action) => {
+    switch (action) {
+      case "DELETE_ELAPSED_SLOTS":
+        openDialog(
+          "Are you sure you want to delete elapsed slots?",
+          deleteElapsedSlotsHandler
+        );
+        break;
+      default:
+        return (
+          <>
+            <HeaderWithSearch
+              hideSearchBar
+              headerText={action}
+              html={<CloseBtnHtml />}
+            />
+            <WorkInProgress />
+          </>
+        );
+    }
+  };
+
   const getHeaderText = () => {
     let headerText = `Appointment `;
     if (selectedDoctor) {
@@ -119,6 +220,15 @@ const Appointment = () => {
     return headerText;
   };
 
+  const deleteElapsedSlotsHandler = async () => {
+    if (selectedDoctor === null) return;
+    const response = await postData("/appointment/deleteElapsedSlots", {
+      doctor: selectedDoctor?.userName,
+    });
+    successAlert(response.message, { autoClose: 1500 });
+    loadSlotsHandler();
+  };
+
   return (
     <>
       <HeaderWithSearch
@@ -130,17 +240,30 @@ const Appointment = () => {
         html={
           <>
             {doctorSlots?.length > 0 && (
-              <Button
-                size="small"
-                type="button"
-                variant="outlined"
-                sx={{ ml: 2 }}
-                onClick={(e) => {
-                  setLegendEl(e.currentTarget);
-                }}
-              >
-                Legend
-              </Button>
+              <>
+                <Button
+                  size="small"
+                  type="button"
+                  variant="outlined"
+                  sx={{ ml: 2 }}
+                  onClick={(e) => {
+                    setActionEl(e.currentTarget);
+                  }}
+                >
+                  Actions
+                </Button>
+                <Button
+                  size="small"
+                  type="button"
+                  variant="outlined"
+                  sx={{ ml: 2 }}
+                  onClick={(e) => {
+                    setLegendEl(e.currentTarget);
+                  }}
+                >
+                  Legend
+                </Button>
+              </>
             )}
             <Button
               size="small"
@@ -173,7 +296,7 @@ const Appointment = () => {
         open={showDocPopover}
         maxWidth={"sm"}
         fullWidth
-        onClose={() => setShowDocPopover(false)}
+        onClose={closeDocPopover}
       >
         <HeaderWithSearch
           hideSearchBar
@@ -199,7 +322,7 @@ const Appointment = () => {
           sx={{
             width: "560px !important",
             minWidth: "560px !important",
-            maxWidth: "580px !important",
+            maxWidth: "560px !important",
             p: 1,
           }}
         >
@@ -209,8 +332,8 @@ const Appointment = () => {
               justifyContent: "space-between",
               alignItems: "center",
               gap: 1,
-              maxWidth: "580px",
-              width: "580px",
+              maxWidth: "560px",
+              width: "560px",
             }}
           >
             <F_DatePicker
@@ -223,6 +346,7 @@ const Appointment = () => {
               }}
               maxWidth="100%"
               label="Date"
+              minDate={new Date().toISOString().split("T")[0]}
               maxDate={
                 addDaysToCurrentDate(MAX_NO_OF_DAYS_AHEAD_TO_BOOK_APT)
                   .toISOString()
@@ -278,8 +402,45 @@ const Appointment = () => {
         })}
       </Popover>
 
+      <Popover
+        open={Boolean(actionEl)}
+        anchorEl={actionEl}
+        onClose={() => setActionEl(null)}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+      >
+        {ACTIONS?.map((x, i) => {
+          return (
+            <Box
+              onClick={() => actionClickHandler(x.privilege)}
+              key={i}
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                minWidth: "120px",
+                width: "200px",
+                maxWidth: "370px",
+                m: 1.5,
+                mb: 2,
+                cursor: x.disabled ? "no-drop" : "pointer",
+                opacity: x.disabled ? 0.2 : 1,
+                pointerEvents: x.disabled ? "none" : "all",
+              }}
+            >
+              <span style={{ flexBasis: "17%" }}>{x.icon}</span>
+              <MyHeading variant="caption" text={x.name} />
+            </Box>
+          );
+        })}
+      </Popover>
+
       {doctorSlots?.length > 0 && <SlotSelection slots={doctorSlots} />}
       {doctorSlots?.length === 0 && <NoDataFound sx={{ mt: 10 }} />}
+      {DialogComponent}
     </>
   );
 };

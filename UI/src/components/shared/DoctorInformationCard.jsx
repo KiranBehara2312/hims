@@ -96,7 +96,6 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
               width: "100%",
             }}
           >
-            <DisplayData label="Available Days" value={null} />
             <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
               {WEEK_DAYS_LIST?.map((x) => {
                 return (

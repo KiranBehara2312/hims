@@ -39,14 +39,14 @@ const F_Autocomplete = ({
       <Controller
         name={name}
         control={control}
-        defaultValue={props?.defaultValue ?? (multiple ? [] : '')}
+        defaultValue={props?.defaultValue ?? (multiple ? [] : "")}
         rules={rules}
         render={({ field: { onChange, ref, value } }) => (
           <Fragment>
             <Autocomplete
               multiple={multiple}
               value={
-                list?.find((x) => x.userName === value)?.label ||
+                list?.find((x) => (x.userName || x.label) === value)?.label ||
                 (multiple ? [] : "")
               }
               // value={value}

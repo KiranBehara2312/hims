@@ -2,8 +2,7 @@ import { Box, Typography } from "@mui/material";
 import React from "react";
 import HospitalLogo from "../../assets/hospital/logo.png";
 import MyHeading from "../custom/MyHeading";
-
-const HOSPITAL_NAME = "Ujjwal Hopitals";
+import { META } from "../../constants/projects";
 
 const HospitalDetailsLogo = () => {
   return (
@@ -24,7 +23,7 @@ const HospitalDetailsLogo = () => {
           height: 50,
         }}
       />
-      <MyHeading text={HOSPITAL_NAME} variant="body1" />
+      <MyHeading text={META.PROJECT_TITLE} variant="body1" />
     </Box>
   );
 };
