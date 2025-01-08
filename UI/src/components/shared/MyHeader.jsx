@@ -31,8 +31,9 @@ import { emptyUserDetails } from "../../redux/slices/userDetailsSlice";
 import { FaUserAlt, FaUserCog, FaUserNurse } from "react-icons/fa";
 import MyHeading from "../custom/MyHeading";
 import { FaUserDoctor } from "react-icons/fa6";
-import { formatDate } from "../../helpers";
+import { compareDate, formatDate, infoAlert } from "../../helpers";
 import { WEEK_DAYS_LIST } from "../../constants/localDB/MastersDB";
+import moment from "moment";
 
 const MyHeader = () => {
   const loggedInUser = useSelector((state) => state.userDetails.user);
@@ -42,6 +43,7 @@ const MyHeader = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const dispatch = useDispatch();
+  const [autoLogoutMsg, setAutoLogoutMsg] = useState("");
   const [selectedMenuItem, setSelectedMenuItem] = useState("");
   const { DialogComponent, openDialog } = useConfirmation();
 
@@ -50,6 +52,37 @@ const MyHeader = () => {
     dispatch(emptyUserDetails());
     localStorage.removeItem("authToken");
   };
+
+  useEffect(() => {
+    let countdownInterval = setInterval(function () {
+      const targetDate = moment(loggedInUser?.exp);
+      let currentTime = moment();
+      let remainingTime = targetDate.diff(currentTime);
+      if (remainingTime <= 0) {
+        clearInterval(countdownInterval);
+        return;
+      }
+      let duration = moment.duration(remainingTime);
+      let days = duration.days();
+      let hours = duration.hours();
+      let minutes = duration.minutes();
+      let seconds = duration.seconds();
+      if (minutes === 0 && seconds === 59) {
+        infoAlert(
+          "Your session will end in 1 min, please save your changes...!",
+          { autoClose: 56 * 1000 }
+        );
+      }
+      if (minutes === 0 && seconds == 3) {
+        infoAlert("Logging out...!", { autoClose: 2000 });
+      }
+      if (minutes === 0 && seconds === 1) logoutHanlder();
+      setAutoLogoutMsg(`${hours}h ${minutes}m ${seconds}s`);
+    }, 1000);
+    return () => {
+      clearInterval(countdownInterval);
+    };
+  }, []);
 
   useEffect(() => {
     let inte = setInterval(() => {
@@ -247,6 +280,16 @@ const MyHeader = () => {
           >
             <MyHeading alignCenter variant="caption" text={"Last Login at"} />
             <MyHeading alignCenter variant="caption" text={loggedInUser?.iat} />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              pb: 1,
+            }}
+          >
+            <MyHeading alignCenter variant="caption" text={"Logout's in"} />
+            <MyHeading alignCenter variant="caption" text={autoLogoutMsg} />
           </Box>
           <Divider />
           <Box

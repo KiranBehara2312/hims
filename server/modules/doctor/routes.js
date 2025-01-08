@@ -38,7 +38,7 @@ doctorRoutes.get("/doctorById/:doctorId", async (req, res) => {
       { userName: doctorId, isActive: true },
       { _id: false, __v: false, isActive: false }
     );
-    if (doctorRoutes?.length === 0) {
+    if (doctors?.length === 0) {
       return res.status(404).json({
         message: "Doctor not found..!",
       });

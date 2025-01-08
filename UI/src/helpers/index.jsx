@@ -7,6 +7,16 @@ const formatDate = (formatStr = "dd/MM/yyyy", date = new Date()) => {
   return moment(date).format(formatStr);
 };
 
+const compareDate = (date1 = new Date(), date2 = new Date()) => {
+  if (date1.getTime() < date2.getTime()) {
+    return 1
+  } else if (date1.getTime() > date2.getTime()) {
+    return -1
+  } else {
+    return 0
+  }
+};
+
 const calculateAge = (birthDate = new Date()) => {
   const today = new Date();
   const birth = new Date(birthDate);
@@ -118,4 +128,5 @@ export {
   convertMongoDBDate,
   calculateAge,
   addDaysToCurrentDate,
+  compareDate,
 };

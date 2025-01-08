@@ -20,6 +20,7 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = async ({ userName, password }) => {
+    dispatch(showLoader("Logging in..."));
     const loginObj = {
       userName,
       password,
@@ -32,6 +33,7 @@ const Login = () => {
     dispatch(setUserDetails(response.token));
     localStorage.setItem("authToken", response.token);
     navigate("/pages/home");
+    dispatch(hideLoader());
   };
 
   return (

@@ -21,8 +21,11 @@ import {
   WEEK_DAYS_LIST,
 } from "../../constants/localDB/MastersDB";
 import SlotSelection from "./SlotSelection";
+import { useDispatch } from "react-redux";
+import { hideLoader, showLoader } from "../../redux/slices/loaderSlice";
 
 const Appointment = () => {
+  const dispatch = useDispatch();
   const [legendEl, setLegendEl] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -75,6 +78,7 @@ const Appointment = () => {
         autoClose: 1500,
       });
     }
+    dispatch(showLoader("Loading Slots..."));
     const payload = {
       date: formValues.date,
       doctor: formValues.doctor,
@@ -89,6 +93,7 @@ const Appointment = () => {
       });
       setDoctorSlots(slots.sort((a, b) => a.slotOrder - b.slotOrder) ?? []);
     }
+    dispatch(hideLoader());
     if (!response.isSlotsAvailable) {
       setShowSlotGenBtn(true);
       infoAlert(response.message, { autoClose: 1500 });
@@ -210,7 +215,6 @@ const Appointment = () => {
               }}
               maxWidth="100%"
               label="Date"
-              minDate={new Date().toISOString().split("T")[0]}
               maxDate={
                 addDaysToCurrentDate(MAX_NO_OF_DAYS_AHEAD_TO_BOOK_APT)
                   .toISOString()

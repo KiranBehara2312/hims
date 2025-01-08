@@ -114,6 +114,7 @@ const useCustomTheme = (curmode = "light", dColor = "#0d8672") => {
           paper: {
             height: "auto",
             maxHeight: "calc(100% - 44px)",
+            zIndex: 999,
           },
         },
       },

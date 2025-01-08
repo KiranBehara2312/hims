@@ -32,21 +32,51 @@ patientRoutes.post("/all", async (req, res) => {
   }
 });
 
-patientRoutes.post("/addVitals", async (req, res) => {
+patientRoutes.post("/patientById", async (req, res) => {
   try {
-    const newVital = new PatientVitals(req.body);
-    await newVital.save();
-    res.status(201).json({
-      message: "Vitals added successfully",
+    const { searchString } = req.body;
+    const patients = await PatientRegn.find(
+      {
+        $or: [
+          { UHID: searchString },
+          { patientNo: searchString },
+          { contactNumber: searchString },
+        ],
+        isActive: true,
+      },
+      { _id: false, __v: false, isActive: false }
+    );
+    if (patients?.length === 0) {
+      return res.status(404).json({
+        message: "Patient not found..!" + keyName,
+      });
+    }
+    res.json({
+      data: patients[0],
     });
   } catch (err) {
-    console.log(err);
+    console.log("Error fetching Patient ==>  ", err);
     res.status(400).json({
-      message: "Error while saving Patient Vitals",
+      message: "Error fetching Patient",
       error: err.message || err,
     });
   }
-});
+}),
+  patientRoutes.post("/addVitals", async (req, res) => {
+    try {
+      const newVital = new PatientVitals(req.body);
+      await newVital.save();
+      res.status(201).json({
+        message: "Vitals added successfully",
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({
+        message: "Error while saving Patient Vitals",
+        error: err.message || err,
+      });
+    }
+  });
 
 patientRoutes.post("/vitalHistory", async (req, res) => {
   const UHID = req.body.UHID;

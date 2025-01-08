@@ -34,7 +34,7 @@ authRoutes.post("/login", async (req, res) => {
         colorTheme: user.colorTheme,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "30m" }
+      { expiresIn: "20m" }
     );
 
     res.json({

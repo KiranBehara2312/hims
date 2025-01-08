@@ -1,16 +1,10 @@
-import {
-  Backdrop,
-  Box,
-  CircularProgress,
-  Paper,
-  useTheme,
-} from "@mui/material";
+import { Backdrop, CircularProgress, Paper } from "@mui/material";
 import "./base.css";
 import { useSelector } from "react-redux";
+import { MyHeading } from "../../components/custom";
 
 const BaseLayout = ({ children }) => {
-  const loader = useSelector((state) => state.loader.value);
-  const theme = useTheme();
+  const loader = useSelector((state) => state.loader);
   return (
     <Paper
       sx={{
@@ -20,16 +14,18 @@ const BaseLayout = ({ children }) => {
         overflowX: "auto",
       }}
     >
-      {loader && (
+      {loader?.value && (
         <Backdrop
           sx={(theme) => ({
-            zIndex: theme.zIndex.drawer + 1,
+            zIndex: theme.zIndex.drawer + 100,
           })}
           open={true}
         >
-          <CircularProgress
-            sx={{ color: theme.palette.primary.main }}
-            size={100}
+          <CircularProgress sx={{ color: "whitesmoke" }} size={50} />
+          <MyHeading
+            variant="h6"
+            sx={{ pl: 2, color: "white" }}
+            text={loader?.message}
           />
         </Backdrop>
       )}
