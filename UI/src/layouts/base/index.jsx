@@ -17,7 +17,8 @@ const BaseLayout = ({ children }) => {
       {loader?.value && (
         <Backdrop
           sx={(theme) => ({
-            zIndex: theme.zIndex.drawer + 100,
+            zIndex: theme.zIndex.drawer + 1000,
+            background: "#000000b3",
           })}
           open={true}
         >

@@ -78,6 +78,11 @@ const BLOOD_GROUPS = [
 
 const WEEK_DAYS_LIST = [
   {
+    label: "Sunday",
+    value: "Sunday",
+    shortName: "Sun",
+  },
+  {
     label: "Monday",
     value: "Monday",
     shortName: "Mon",
@@ -106,11 +111,6 @@ const WEEK_DAYS_LIST = [
     label: "Saturday",
     value: "Saturday",
     shortName: "Sat",
-  },
-  {
-    label: "Sunday",
-    value: "Sunday",
-    shortName: "Sun",
   },
 ];
 
