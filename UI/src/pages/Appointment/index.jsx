@@ -91,6 +91,7 @@ const Appointment = () => {
   const [doctorSlots, setDoctorSlots] = useState([]);
   const [showDocPopover, setShowDocPopover] = useState(false);
   const [selectedHeaderAction, setSelectedHeaderAction] = useState(null);
+  const [component, setComponent] = useState(null);
   const [showDialog, setShowDialog] = useState({
     show: false,
     rerender: false,
@@ -113,6 +114,14 @@ const Appointment = () => {
   useEffect(() => {
     fetchDoctors();
   }, []);
+
+  useEffect(() => {
+    if (selectedHeaderAction === null) return;
+    setComponent(actionClickHandler(selectedHeaderAction));
+    if (selectedHeaderAction !== "DELETE_ELAPSED_SLOTS") {
+      setShowDialog({ rerender: false, show: true });
+    }
+  }, [selectedHeaderAction]);
 
   const fetchDoctors = async () => {
     const response = await postData("/doctor/doctors", {
@@ -246,7 +255,11 @@ const Appointment = () => {
     return headerText;
   };
 
-  const deleteElapsedSlotsHandler = async () => {
+  const deleteElapsedSlotsHandler = async (confirmed) => {
+    setSelectedHeaderAction(null);
+    if (!confirmed) {
+      return;
+    }
     if (selectedDoctor === null) return;
     const response = await postData("/appointment/deleteElapsedSlots", {
       doctor: selectedDoctor?.userName,
@@ -400,7 +413,6 @@ const Appointment = () => {
               sx={{ mb: 2 }}
               onClick={() => {
                 setSelectedHeaderAction("GENERATE_SLOTS");
-                setShowDialog({ rerender: false, show: true });
               }}
             >
               <FaCalendarAlt style={{ paddingRight: "10px" }} />
@@ -445,9 +457,7 @@ const Appointment = () => {
             <Box
               onClick={() => {
                 setSelectedHeaderAction(x.privilege);
-                setShowDialog({ rerender: false, show: true });
               }}
-              // onClick={() => actionClickHandler(x.privilege)}
               key={i}
               sx={{
                 display: "flex",
@@ -476,9 +486,7 @@ const Appointment = () => {
       {DialogComponent}
       {showDialog.show && (
         <Dialog maxWidth={showDialog.modalWidth} fullWidth open={true}>
-          <DialogContent sx={{ m: 1 }}>
-            {actionClickHandler(selectedHeaderAction)}
-          </DialogContent>
+          <DialogContent sx={{ m: 1 }}>{component}</DialogContent>
         </Dialog>
       )}
     </>

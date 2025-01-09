@@ -39,7 +39,7 @@ const ACTIONS = [
     icon: <IconWrapper defaultColor icon={<FaCalendarAlt size={18} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
-    modalWidth: "lg",
+    modalWidth: "md",
   },
   {
     name: "View",
@@ -191,7 +191,7 @@ const SlotSelection = ({ slots = [] }) => {
 
   const closeDialog = () => {
     setShowDialog({ rerender: false, show: false, modalWidth: "md" });
-    setSelectedPatient({ action: null, data: null });
+    setSelectedSlot({ action: null, data: null });
   };
 
   const getDialogContent = (action) => {

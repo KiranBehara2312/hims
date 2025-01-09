@@ -1,4 +1,4 @@
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, useMediaQuery, useTheme } from "@mui/material";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
@@ -59,10 +59,14 @@ const AppointmentForm = ({
   });
   const formValues = watch();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
-  const CARD_WIDTH = isSmallScreen ? "100%" : "340px";
+  const CARD_WIDTH = isSmallScreen ? "100%" : "240px";
 
   useEffect(() => {
-    if (selectedPatient !== null) {
+    populatePatientDetails()
+  }, [selectedPatient]);
+
+  const populatePatientDetails = () => {
+    if(selectedPatient !== null){
       Object.entries(selectedPatient)?.map(([key, val], index) => {
         setValue(key, val, {
           shouldValidate: true,
@@ -71,24 +75,56 @@ const AppointmentForm = ({
         });
       });
     }
-  }, [selectedPatient]);
+  }
+
+  const onSubmit = (formData) => {
+    console.log(formData);
+  };
+
+  const resetForm = () => {
+    reset()
+    populatePatientDetails()
+  }
+
+  const FormButtons = () => {
+    return (
+      <Box sx={{ display: "flex", gap: 1, mr: 1 }}>
+        <Button variant="outlined" size="small" type="submit">
+          Submit
+        </Button>
+        <Button
+          variant="outlined"
+          size="small"
+          type="reset"
+          onClick={() => resetForm()}
+        >
+          Reset
+        </Button>
+      </Box>
+    );
+  };
   return (
     <>
-      <HeaderWithSearch
-        hideSearchBar
-        notScrollable
-        headerIcon={
-          <IconWrapper defaultColor icon={<FaCalendarAlt size={20} />} />
-        }
-        headerText={headerText}
-        html={<>{dialogCloseBtn}</>}
-      />
-      <form>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, m: 1 }}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <HeaderWithSearch
+          hideSearchBar
+          notScrollable
+          headerIcon={
+            <IconWrapper defaultColor icon={<FaCalendarAlt size={20} />} />
+          }
+          headerText={headerText}
+          html={
+            <>
+              <FormButtons />
+              {dialogCloseBtn}
+            </>
+          }
+        />
+        <Box sx={{ display: "flex", flexWrap: "wrap", m: 1, gap: 1 }}>
           <GlassBG cardStyles={{ width: CARD_WIDTH, mt: "50px" }}>
             <MyHeading
               alignCenter
-              text="Slot & Doctor Information"
+              text="Slot & Doctor"
               variant="h6"
               sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
             />
@@ -129,7 +165,7 @@ const AppointmentForm = ({
           <GlassBG cardStyles={{ width: CARD_WIDTH, mt: "50px" }}>
             <MyHeading
               alignCenter
-              text="Patient Information"
+              text={`Patient- ${selectedPatient?.UHID}- ${selectedPatient?.patientNo}`}
               variant="h6"
               sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
             />
@@ -207,7 +243,7 @@ const AppointmentForm = ({
           <GlassBG cardStyles={{ width: CARD_WIDTH, mt: "50px" }}>
             <MyHeading
               alignCenter
-              text="Appointment Information"
+              text="Others"
               variant="h6"
               sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
             />
