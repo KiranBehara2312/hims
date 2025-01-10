@@ -25,7 +25,7 @@ const Communication = ({ control, errors, readOnly = false }) => {
   };
   return (
     <>
-      <GlassBG cardStyles={{ width: "240px", m: 1, height: "auto" }}>
+      <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
           text="Communication Information"

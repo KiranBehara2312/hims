@@ -48,7 +48,7 @@ const Doctor = ({
 
   const DocInfoCard = () => {
     return (
-      <GlassBG cardStyles={{ width: "200px", height: "auto" }}>
+      <GlassBG cardStyles={{ width: "210px", height: "auto" }}>
         <Box
           sx={{
             display: "flex",
@@ -126,7 +126,7 @@ const Doctor = ({
   };
   return (
     <>
-      <GlassBG cardStyles={{ width: "240px", m: 1, height: "auto" }}>
+      <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
           text="Doctor Information"

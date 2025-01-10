@@ -193,6 +193,7 @@ const Registration = ({
               flexWrap: "wrap",
               height: "calc(100vh - 130px)",
               overflow: "auto",
+              gap:1
             }}
           >
             <Primary

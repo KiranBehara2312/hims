@@ -13,7 +13,7 @@ import F_DatePicker from "../../../components/custom/form/F_DatePicker";
 const Personal = ({ control, errors, readOnly = false }) => {
   return (
     <>
-      <GlassBG cardStyles={{ width: "240px", m: 1, height: "auto" }}>
+      <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
           text="Personal Information"

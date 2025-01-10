@@ -53,6 +53,9 @@ const appointmentSlotSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    apptCode: {
+      type: String,
+    },
     calSlotCodeCounter: {
       type: Number,
       default: 1,

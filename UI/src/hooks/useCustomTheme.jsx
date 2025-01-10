@@ -149,7 +149,7 @@ const useCustomTheme = (curmode = "light", dColor = "#0d8672") => {
       MuiTextField: {
         styleOverrides: {
           root: {
-            margin: 4.5,
+            margin: "4px 0px",
             "& .MuiInputBase-root": {
               fontSize: "0.875rem",
               padding: "0 0",

@@ -13,7 +13,7 @@ import { FaSearch } from "react-icons/fa";
 const Primary = ({ control, errors, readOnly = "" }) => {
   return (
     <>
-      <GlassBG cardStyles={{ width: "240px", m: 1, height: "auto" }}>
+      <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
           text="Primary Information"

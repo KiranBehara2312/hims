@@ -31,7 +31,7 @@ const Payment = ({ control, errors, formValues, setValue }) => {
     });
 
     return (
-      <GlassBG cardStyles={{ width: "200px", height: "auto" }}>
+      <GlassBG cardStyles={{ width: "190px",mt:2, height: "auto" }}>
         <Box
           sx={{
             display: "flex",
@@ -71,7 +71,7 @@ const Payment = ({ control, errors, formValues, setValue }) => {
 
   return (
     <>
-      <GlassBG cardStyles={{ width: "240px", m: 1, height: "auto" }}>
+      <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
           text="Payment Information"

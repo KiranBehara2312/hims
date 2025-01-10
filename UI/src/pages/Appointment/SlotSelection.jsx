@@ -69,7 +69,7 @@ const ACTIONS = [
     name: "Mark No-Show",
     privilege: "MARK_NO_SHOW",
     icon: (
-      <IconWrapper defaultColor icon={<FaUserAltSlash nsfer size={18} />} />
+      <IconWrapper defaultColor icon={<FaUserAltSlash size={18} />} />
     ),
     disabled: false,
     access: [ADMIN, STAFF],

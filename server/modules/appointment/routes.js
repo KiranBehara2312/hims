@@ -3,6 +3,7 @@ const appointmentRoutes = express.Router();
 const AppointmentController = require("./Controller");
 const Doctor = require("../../models/Doctor");
 const AppointmentSlots = require("../../models/AppointmentSlot");
+const Appointments = require("../../models/Appointment");
 
 appointmentRoutes.post("/daySlotGeneration", async (req, res) => {
   try {
@@ -111,6 +112,44 @@ appointmentRoutes.post("/doctorSlots", async (req, res) => {
     console.log(err);
     res.status(400).json({
       message: "Error fetching doctors slots",
+      error: err.message || err,
+    });
+  }
+});
+
+appointmentRoutes.post("/book", async (req, res) => {
+  try {
+    const { calSlotCode, slotNextStatus, slotNextStatusColor } = req.body;
+    const loggedInuser = req.loggedInuser;
+    const appointment = new Appointments({
+      ...req.body,
+      createdBy: loggedInuser?.userName,
+      // apptCode: "a",
+    });
+    const { apptCode } = await appointment.save();
+    const result = await AppointmentSlots.updateOne(
+      { calSlotCode: calSlotCode },
+      {
+        $set: {
+          bookingStatus: slotNextStatus,
+          color: slotNextStatusColor,
+          apptCode,
+        },
+      },
+      { runValidators: true }
+    );
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({
+        message: `Slot(${calSlotCode}) not found or no changes made`,
+      });
+    }
+    res.status(201).json({
+      message: "Appointment saved successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      message: "Error while saving Appointment",
       error: err.message || err,
     });
   }

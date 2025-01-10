@@ -43,6 +43,7 @@ import { ADMIN, STAFF } from "../../constants/roles";
 import WorkInProgress from "../../components/shared/WorkInProgress";
 import useConfirmation from "../../hooks/useConfirmation";
 import GenerateSlots from "../Doctor/AddEdits/GenerateSlots";
+import { setDoctorsInCache } from "../../redux/slices/apiCacheSlice";
 
 const ACTIONS = [
   {
@@ -81,7 +82,6 @@ const ACTIONS = [
 
 const Appointment = () => {
   const { DialogComponent, openDialog } = useConfirmation();
-
   const dispatch = useDispatch();
   const [legendEl, setLegendEl] = useState(null);
   const [actionEl, setActionEl] = useState(null);
@@ -117,6 +117,7 @@ const Appointment = () => {
 
   useEffect(() => {
     if (selectedHeaderAction === null) return;
+    setActionEl(null);
     setComponent(actionClickHandler(selectedHeaderAction));
     if (selectedHeaderAction !== "DELETE_ELAPSED_SLOTS") {
       setShowDialog({ rerender: false, show: true });
@@ -128,20 +129,22 @@ const Appointment = () => {
       page: 1,
       limit: 100,
     });
-    setDoctors(
+    let docs =
       response?.data?.map((x) => {
         return {
           ...x,
           value: x.userName,
           label: `Dr. ${x.firstName} ${x.lastName}`,
         };
-      }) ?? []
-    );
+      }) ?? [];
+    setDoctors(docs ?? []);
+    dispatch(setDoctorsInCache(docs ?? []));
   };
 
   const docSelectionHandler = (doc) => {
     const selDoc = doctors.find((x) => x.userName === doc) ?? null;
     setSelectedDoctor(selDoc);
+    setShowSlotGenBtn(false);
   };
 
   const loadSlotsHandler = async () => {
