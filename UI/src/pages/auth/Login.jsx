@@ -7,7 +7,6 @@ import { postData } from "../../helpers/http";
 import { successAlert } from "../../helpers";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../../redux/slices/userDetailsSlice";
-import { hideLoader, showLoader } from "../../redux/slices/loaderSlice";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,20 +19,18 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = async ({ userName, password }) => {
-    dispatch(showLoader("Logging in..."));
     const loginObj = {
       userName,
       password,
     };
-    const response = await postData("/auth/login", loginObj);
+    const response = await postData("/auth/login", loginObj, "Logging in...");
     const welcomeMsg = `Welcome ${
       response?.user?.role === "DOCTOR" ? "Dr." : ""
     } ${response?.user?.firstName} ${response?.user?.lastName}`;
     successAlert(welcomeMsg, { autoClose: 1500 });
-    dispatch(setUserDetails(response.token));
-    localStorage.setItem("authToken", response.token);
+    dispatch(setUserDetails(response?.token));
+    localStorage.setItem("authToken", response?.token);
     navigate("/pages/home");
-    dispatch(hideLoader());
   };
 
   return (

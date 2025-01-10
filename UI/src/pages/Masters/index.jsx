@@ -7,6 +7,7 @@ import { postData } from "../../helpers/http";
 import MyTable from "../../components/custom/MyTable";
 import IconWrapper from "../../components/custom/IconWrapper";
 import { FaPlus } from "react-icons/fa";
+import NoDataFound from "../../components/shared/NoDataFound";
 
 const Masters = () => {
   const theme = useTheme();
@@ -149,6 +150,7 @@ const Masters = () => {
       >
         <MasterItems />
       </Box>
+      {selectedMenuCard === null && <NoDataFound sx={{ mt: 20 }} />}
       {selectedMenuCard && (
         <Box sx={{ minWidth: "80%", maxWidth: "100%", overflowX: "auto" }}>
           <HeaderWithSearch

@@ -4,6 +4,7 @@ const AppointmentController = require("./Controller");
 const Doctor = require("../../models/Doctor");
 const AppointmentSlots = require("../../models/AppointmentSlot");
 const Appointments = require("../../models/Appointment");
+const ApptVisitHistory = require("../../models/ApptVisitHisory");
 
 appointmentRoutes.post("/daySlotGeneration", async (req, res) => {
   try {
@@ -119,14 +120,26 @@ appointmentRoutes.post("/doctorSlots", async (req, res) => {
 
 appointmentRoutes.post("/book", async (req, res) => {
   try {
-    const { calSlotCode, slotNextStatus, slotNextStatusColor } = req.body;
+    const {
+      calSlotCode,
+      slotNextStatus,
+      slotNextStatusColor,
+      UHID,
+      patientNo,
+      appointmentDate,
+      doctorName,
+      visitFor,
+    } = req.body;
+
     const loggedInuser = req.loggedInuser;
     const appointment = new Appointments({
       ...req.body,
       createdBy: loggedInuser?.userName,
-      // apptCode: "a",
     });
+    //saving appointment
     const { apptCode } = await appointment.save();
+
+    // updating the slot status
     const result = await AppointmentSlots.updateOne(
       { calSlotCode: calSlotCode },
       {
@@ -143,6 +156,19 @@ appointmentRoutes.post("/book", async (req, res) => {
         message: `Slot(${calSlotCode}) not found or no changes made`,
       });
     }
+
+    if (UHID !== null && UHID !== "" && UHID !== undefined) {
+      const newVisitHistoryEntry = new ApptVisitHistory({
+        apptCode: apptCode,
+        appointmentDate: appointmentDate,
+        doctorName: doctorName,
+        visitFor: visitFor,
+        UHID: UHID,
+        patientNo: patientNo,
+      });
+      await newVisitHistoryEntry.save();
+    }
+
     res.status(201).json({
       message: "Appointment saved successfully",
     });
@@ -150,6 +176,37 @@ appointmentRoutes.post("/book", async (req, res) => {
     console.log(err);
     res.status(400).json({
       message: "Error while saving Appointment",
+      error: err.message || err,
+    });
+  }
+});
+
+appointmentRoutes.post("/patientVisitHistory", async (req, res) => {
+  const page = parseInt(req.body.page) || 1;
+  const limit = parseInt(req.body.limit) || 10;
+  const { UHID } = req.body;
+  const skip = (page - 1) * limit;
+  try {
+    const totalCount = await ApptVisitHistory.countDocuments();
+    const visitHistories = await ApptVisitHistory.find(
+      {
+        UHID: UHID,
+      },
+      { _id: false, __v: false, isActive: false }
+    )
+      .skip(skip)
+      .limit(limit);
+    const totalPages = Math.ceil(totalCount / limit);
+    res.json({
+      page,
+      totalPages,
+      totalCount,
+      data: visitHistories,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      message: "Error fetching visit history against patient",
       error: err.message || err,
     });
   }

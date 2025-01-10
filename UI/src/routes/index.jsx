@@ -11,6 +11,7 @@ import Doctor from "../pages/Doctor";
 import PaymentLedger from "../pages/PaymentLedger";
 import Patients from "../pages/patients";
 import Appointment from "../pages/Appointment";
+import ApptMainScreen from "../pages/Appointment/Main";
 
 const AppRoutes = () => {
   const routes = useRoutes([
@@ -44,7 +45,7 @@ const AppRoutes = () => {
         },
         {
           path: "appointment",
-          element: <Appointment />,
+          element: <ApptMainScreen />,
         },
         {
           path: "doctor",

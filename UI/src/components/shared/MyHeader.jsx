@@ -47,7 +47,8 @@ const MyHeader = () => {
   const [selectedMenuItem, setSelectedMenuItem] = useState("");
   const { DialogComponent, openDialog } = useConfirmation();
 
-  const logoutHanlder = () => {
+  const logoutHanlder = (confirmed) => {
+    if (!confirmed) return;
     navigate("/auth/login");
     dispatch(emptyUserDetails());
     localStorage.removeItem("authToken");
@@ -70,7 +71,7 @@ const MyHeader = () => {
       if (minutes === 0 && seconds === 59) {
         infoAlert(
           "Your session will end in 1 min, please save your changes...!",
-          { autoClose: 56 * 1000 }
+          { autoClose: 5000 }
         );
       }
       if (minutes === 0 && seconds == 3) {
@@ -86,7 +87,7 @@ const MyHeader = () => {
 
   useEffect(() => {
     let inte = setInterval(() => {
-      const dateWithTime = formatDate("DD/MM/YYYY hh:mm:ss");
+      const dateWithTime = formatDate("DD MMM YYYY - hh:mm");
       const day = WEEK_DAYS_LIST[new Date().getDay()]?.label;
       const currentURL = window.location.pathname.split("/pages/")[1];
       setSelectedMenuItem(currentURL);
@@ -201,9 +202,9 @@ const MyHeader = () => {
           </Typography>
 
           <MyHeading
-            variant="caption"
+            variant="body2"
             text={currentDateTime}
-            sx={{ pr: 1, pt: 0.5 }}
+            sx={{ pr: 1}}
           />
           <IconButton color="inherit" onClick={accountClickHandler}>
             {getIconByRole(loggedInUser?.role, 25)}
@@ -280,16 +281,6 @@ const MyHeader = () => {
           >
             <MyHeading alignCenter variant="caption" text={"Last Login at"} />
             <MyHeading alignCenter variant="caption" text={loggedInUser?.iat} />
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              pb: 1,
-            }}
-          >
-            <MyHeading alignCenter variant="caption" text={"Logout's in"} />
-            <MyHeading alignCenter variant="caption" text={autoLogoutMsg} />
           </Box>
           <Divider />
           <Box

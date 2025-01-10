@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
 import IconWrapper from "../../components/custom/IconWrapper";
 import {
@@ -37,13 +37,13 @@ import {
 } from "../../constants/localDB/MastersDB";
 import SlotSelection from "./SlotSelection";
 import { useDispatch } from "react-redux";
-import { hideLoader, showLoader } from "../../redux/slices/loaderSlice";
 import { MyHeading } from "../../components/custom";
 import { ADMIN, STAFF } from "../../constants/roles";
 import WorkInProgress from "../../components/shared/WorkInProgress";
 import useConfirmation from "../../hooks/useConfirmation";
 import GenerateSlots from "../Doctor/AddEdits/GenerateSlots";
 import { setDoctorsInCache } from "../../redux/slices/apiCacheSlice";
+import { ApptContext } from "./ApptContext";
 
 const ACTIONS = [
   {
@@ -82,14 +82,19 @@ const ACTIONS = [
 
 const Appointment = () => {
   const { DialogComponent, openDialog } = useConfirmation();
-  const dispatch = useDispatch();
   const [legendEl, setLegendEl] = useState(null);
   const [actionEl, setActionEl] = useState(null);
-  const [doctors, setDoctors] = useState([]);
-  const [selectedDoctor, setSelectedDoctor] = useState(null);
-  const [showSlotGenBtn, setShowSlotGenBtn] = useState(false);
-  const [doctorSlots, setDoctorSlots] = useState([]);
-  const [showDocPopover, setShowDocPopover] = useState(false);
+  const {
+    doctors,
+    loadSlotsHandler,
+    doctorSlots,
+    setSelectedDoctor,
+    selectedDoctor,
+    selectedDate,
+    setSelectedDate,
+    resetEverything,
+  } = useContext(ApptContext);
+  const [showDocPopover, setShowDocPopover] = useState(true);
   const [selectedHeaderAction, setSelectedHeaderAction] = useState(null);
   const [component, setComponent] = useState(null);
   const [showDialog, setShowDialog] = useState({
@@ -112,11 +117,16 @@ const Appointment = () => {
   const formValues = watch();
 
   useEffect(() => {
-    fetchDoctors();
-  }, []);
+    setSelectedDate(formValues?.date);
+  }, [formValues?.date]);
 
   useEffect(() => {
-    if (selectedHeaderAction === null) return;
+    if (
+      selectedHeaderAction === null ||
+      formValues?.doctor === "" ||
+      formValues?.date === ""
+    )
+      return;
     setActionEl(null);
     setComponent(actionClickHandler(selectedHeaderAction));
     if (selectedHeaderAction !== "DELETE_ELAPSED_SLOTS") {
@@ -124,61 +134,21 @@ const Appointment = () => {
     }
   }, [selectedHeaderAction]);
 
-  const fetchDoctors = async () => {
-    const response = await postData("/doctor/doctors", {
-      page: 1,
-      limit: 100,
-    });
-    let docs =
-      response?.data?.map((x) => {
-        return {
-          ...x,
-          value: x.userName,
-          label: `Dr. ${x.firstName} ${x.lastName}`,
-        };
-      }) ?? [];
-    setDoctors(docs ?? []);
-    dispatch(setDoctorsInCache(docs ?? []));
-  };
+  useEffect(() => {
+    if (doctorSlots?.length !== 0 && showDocPopover) {
+      closeDocPopover();
+    }
+  }, [doctorSlots]);
+
+  useEffect(() => {
+    if (selectedHeaderAction === "GENERATE_SLOTS" && showDialog.rerender) {
+      loadSlotsHandler();
+    }
+  }, [showDialog.rerender]);
 
   const docSelectionHandler = (doc) => {
     const selDoc = doctors.find((x) => x.userName === doc) ?? null;
     setSelectedDoctor(selDoc);
-    setShowSlotGenBtn(false);
-  };
-
-  const loadSlotsHandler = async () => {
-    if (formValues.date === "" || formValues.doctor == "") {
-      setShowSlotGenBtn(false);
-      return warnAlert("Date and Doctor are required to fetch slots", {
-        autoClose: 1500,
-      });
-    }
-    dispatch(showLoader("Loading Slots..."));
-    const payload = {
-      date: formValues.date,
-      doctor: formValues.doctor,
-    };
-    const response = await postData("/appointment/doctorSlots", payload);
-    if (response?.data?.length > 0) {
-      let slots = response?.data?.map((x) => {
-        return {
-          ...x,
-          slotOrder: x.slotNo?.split("-")[1],
-        };
-      });
-      setDoctorSlots(slots.sort((a, b) => a.slotOrder - b.slotOrder) ?? []);
-    }
-    dispatch(hideLoader());
-    if (!response.isSlotsAvailable) {
-      setDoctorSlots([]);
-      setShowSlotGenBtn(true);
-      infoAlert(response.message, { autoClose: 1500 });
-    } else {
-      setShowDocPopover(false);
-      setShowSlotGenBtn(false);
-      successAlert(response.message, { autoClose: 1500 });
-    }
   };
 
   const closeDocPopover = (event, reason) => {
@@ -209,7 +179,7 @@ const Appointment = () => {
 
   const closeDialog = () => {
     setShowDialog({ rerender: false, show: false });
-    setSelectedPatient({ action: null, data: null });
+    // setSelectedPatient({ action: null, data: null });
     setSelectedHeaderAction(null);
   };
 
@@ -221,6 +191,7 @@ const Appointment = () => {
           deleteElapsedSlotsHandler
         );
       case "GENERATE_SLOTS":
+      case "GENERATE_EXTRA_SLOTS":
         return (
           <GenerateSlots
             dialogCloseBtn={<CloseBtnHtml />}
@@ -249,9 +220,9 @@ const Appointment = () => {
     if (selectedDoctor) {
       headerText += ` for Dr. ${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`;
     }
-    if (formValues?.date) {
-      headerText += ` | ${formValues?.date} | ${
-        WEEK_DAYS_LIST[new Date(formValues?.date)?.getDay()]?.label
+    if (selectedDate) {
+      headerText += ` | ${selectedDate} | ${
+        WEEK_DAYS_LIST[new Date(selectedDate)?.getDay()]?.label
       }`;
     }
 
@@ -325,10 +296,9 @@ const Appointment = () => {
               sx={{ ml: 2 }}
               onClick={() => {
                 reset();
-                setSelectedDoctor(null);
+                resetEverything();
+                setShowDocPopover(true);
                 setSelectedHeaderAction(null);
-                setDoctorSlots([]);
-                setShowSlotGenBtn(false);
               }}
             >
               Reset Everything
@@ -344,7 +314,7 @@ const Appointment = () => {
       >
         <HeaderWithSearch
           hideSearchBar
-          headerText="Choose/Change Doctor"
+          headerText="Choose / Change Doctor"
           html={
             <Button
               size="small"
@@ -405,11 +375,11 @@ const Appointment = () => {
             variant="outlined"
             fullWidth
             sx={{ mb: 2 }}
-            onClick={loadSlotsHandler}
+            onClick={() => loadSlotsHandler()}
           >
             Load Slots
           </Button>
-          {showSlotGenBtn && (
+          {doctorSlots?.length === 0 && (
             <Button
               variant="outlined"
               fullWidth
@@ -484,8 +454,9 @@ const Appointment = () => {
         })}
       </Popover>
 
-      {doctorSlots?.length > 0 && <SlotSelection slots={doctorSlots} />}
+      {doctorSlots?.length > 0 && <SlotSelection />}
       {doctorSlots?.length === 0 && <NoDataFound sx={{ mt: 10 }} />}
+
       {DialogComponent}
       {showDialog.show && (
         <Dialog maxWidth={showDialog.modalWidth} fullWidth open={true}>

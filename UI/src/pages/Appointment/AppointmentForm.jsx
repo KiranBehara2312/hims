@@ -1,5 +1,5 @@
 import { Box, Button, useMediaQuery, useTheme } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
 import IconWrapper from "../../components/custom/IconWrapper";
@@ -19,6 +19,7 @@ import { REGEX_PATTERNS } from "../../constants/Regex";
 import { formatDate, successAlert } from "../../helpers";
 import { useSelector } from "react-redux";
 import { postData } from "../../helpers/http";
+import { ApptContext } from "./ApptContext";
 
 const DEFAULT_VALUES = {
   firstName: "",
@@ -44,12 +45,12 @@ const AppointmentForm = ({
   dialogCloseBtn = null,
   setShowDialog = () => {},
   headerText = "Book Appointment",
-  selectedPatient = null,
   selectedSlot = null,
   action = null,
 }) => {
   const theme = useTheme();
-  const doctorsFromCache = useSelector((state) => state.apiCache.doctors);
+  const { doctors, loadSlotsHandler, selectedPatient } =
+    useContext(ApptContext);
   const {
     handleSubmit,
     control,
@@ -96,9 +97,7 @@ const AppointmentForm = ({
   };
 
   const onSubmit = async (formData) => {
-    const docObj = doctorsFromCache?.find(
-      (x) => x.userName === selectedSlot?.doctor
-    );
+    const docObj = doctors?.find((x) => x.userName === selectedSlot?.doctor);
     if (!docObj) return;
 
     const payload = {
@@ -112,6 +111,7 @@ const AppointmentForm = ({
     const response = await postData("/appointment/book", payload);
     successAlert(response.message, { autoClose: 1500 });
     setShowDialog({ rerender: true, show: false });
+    loadSlotsHandler();
   };
 
   const resetForm = () => {
@@ -169,7 +169,7 @@ const AppointmentForm = ({
                 mt: 1,
                 mb: 2,
                 border: "0.5px solid gray",
-                borderLeft: `10px solid ${selectedSlot.color}`,
+                borderLeft: `15px solid ${selectedSlot.color}`,
               }}
             >
               <MyHeading

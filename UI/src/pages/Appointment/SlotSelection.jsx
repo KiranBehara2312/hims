@@ -8,7 +8,7 @@ import {
   useTheme,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { GlassBG, MyHeading } from "../../components/custom";
 import { useForm } from "react-hook-form";
 import F_Input from "../../components/custom/form/F_Input";
@@ -24,18 +24,20 @@ import {
 } from "react-icons/fa";
 import PatientInformationCard from "../../components/shared/PatientInformationCard";
 import { ADMIN, STAFF } from "../../constants/roles";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { camelToTitle, infoAlert, warnAlert } from "../../helpers";
 import { BiTransfer } from "react-icons/bi";
 
 import { postData } from "../../helpers/http";
 import AppointmentForm from "./AppointmentForm";
 import WorkInProgress from "../../components/shared/WorkInProgress";
+import { ApptContext } from "./ApptContext";
 
 const ACTIONS = [
   {
     name: "Book",
     privilege: "BOOK_APPOINTMENT",
+    dependency: 0,
     icon: <IconWrapper defaultColor icon={<FaCalendarAlt size={18} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
@@ -44,6 +46,7 @@ const ACTIONS = [
   {
     name: "View",
     privilege: "VIEW_APPOINTMENT",
+    dependency: 1,
     icon: <IconWrapper defaultColor icon={<FaEye size={18} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
@@ -52,6 +55,7 @@ const ACTIONS = [
   {
     name: "Cancel",
     privilege: "CANCEL_APPOINTMENT",
+    dependency: 1,
     icon: <IconWrapper defaultColor icon={<FaTimesCircle size={18} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
@@ -60,6 +64,7 @@ const ACTIONS = [
   {
     name: "Transfer",
     privilege: "TRANSFER_APPOINTMENT",
+    dependency: 1,
     icon: <IconWrapper defaultColor icon={<BiTransfer size={18} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
@@ -68,17 +73,16 @@ const ACTIONS = [
   {
     name: "Mark No-Show",
     privilege: "MARK_NO_SHOW",
-    icon: (
-      <IconWrapper defaultColor icon={<FaUserAltSlash size={18} />} />
-    ),
+    icon: <IconWrapper defaultColor icon={<FaUserAltSlash size={18} />} />,
     disabled: false,
+    dependency: 1,
     access: [ADMIN, STAFF],
     modalWidth: "md",
   },
 ];
-const SlotSelection = ({ slots = [] }) => {
-  const [patient, setPatient] = useState(null);
-  const theme = useTheme();
+const SlotSelection = () => {
+  const { doctorSlots, selectedPatient, setSelectedPatient } =
+    useContext(ApptContext);
   const loggedInUser = useSelector((state) => state.userDetails.user);
   const [selectedSlot, setSelectedSlot] = useState({
     data: null,
@@ -86,6 +90,8 @@ const SlotSelection = ({ slots = [] }) => {
   });
   const [anchorPosition, setAnchorPosition] = useState(null);
   const lessThanMd = useMediaQuery((theme) => theme.breakpoints.down("md"));
+  const [actionsArr, setActionsArr] = useState([]);
+  const [visitHistory, setVisitHistory] = useState([]);
   const [showDialog, setShowDialog] = useState({
     show: false,
     rerender: false,
@@ -112,9 +118,17 @@ const SlotSelection = ({ slots = [] }) => {
       data: slot,
       action: null,
     });
+    if (slot?.apptCode) {
+      // retrieve actions for slots status as not FREE
+      setActionsArr(ACTIONS.filter((x) => x.dependency === 1));
+    } else {
+      // retrieve actions for slots status as FREE
+      setActionsArr(ACTIONS.filter((x) => x.dependency === 0));
+    }
     const { clientX, clientY } = event;
     setAnchorPosition({ top: clientY, left: clientX });
   };
+
   const closeActions = () => {
     setAnchorPosition(null);
     setSelectedSlot({
@@ -140,34 +154,41 @@ const SlotSelection = ({ slots = [] }) => {
 
   const searchPatient = async () => {
     if (formValues?.searchString == "") {
-      setPatient(null);
+      setSelectedPatient(null);
       return warnAlert("Please enter a value to find patient");
     }
     if (
       formValues?.searchString?.charAt(0) === "U" &&
       formValues?.searchString?.length !== 10
     ) {
-      setPatient(null);
+      setSelectedPatient(null);
       return warnAlert("Please enter a valid UHID");
     }
     if (
       formValues?.searchString?.charAt(0) === "P" &&
       formValues?.searchString?.length !== 9
     ) {
-      setPatient(null);
+      setSelectedPatient(null);
       return warnAlert("Please enter a valid Patient Number");
     }
     if (
       !isNaN(formValues?.searchString?.charAt(0)) &&
       formValues?.searchString?.length !== 10
     ) {
-      setPatient(null);
+      setSelectedPatient(null);
       return warnAlert("Please enter a valid Contact Number");
     }
     const response = await postData("/patients/patientById", {
       searchString: formValues?.searchString ?? "",
     });
-    setPatient(response?.data ?? null);
+    const visitHistoryResp = await postData(
+      "/appointment/patientVisitHistory",
+      {
+        UHID: response?.data?.UHID ?? "",
+      }
+    );
+    setVisitHistory(visitHistoryResp?.data ?? []);
+    setSelectedPatient(response?.data ?? null);
   };
 
   const CloseBtnHtml = () => {
@@ -204,7 +225,6 @@ const SlotSelection = ({ slots = [] }) => {
             selectedSlot={selectedSlot?.data}
             action={selectedSlot?.action}
             setShowDialog={setShowDialog}
-            selectedPatient={patient ?? null}
           />
         );
       default:
@@ -258,12 +278,63 @@ const SlotSelection = ({ slots = [] }) => {
                   type="button"
                   variant="outlined"
                   sx={{ height: "35px" }}
+                  onClick={() => {
+                    reset();
+                    setVisitHistory([]);
+                    setSelectedPatient(null);
+                  }}
                 >
                   Reset
                 </Button>
               </Grid>
             </Grid>
-            {patient !== null && <PatientInformationCard patient={patient} />}
+            {selectedPatient !== null && (
+              <PatientInformationCard patient={selectedPatient} />
+            )}
+            {visitHistory?.length !== 0 && (
+              <>
+                <MyHeading
+                  alignCenter
+                  text="Appointment Visit History"
+                  variant="h6"
+                  sx={{ mt: 2, fontSize: "15px", fontWeight: "bold" }}
+                />
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 2,
+                    m: 2,
+                    height: "220px",
+                    overflowY: "auto",
+                  }}
+                >
+                  {visitHistory?.map((x) => {
+                    return (
+                      <GlassBG
+                        cardStyles={{ width: "35%", height: "50px", m: 0.5 }}
+                      >
+                        <MyHeading
+                          alignCenter
+                          variant="body2"
+                          text={x.appointmentDate}
+                        />
+                        <MyHeading
+                          alignCenter
+                          variant="caption"
+                          text={x.doctorName}
+                        />
+                        <MyHeading
+                          alignCenter
+                          sx={{fontSize : "10px"}}
+                          text={x.apptCode}
+                        />
+                      </GlassBG>
+                    );
+                  })}
+                </Box>
+              </>
+            )}
           </GlassBG>
         </Grid>
         <Grid size={lessThanMd ? 12 : 8}>
@@ -276,7 +347,7 @@ const SlotSelection = ({ slots = [] }) => {
               flexWrap: "wrap",
             }}
           >
-            {slots?.map((slot, i) => {
+            {doctorSlots?.map((slot, i) => {
               return (
                 <Box
                   onContextMenu={(event) => showActions(event, slot)}
@@ -286,7 +357,7 @@ const SlotSelection = ({ slots = [] }) => {
                     width: "180px",
                     height: "55px",
                     border: "0.5px solid gray",
-                    borderLeft: `10px solid ${slot.color}`,
+                    borderLeft: `15px solid ${slot.color}`,
                   }}
                 >
                   <MyHeading
@@ -327,8 +398,9 @@ const SlotSelection = ({ slots = [] }) => {
             alignCenter
             text={selectedSlot?.data?.slotNo ?? ""}
           />
-          {ACTIONS.filter((x) => x.access.includes(loggedInUser?.role))?.map(
-            (x, i) => {
+          {actionsArr
+            ?.filter((x) => x.access.includes(loggedInUser?.role))
+            ?.map((x, i) => {
               return (
                 <Box
                   onClick={() => actionClickHandler(x.privilege, x.modalWidth)}
@@ -351,8 +423,7 @@ const SlotSelection = ({ slots = [] }) => {
                   <MyHeading variant="caption" text={x.name} />
                 </Box>
               );
-            }
-          )}
+            })}
         </Box>
       </Popover>
 

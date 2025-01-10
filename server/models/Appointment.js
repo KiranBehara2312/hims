@@ -70,7 +70,6 @@ const appointmentsSchema = new mongoose.Schema(
     },
     additionalNotes: {
       type: String,
-      required: true,
     },
     doctorDesignation: {
       type: String,
