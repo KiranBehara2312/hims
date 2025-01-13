@@ -4,4 +4,19 @@ const REGISTRATION_CHARGES = {
   discountAppliedinPercent: 0,
 };
 
-export { REGISTRATION_CHARGES };
+const SERVICE_LOCATIONS = [
+  {
+    label: "REGISTRATION",
+    value: "REGISTRATION",
+  },
+  {
+    label: "DUPLICATE_PATIENT_REGISTRATION_CARD",
+    value: "DUPLICATE_PATIENT_REGISTRATION_CARD",
+  },
+  {
+    label: "DUPLICATE_VISIT_SLIP",
+    value: "DUPLICATE_VISIT_SLIP",
+  },
+];
+
+export { REGISTRATION_CHARGES, SERVICE_LOCATIONS };

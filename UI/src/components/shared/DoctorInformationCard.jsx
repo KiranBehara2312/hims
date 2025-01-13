@@ -28,7 +28,7 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               gap: 1.5,
               mt: 1,
               justifyContent: "space-between",
@@ -48,7 +48,7 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               gap: 1.5,
               mt: 1,
               justifyContent: "space-between",
@@ -65,7 +65,7 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               gap: 1.5,
               mt: 1,
               justifyContent: "space-between",
@@ -90,13 +90,21 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
             sx={{
               display: "flex",
               flexDirection: "row",
+              flexWrap: "wrap",
               gap: 1.5,
               mt: 3,
               justifyContent: "space-between",
               width: "100%",
             }}
           >
-            <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 1,
+                justifyContent: "center",
+              }}
+            >
               {WEEK_DAYS_LIST?.map((x) => {
                 return (
                   <Button

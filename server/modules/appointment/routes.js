@@ -44,6 +44,34 @@ appointmentRoutes.post("/daySlotGeneration", async (req, res) => {
   }
 });
 
+appointmentRoutes.post("/allAppointments", async (req, res) => {
+  const page = parseInt(req.body.page) || 1;
+  const limit = parseInt(req.body.limit) || 10;
+  const skip = (page - 1) * limit;
+  try {
+    const totalCount = await Appointments.countDocuments();
+    const allAppointments = await Appointments.find(
+      {},
+      { _id: false, __v: false, apptCounter: false }
+    )
+      .skip(skip)
+      .limit(limit);
+    const totalPages = Math.ceil(totalCount / limit);
+    res.json({
+      page,
+      totalPages,
+      totalCount,
+      data: allAppointments,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      message: "Error fetching all appointments",
+      error: err.message || err,
+    });
+  }
+});
+
 appointmentRoutes.post("/deleteElapsedSlots", async (req, res) => {
   try {
     const { doctor } = req.body;

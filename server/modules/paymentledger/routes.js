@@ -5,21 +5,29 @@ const paymentLedgerRoutes = express.Router();
 paymentLedgerRoutes.post("/history", async (req, res) => {
   const page = parseInt(req.body.page) || 1;
   const limit = parseInt(req.body.limit) || 10;
+  let filter = {};
+  if (req?.body?.serviceLocation !== "All") {
+    filter["location"] = req.body.serviceLocation;
+  }
   const skip = (page - 1) * limit;
   try {
-    const totalCount = await PaymentLedger.countDocuments();
-    const doctors = await PaymentLedger.find(
-      {},
-      { _id: false, __v: false, billNoCounter: false }
-    )
+    let totalCount = await PaymentLedger.countDocuments();
+    const totalLedgers = await PaymentLedger.find(filter, {
+      _id: false,
+      __v: false,
+      billNoCounter: false,
+    })
       .skip(skip)
       .limit(limit);
+    if (req.body.serviceLocation !== "All") {
+      totalCount = totalLedgers?.length ?? 0;
+    }
     const totalPages = Math.ceil(totalCount / limit);
     res.json({
       page,
       totalPages,
       totalCount,
-      data: doctors,
+      data: totalLedgers,
     });
   } catch (err) {
     console.log(err);

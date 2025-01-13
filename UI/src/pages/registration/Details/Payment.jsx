@@ -31,7 +31,7 @@ const Payment = ({ control, errors, formValues, setValue }) => {
     });
 
     return (
-      <GlassBG cardStyles={{ width: "190px",mt:2, height: "auto" }}>
+      <GlassBG cardStyles={{ width: "190px", mt: 2, height: "auto" }}>
         <Box
           sx={{
             display: "flex",
@@ -40,10 +40,19 @@ const Payment = ({ control, errors, formValues, setValue }) => {
         >
           <Typography
             variant="caption"
-            sx={{ pl: 1, color: "red", fontSize: "12px" }}
+            sx={{ pl: 1, pb:1, color: "red", fontSize: "12px" }}
           >
             {"Note: All amounts are in INR"}
           </Typography>
+          <span
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="caption">Service Name</Typography>
+            <Typography variant="caption">Amount</Typography>
+          </span>
           {combinationOfFees?.map((x, i) => {
             return (
               <span
@@ -60,7 +69,7 @@ const Payment = ({ control, errors, formValues, setValue }) => {
                 }}
               >
                 <Typography variant="caption">{x.serviceName}</Typography>
-                <Typography variant="body2">{x.serviceAmount}</Typography>
+                <Typography variant="caption">{x.serviceAmount}</Typography>
               </span>
             );
           })}

@@ -5,6 +5,7 @@ import { postData } from "../../../helpers/http";
 import { Box, Typography } from "@mui/material";
 import F_Input from "../../../components/custom/form/F_Input";
 import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
+import DoctorInformationCard from "../../../components/shared/DoctorInformationCard";
 
 const Doctor = ({
   control,
@@ -146,7 +147,7 @@ const Doctor = ({
         />
 
         {formValues?.doctor !== null && formValues?.doctor !== "" && (
-          <DocInfoCard />
+          <DoctorInformationCard selectedDoctor={selectedDoc} />
         )}
       </GlassBG>
     </>
