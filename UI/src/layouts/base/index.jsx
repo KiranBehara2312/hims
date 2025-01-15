@@ -2,9 +2,14 @@ import { Backdrop, CircularProgress, Paper } from "@mui/material";
 import "./base.css";
 import { useSelector } from "react-redux";
 import { MyHeading } from "../../components/custom";
+import { useEffect } from "react";
+import { META } from "../../constants/projects";
 
 const BaseLayout = ({ children }) => {
   const loader = useSelector((state) => state.loader);
+  useEffect(() => {
+    document.title = `HIMS | ${META.PROJECT_TITLE}`;
+  }, []);
   return (
     <Paper
       sx={{
@@ -12,6 +17,7 @@ const BaseLayout = ({ children }) => {
         width: "100vw",
         overflowY: "hidden",
         overflowX: "auto",
+        background: "whitesmoke",
       }}
     >
       {loader?.value && (

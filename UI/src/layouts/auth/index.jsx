@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import BaseLayout from "../base";
 import { Outlet } from "react-router-dom";
 import { Box, useMediaQuery } from "@mui/material";
@@ -9,8 +9,13 @@ import Tablets from "../../assets/svg/tablets.svg";
 import StethSvg from "../../assets/svg/steth.svg";
 import FirstAid from "../../assets/svg/firstAid.svg";
 import Nurse from "../../assets/svg/nurse.svg";
+import Dhanista from "../../assets/generic/dhanista.svg";
+import { META } from "../../constants/projects";
 
 const AuthLayout = () => {
+  useEffect(() => {
+    document.title = `HIMS | ${META.PROJECT_TITLE}`;
+  }, []);
   const lessThanMd = useMediaQuery((theme) => theme.breakpoints.down("md"));
 
   return (

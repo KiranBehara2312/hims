@@ -7,6 +7,7 @@ import { postData } from "../../helpers/http";
 import { successAlert } from "../../helpers";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../../redux/slices/userDetailsSlice";
+import useNotification from "../../hooks/useCustomNotification";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const Login = () => {
             helperText={errors.password ? errors.password.message : ""}
           />
 
-          <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+          <Button type="submit" variant="outlined" fullWidth sx={{ mt: 2 }}>
             Submit
           </Button>
           {/* <Button

@@ -84,7 +84,7 @@ const errorAlert = (
   });
 const successAlert = (
   message = "This is default message",
-  options = { autoClose: 5000, pauseOnFocusLoss: false }
+  options = { autoClose: 1500, pauseOnFocusLoss: false }
 ) =>
   toast.success(message, {
     autoClose: options.autoClose,
@@ -92,7 +92,7 @@ const successAlert = (
   });
 const infoAlert = (
   message = "This is default message",
-  options = { autoClose: 5000, pauseOnFocusLoss: false }
+  options = { autoClose: 1500, pauseOnFocusLoss: false }
 ) =>
   toast.info(message, {
     autoClose: options.autoClose,
@@ -100,7 +100,7 @@ const infoAlert = (
   });
 const warnAlert = (
   message = "This is default message",
-  options = { autoClose: 5000, pauseOnFocusLoss: false }
+  options = { autoClose: 1500, pauseOnFocusLoss: false }
 ) =>
   toast.warn(message, {
     autoClose: options.autoClose,
@@ -108,7 +108,7 @@ const warnAlert = (
   });
 const defaultAlert = (
   message = "This is default message",
-  options = { autoClose: 5000, pauseOnFocusLoss: false }
+  options = { autoClose: 1500, pauseOnFocusLoss: false }
 ) =>
   toast(message, {
     autoClose: options.autoClose,

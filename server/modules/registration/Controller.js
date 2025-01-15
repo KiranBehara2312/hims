@@ -40,16 +40,12 @@ const PatRegnController = {
   },
   insertPayments: async (payments, newUHID) => {
     try {
-      // Fetch the last billNo from the PaymentLedger collection
       const lastPayment = await PaymentLedger.findOne().sort({ _id: -1 });
 
-      let lastBillNo = 1; // Default value if no last payment exists
+      let lastBillNo = 1;
       if (lastPayment && lastPayment.billNo) {
-        // Extract the numeric part of the billNo and increment it
         lastBillNo = +lastPayment.billNo.split("LL")[1] + 1;
       }
-
-      // Create an array of payment objects to insert
       const paymentDocs = await Promise.all(
         payments.map((x, index) => {
           const newBillNo = `BILL${(lastBillNo + index)
@@ -57,16 +53,14 @@ const PatRegnController = {
             .padStart(8, "0")}`;
 
           const newBill = {
-            UHID: newUHID, // Assuming newUHID is already defined or passed in context
-            location: "REGISTRATION",
-            billNo: newBillNo, // Assign the generated billNo
-            ...x, // Spread the rest of the properties from the payment data
+            UHID: newUHID,
+            billNo: newBillNo,
+            ...x,
           };
 
-          return newBill; // Return the new bill object
+          return newBill;
         })
       );
-
       // Insert all payment documents at once using insertMany
       await PaymentLedger.insertMany(paymentDocs);
 

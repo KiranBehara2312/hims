@@ -16,6 +16,7 @@ import IconWrapper from "../../components/custom/IconWrapper";
 import { FaPlus } from "react-icons/fa";
 import NoDataFound from "../../components/shared/NoDataFound";
 import PaymentService from "./AddEdits/PaymentService";
+import WorkInProgress from "../../components/shared/WorkInProgress";
 
 const LIMIT = 10;
 const Masters = () => {
@@ -33,6 +34,7 @@ const Masters = () => {
     data: [],
     totalCount: 0,
     defaultPage: 0,
+    isServerSidePagination: true,
   });
 
   useEffect(() => {
@@ -125,8 +127,9 @@ const Masters = () => {
           };
         }),
         data: selectedMenuCard?.collection ?? [],
-        totalCount: 1,
+        totalCount: Math.ceil(selectedMenuCard?.collection?.length / LIMIT),
         defaultPage: 1,
+        isServerSidePagination: false,
       });
     }
   }, [selectedMenuCard]);
@@ -151,12 +154,14 @@ const Masters = () => {
         data: response?.data ?? [],
         totalCount: response?.totalPages || 0,
         defaultPage: response?.page || 0,
+        isServerSidePagination: true,
       });
     } else {
       setTableObj({
         columns: [],
         data: [],
         totalCount: 0,
+        isServerSidePagination: true,
         defaultPage: 0,
       });
     }
@@ -173,46 +178,48 @@ const Masters = () => {
           justifyContent: "space-around",
         }}
       >
-        {MASTERS_ITEMS.map((x, i) => {
-          return (
-            <Box onClick={() => setSelectedMenuCard(x)} key={i}>
-              <GlassBG
-                cardStyles={{
-                  height: "40px",
-                  cursor: "pointer",
-                  minWidth: "95px",
-                  maxWidth: "95px",
-                }}
-              >
-                <MyHeading
-                  text={
-                    <IconWrapper
-                      icon={x.icon}
-                      color={
-                        selectedMenuCard === x
-                          ? theme.palette.primary.main
-                          : null
-                      }
-                    />
-                  }
-                  alignCenter
-                  variant="body1"
-                />
-                <MyHeading
-                  text={
-                    x.label?.length > 15 ? (
-                      <marquee scrollamount={3}>{x.label}</marquee>
-                    ) : (
-                      x.label
-                    )
-                  }
-                  alignCenter
-                  variant="caption"
-                />
-              </GlassBG>
-            </Box>
-          );
-        })}
+        {MASTERS_ITEMS.sort((a, b) => a.label.localeCompare(b.label)).map(
+          (x, i) => {
+            return (
+              <Box onClick={() => setSelectedMenuCard(x)} key={i}>
+                <GlassBG
+                  cardStyles={{
+                    height: "40px",
+                    cursor: "pointer",
+                    minWidth: "95px",
+                    maxWidth: "95px",
+                  }}
+                >
+                  <MyHeading
+                    text={
+                      <IconWrapper
+                        icon={x.icon}
+                        color={
+                          selectedMenuCard === x
+                            ? theme.palette.primary.main
+                            : null
+                        }
+                      />
+                    }
+                    alignCenter
+                    variant="body1"
+                  />
+                  <MyHeading
+                    text={
+                      x.label?.length > 15 ? (
+                        <marquee scrollamount={3}>{x.label}</marquee>
+                      ) : (
+                        x.label
+                      )
+                    }
+                    alignCenter
+                    variant="caption"
+                  />
+                </GlassBG>
+              </Box>
+            );
+          }
+        )}
       </Stack>
     );
   };

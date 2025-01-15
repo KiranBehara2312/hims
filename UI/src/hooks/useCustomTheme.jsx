@@ -3,9 +3,9 @@ import { createTheme } from "@mui/material";
 // Define your custom theme configuration
 // nurse = #86320d
 // doctor = #860d74
-// admin = #86690d
+// admin = #0d6986
 // staff = #0d8672
-const useCustomTheme = (curmode = "light", dColor = "#0d8672") => {
+const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
   const theme = createTheme({
     palette: {
       mode: curmode,
@@ -39,6 +39,13 @@ const useCustomTheme = (curmode = "light", dColor = "#0d8672") => {
       borderRadius: 8,
     },
     components: {
+      MuiToolbar: {
+        styleOverrides: {
+          root: {
+            borderRadius: "none !important",
+          },
+        },
+      },
       MuiFormHelperText: {
         styleOverrides: {
           root: {

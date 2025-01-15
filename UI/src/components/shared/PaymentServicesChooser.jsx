@@ -18,7 +18,7 @@ import HeaderWithSearch from "../custom/HeaderWithSearch";
 import IconWrapper from "../custom/IconWrapper";
 import { useForm } from "react-hook-form";
 import F_Input from "../custom/form/F_Input";
-import { errorAlert } from "../../helpers";
+import { errorAlert, warnAlert } from "../../helpers";
 
 const PaymentServicesChooser = ({
   dialogCloseBtn = null,
@@ -96,6 +96,12 @@ const PaymentServicesChooser = ({
           }) ?? []
       );
       return;
+    }
+    const alreadyAdded = incomingPaymentCharges?.find(
+      (x) => x.serviceCode === serviceCode
+    );
+    if (alreadyAdded) {
+      return warnAlert("Service is already in user, can not add...");
     }
     const newService = paymentServices?.find(
       (x) => x.serviceCode === serviceCode

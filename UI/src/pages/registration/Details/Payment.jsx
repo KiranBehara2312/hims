@@ -123,7 +123,6 @@ const Payment = ({
     if (!charges && charges?.length === 0) return;
     setPaymentCharges(charges);
     calculateTotalAmount(charges);
-    setPaymentChargeDetails(charges);
   };
 
   const calculateTotalAmount = (charges) => {
@@ -131,6 +130,7 @@ const Payment = ({
       (acc, cur) => acc + cur.serviceAmount,
       0
     );
+    setPaymentChargeDetails(charges);
     setTotalAmtStr(`${totalAmount}`);
   };
   const PaymentSummary = () => {

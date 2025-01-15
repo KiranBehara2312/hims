@@ -36,13 +36,17 @@ const paymentLedgerSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    location: {
+    serviceLocation: {
+      type: String,
+      required: true,
+    },
+    serviceCode: {
       type: String,
       required: true,
     },
     billNoCounter: {
       type: Number,
-      default: 1
+      default: 1,
     },
     createdBy: {
       type: String,

@@ -21,21 +21,44 @@ import MyHeading from "./MyHeading";
 import { FaCircle } from "react-icons/fa";
 
 export default function ({
-  columns,
-  data,
-  totalCount,
-  defaultPage,
-  changedPage,
+  columns = [],
+  data = [],
+  totalCount = 1,
+  defaultPage = 1,
+  isServerSidePagination = true,
+  changedPage = () => {},
   actions = [],
   helperNote = "",
   actionWithRecord = () => {},
   ...props
 }) {
   const theme = useTheme();
+  const [localPage, setLocalPage] = React.useState(1);
+  const [localData, setLocalData] = React.useState([]);
   const [anchorPosition, setAnchorPosition] = React.useState(null);
   const [selectedRow, setSelectedRow] = React.useState(null);
+
+  React.useEffect(() => {
+    if (isServerSidePagination) {
+      setLocalData(data);
+    } else {
+      setLocalData(localPagination(data, 1, 10));
+    }
+  }, [data]);
+
+  function localPagination(array, pageNumber, limit) {
+    const startIndex = (pageNumber - 1) * limit;
+    const endIndex = startIndex + limit;
+    return array.slice(startIndex, endIndex);
+  }
+
   const paginationChangeHandler = (event, value) => {
-    changedPage(value);
+    if (isServerSidePagination) {
+      changedPage(value);
+    } else {
+      setLocalPage(value);
+      setLocalData(localPagination(data, value, 10));
+    }
   };
 
   const openActions = (event, row) => {
@@ -91,12 +114,12 @@ export default function ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data?.length === 0 && (
+            {localData?.length === 0 && (
               <TableRow hover role="checkbox">
                 <TableCell>No Data Found...!</TableCell>
               </TableRow>
             )}
-            {data?.map((row, i) => {
+            {localData?.map((row, i) => {
               return (
                 <TableRow
                   hover
@@ -154,11 +177,11 @@ export default function ({
         </Typography>
         <Pagination
           sx={{ m: 1, float: "right" }}
-          variant="outlined"
+          variant="text"
           color="primary"
           shape="rounded"
           count={totalCount}
-          page={defaultPage}
+          page={isServerSidePagination ? defaultPage : localPage}
           onChange={paginationChangeHandler}
         />
       </Box>

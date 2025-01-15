@@ -105,6 +105,8 @@ const Registration = ({
           finalPaymentDetails.push({
             serviceAmount: x.serviceAmount,
             serviceName: x.serviceName,
+            serviceCode: x.serviceCode,
+            serviceLocation: x.serviceLocation,
             discountAppliedinPercent: 0,
             payeeName: formData.payeeName,
             paymentType: formData.paymentType,

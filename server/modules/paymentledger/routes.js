@@ -7,7 +7,7 @@ paymentLedgerRoutes.post("/history", async (req, res) => {
   const limit = parseInt(req.body.limit) || 10;
   let filter = {};
   if (req?.body?.serviceLocation !== "All") {
-    filter["location"] = req.body.serviceLocation;
+    filter["serviceLocation"] = req.body.serviceLocation;
   }
   const skip = (page - 1) * limit;
   try {

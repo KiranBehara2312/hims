@@ -1,5 +1,5 @@
 const META = {
-  PROJECT_TITLE: "Ujhwal Hospitals",
+  PROJECT_TITLE: "Ayushmann Hospitals",
 };
 
 export { META };
