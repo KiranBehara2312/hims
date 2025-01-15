@@ -3,6 +3,7 @@ import {
   FaCashRegister,
   FaHandshake,
   FaPeopleArrows,
+  FaServicestack,
   FaTransgenderAlt,
   FaUsers,
   FaUsersCog,
@@ -110,6 +111,12 @@ const MASTERS_ITEMS = [
     label: "Payment Service Locations",
     collection: SERVICE_LOCATIONS,
     icon: <FaLocationDot size={25} />,
+    category: null,
+  },
+  {
+    label: "Payment Services",
+    collection: "paymentServices",
+    icon: <FaServicestack size={25} />,
     category: null,
   },
 ];

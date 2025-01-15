@@ -11,6 +11,7 @@ const registrationRoutes = require("./modules/registration/routes");
 const paymentLedgerRoutes = require("./modules/paymentledger/routes");
 const patientRoutes = require("./modules/patients/routes");
 const appointmentRoutes = require("./modules/appointment/routes");
+const paymentRoutes = require("./modules/payment/routes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -24,6 +25,7 @@ app.use("/appointment", isAuthenticated, appointmentRoutes);
 app.use("/registration", isAuthenticated, registrationRoutes);
 app.use("/paymentledger", isAuthenticated, paymentLedgerRoutes);
 app.use("/patients", isAuthenticated, patientRoutes);
+app.use("/payment", isAuthenticated, paymentRoutes);
 app.use("/api", isAuthenticated, routes);
 
 // Start the server after MongoDB connection is established

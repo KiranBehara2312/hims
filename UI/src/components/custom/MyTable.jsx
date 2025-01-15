@@ -109,6 +109,7 @@ export default function ({
                     const value = row[column.id];
                     return (
                       <TableCell
+                        title={value?.length > 25 ? value : ""}
                         key={column.id}
                         align={column.align}
                         sx={{

@@ -34,11 +34,11 @@ const AuthLayout = () => {
           }}
         >
           <img
-            src={HospitalSVG}
-            alt="Hospital"
+            src={AmbulanceSvg}
+            alt="Ambulance"
             width={300}
-            height={220}
-            style={{ paddingLeft: "10px" }}
+            height={280}
+            style={{ marginLeft: "10px" }}
           />
 
           {!lessThanMd && (
@@ -99,11 +99,11 @@ const AuthLayout = () => {
 
           <Outlet />
           <img
-            src={AmbulanceSvg}
-            alt="Ambulance"
+            src={HospitalSVG}
+            alt="Hospital"
             width={300}
-            height={280}
-            style={{ paddingRight: "10px" }}
+            height={220}
+            style={{ marginRight: "10px" }}
           />
         </Box>
       </Box>

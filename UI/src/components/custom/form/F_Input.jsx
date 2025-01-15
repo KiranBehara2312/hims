@@ -15,6 +15,7 @@ const F_Input = ({
   readOnly = false,
   multiline = false,
   maxRows = 1,
+  placeholder = "",
   ...props
 }) => {
   return (
@@ -43,6 +44,7 @@ const F_Input = ({
             value={value}
             label={label}
             fullWidth
+            placeholder={placeholder ?? ""}
             size="small"
             error={!!errors?.[name]}
             autoComplete="off"

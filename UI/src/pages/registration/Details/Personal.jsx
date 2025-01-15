@@ -68,6 +68,7 @@ const Personal = ({ control, errors, readOnly = false }) => {
           label="Date Of Birth"
           isRequired={true}
           readOnly={readOnly}
+          maxDate={new Date().toISOString().split("T")[0]}
         />
 
         <F_Select
