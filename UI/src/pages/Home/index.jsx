@@ -5,6 +5,8 @@ import { GlassBG, MyHeading } from "../../components/custom";
 import { IoPeople } from "react-icons/io5";
 import { FaBed, FaCalendarCheck } from "react-icons/fa";
 import IconWrapper from "../../components/custom/IconWrapper";
+import PDFGenerator from "../../components/pdf/PDFGenerator";
+import BillReceiptTemplate from "../../components/pdf/templates/BillReceipt";
 
 const Home = () => {
   const theme = useTheme();
@@ -70,6 +72,8 @@ const Home = () => {
           </Box>
         );
       })}
+      <PDFGenerator document={<BillReceiptTemplate />} fileName="bills.pdf" />
+      <span>asdasd</span>
     </Box>
   );
 };
