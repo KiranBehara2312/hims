@@ -63,7 +63,7 @@ userSchema.pre("save", async function (next) {
   const COLOR_THEME_OBJ = {
     NURSE: "#86320d",
     DOCTOR: "#860d74",
-    ADMIN: "#86690d",
+    ADMIN: "#0d6986",
     STAFF: "#0d8672",
   };
   this.colorTheme = COLOR_THEME_OBJ[this.role];

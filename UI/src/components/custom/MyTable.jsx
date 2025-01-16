@@ -183,7 +183,7 @@ export default function ({
         </Typography>
         <Pagination
           sx={{ m: 1, float: "right" }}
-          variant="text"
+          variant="outlined"
           color="primary"
           shape="rounded"
           count={totalCount}
