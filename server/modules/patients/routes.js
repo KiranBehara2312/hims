@@ -1,7 +1,8 @@
 const express = require("express");
 const PatientRegn = require("../../models/PatientRegn");
 const PatientVitals = require("../../models/PatientVitals");
-const pdfkit = require("pdfkit");
+const PDFDocument = require("pdfkit");
+const blobStream = require("blob-stream");
 const patientRoutes = express.Router();
 
 patientRoutes.post("/all", async (req, res) => {
@@ -115,24 +116,6 @@ patientRoutes.post("/vitalHistory", async (req, res) => {
   }
 });
 
-patientRoutes.get("/pdf", (req, res) => {
-  const doc = new pdfkit();
 
-  // Set response headers for PDF download
-  res.setHeader("Content-Type", "application/pdf");
-  res.setHeader(
-    "Content-Disposition",
-    "attachment; filename=generated-document.pdf"
-  );
-
-  // Pipe the PDF to the response object
-  doc.pipe(res);
-
-  // Add content to the PDF (you can modify as per your needs)
-  doc.fontSize(12).text("This is a dynamically generated PDF.", 100, 100);
-
-  // Finalize the PDF and end the response
-  doc.end();
-});
 
 module.exports = patientRoutes;

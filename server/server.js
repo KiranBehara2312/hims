@@ -12,6 +12,7 @@ const paymentLedgerRoutes = require("./modules/paymentledger/routes");
 const patientRoutes = require("./modules/patients/routes");
 const appointmentRoutes = require("./modules/appointment/routes");
 const paymentRoutes = require("./modules/payment/routes");
+const dummyRoutes = require("./modules/Dummy/routes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ app.use(cors());
 app.use(bodyParser.json());
 // Use the routes
 app.use("/auth", authRoutes);
+app.use("/dummy", dummyRoutes);
 app.use("/masters", isAuthenticated, masterRoutes);
 app.use("/doctor", isAuthenticated, doctorRoutes);
 app.use("/appointment", isAuthenticated, appointmentRoutes);

@@ -13,23 +13,17 @@ import NoDataFound from "../../components/shared/NoDataFound";
 import F_Autocomplete from "../../components/custom/form/F_AutoComplete";
 import { MyHeading } from "../../components/custom";
 import { FaLocationDot, FaLocationPin } from "react-icons/fa6";
+import { ADMIN, STAFF } from "../../constants/roles";
 
 const LIMIT = 10;
 const ACTIONS = [
   {
     name: "Edit",
-    icon: <IconWrapper icon={<FaEdit size={15} />} />,
+    privilege: "EDIT",
+    icon: <IconWrapper defaultColor icon={<FaEdit size={18} />} />,
     disabled: false,
-  },
-  {
-    name: "View",
-    icon: <IconWrapper icon={<FaEye size={15} />} />,
-    disabled: false,
-  },
-  {
-    name: "Delete",
-    icon: <IconWrapper icon={<FaTrash size={15} />} />,
-    disabled: true,
+    access: [ADMIN, STAFF],
+    modalWidth: "md",
   },
 ];
 const PaymentLedger = () => {
