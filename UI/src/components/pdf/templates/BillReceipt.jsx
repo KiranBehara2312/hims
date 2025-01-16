@@ -10,17 +10,14 @@ import {
   Font,
 } from "@react-pdf/renderer";
 
-// Add a custom font if needed (optional)
-Font.register({
-  family: "Roboto",
-  src: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap",
-});
-
-import HospitalLogo from "../../../assets/hospital/logo.jpg";
+import PdfLogoDetails from "./defaults/LogoDetails";
+import PdfPatientDetails from "./defaults/PatientDetails";
+import PdfHeader from "./defaults/Header";
+import PdfPayeeDetails from "./defaults/PayeeDetails";
 
 const styles = StyleSheet.create({
   page: {
-    padding: 30,
+    padding: "16px",
     backgroundColor: "#f3f3f3",
   },
   header: {
@@ -77,65 +74,15 @@ const BillReceiptTemplate = ({ patientName = "Sample Kira ", billDetails }) => {
   return (
     <Document>
       <Page style={styles.page}>
-        {/* Header Section */}
-        <View style={styles.header}>
-          <Image style={styles.logo} src={HospitalLogo} />
+        <PdfLogoDetails />
+        <PdfHeader />
+        <PdfPatientDetails />
 
-          <Text style={styles.boldText}>Hospital Bill Receipt</Text>
-          <Text style={styles.text}>
-            Receipt Date: {new Date().toLocaleDateString()}
-          </Text>
+        <View style={{ margin: "10px 0" }}>
+          <PdfPayeeDetails />
         </View>
 
-        {/* Patient Info Section */}
-        <View style={styles.section}>
-          <Text style={styles.boldText}>Patient Information</Text>
-          <Text style={styles.details}>Name: {patientName}</Text>
-          <Text style={styles.details}>Patient ID: 123456789</Text>
-          <Text style={styles.details}>
-            Date of Visit: {new Date().toLocaleDateString()}
-          </Text>
-        </View>
-
-        {/* Bill Details Table */}
-        <View style={styles.section}>
-          <Text style={styles.boldText}>Bill Details</Text>
-          <View style={styles.table}>
-            {/* Table Header */}
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableCellHeader]}>
-                Item
-              </Text>
-              <Text style={[styles.tableCell, styles.tableCellHeader]}>
-                Quantity
-              </Text>
-              <Text style={[styles.tableCell, styles.tableCellHeader]}>
-                Unit Price
-              </Text>
-              <Text style={[styles.tableCell, styles.tableCellHeader]}>
-                Amount
-              </Text>
-            </View>
-
-            {/* Table Data */}
-            {/* {billDetails.map((item, index) => (
-              <View style={styles.tableRow} key={index}>
-                <Text style={styles.tableCell}>{item.name}</Text>
-                <Text style={styles.tableCell}>{item.quantity}</Text>
-                <Text style={styles.tableCell}>{item.unitPrice}</Text>
-                <Text style={styles.tableCell}>{item.amount}</Text>
-              </View>
-            ))} */}
-          </View>
-        </View>
-
-        {/* Total Section */}
-        <View style={styles.section}>
-          <Text style={styles.boldText}>Total Amount</Text>
-          {/* <Text style={styles.details}>
-            Total: ${billDetails.reduce((acc, item) => acc + item.amount, 0)}
-          </Text> */}
-        </View>
+        
       </Page>
     </Document>
   );
