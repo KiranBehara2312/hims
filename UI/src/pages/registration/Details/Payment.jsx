@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { GlassBG, MyHeading } from "../../../components/custom";
 import {
   PAYMENT_STATUSES,
@@ -6,45 +6,153 @@ import {
 } from "../../../constants/localDB/MastersDB";
 import F_Input from "../../../components/custom/form/F_Input";
 import F_Select from "../../../components/custom/form/F_Select";
-import { Box, Divider, Typography } from "@mui/material";
-import { REGISTRATION_CHARGES } from "../../../constants/localDB/PaymentServices";
+import { Box, Button, Dialog, DialogContent, Typography } from "@mui/material";
 import PaymentStatus from "../../../components/custom/PaymentStatus";
+import { postData } from "../../../helpers/http";
+import PaymentServicesChooser from "../../../components/shared/PaymentServicesChooser";
+import HeaderWithSearch from "../../../components/custom/HeaderWithSearch";
+import WorkInProgress from "../../../components/shared/WorkInProgress";
 
-const Payment = ({ control, errors, formValues, setValue }) => {
-  const PaymentSummary = () => {
-    let DOCTOR_FEE_SERVICE = [];
-    if (formValues?.doctor !== "") {
-      DOCTOR_FEE_SERVICE.push({
-        serviceName: "Doctor Consultation Fee",
-        serviceAmount: +formValues?.doctorConsultationFee,
-        discountAppliedinPercent: 0,
-      });
+const Payment = ({
+  control,
+  errors,
+  formValues,
+  setValue,
+  setPaymentChargeDetails = () => {},
+}) => {
+  const [paymentCharges, setPaymentCharges] = useState([]);
+  const [selectedAction, setSelectedAction] = useState(null);
+  const [totalAmtStr, setTotalAmtStr] = useState("");
+
+  const [component, setComponent] = useState(null);
+  const [showDialog, setShowDialog] = useState({
+    show: false,
+    rerender: false,
+    modalWidth: "md",
+  });
+
+  useEffect(() => {
+    if (!showDialog.show) {
+      setSelectedAction(null);
     }
-    let combinationOfFees = [REGISTRATION_CHARGES, ...DOCTOR_FEE_SERVICE];
-    const totalAmount = combinationOfFees.reduce(
+  }, [showDialog.show]);
+
+  useEffect(() => {
+    if (formValues?.doctor?.length > 0) {
+      fetchPaymentDetails();
+    } else {
+      setPaymentCharges([]);
+    }
+  }, [formValues.doctor]);
+
+  useEffect(() => {
+    if (showDialog.rerender) {
+      calculateTotalAmount(paymentCharges);
+    }
+  }, [showDialog.rerender]);
+
+  useEffect(() => {
+    if (selectedAction === null) return;
+    setComponent(actionClickHandler(selectedAction));
+    setShowDialog((prev) => {
+      return { rerender: false, show: true, modalWidth: "md" };
+    });
+    return () => {
+      setSelectedAction(null);
+    };
+  }, [selectedAction]);
+
+  const actionClickHandler = (action) => {
+    switch (action) {
+      case "ADD_ANOTHER_SERVICE":
+        return (
+          <PaymentServicesChooser
+            dialogCloseBtn={<CloseBtnHtml />}
+            headerText={`Choose Payment Services`}
+            selectedRow={null}
+            action={"ADD_ANOTHER_SERVICE"}
+            paymentCharges={paymentCharges}
+            setPaymentCharges={setPaymentCharges}
+            setShowDialog={setShowDialog}
+          />
+        );
+      default:
+        return (
+          <>
+            <HeaderWithSearch
+              hideSearchBar
+              headerText={action}
+              html={<CloseBtnHtml />}
+            />
+            <WorkInProgress />
+          </>
+        );
+    }
+  };
+
+  const CloseBtnHtml = () => {
+    return (
+      <Button
+        size="small"
+        type="button"
+        variant="outlined"
+        color="error"
+        sx={{
+          maxWidth: "30px !important",
+          minWidth: "30px !important",
+          width: "30px !important",
+        }}
+        onClick={() => closeDialog()}
+      >
+        X
+      </Button>
+    );
+  };
+
+  const closeDialog = () => {
+    setShowDialog({ rerender: false, show: false });
+    setSelectedAction(null);
+  };
+
+  const fetchPaymentDetails = async () => {
+    const response = await postData("/payment/registrationCharges", {
+      serviceLocation: "REGISTRATION",
+      doctor: formValues?.doctor,
+    });
+    const charges = response?.data ?? [];
+    if (!charges && charges?.length === 0) return;
+    setPaymentCharges(charges);
+    calculateTotalAmount(charges);
+  };
+
+  const calculateTotalAmount = (charges) => {
+    const totalAmount = charges?.reduce(
       (acc, cur) => acc + cur.serviceAmount,
       0
     );
-    combinationOfFees.push({
-      serviceName: "Total",
-      serviceAmount: totalAmount,
-    });
-
+    setPaymentChargeDetails(charges);
+    setTotalAmtStr(`${totalAmount}`);
+  };
+  const PaymentSummary = () => {
     return (
-      <GlassBG cardStyles={{ width: "200px", height: "auto" }}>
+      <GlassBG cardStyles={{ width: "190px", mt: 2, height: "auto" }}>
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
           }}
         >
-          <Typography
-            variant="caption"
-            sx={{ pl: 1, color: "red", fontSize: "12px" }}
+          <span
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              borderBottom: "0.5px solid gray",
+            }}
           >
-            {"Note: All amounts are in INR"}
-          </Typography>
-          {combinationOfFees?.map((x, i) => {
+            <Typography variant="caption">Service</Typography>
+            <Typography variant="caption">Amount</Typography>
+          </span>
+          {paymentCharges?.map((x, i) => {
             return (
               <span
                 key={i}
@@ -52,18 +160,39 @@ const Payment = ({ control, errors, formValues, setValue }) => {
                   display: "flex",
                   marginTop: "8px",
                   justifyContent: "space-between",
-                  borderTop:
-                    i === combinationOfFees?.length - 1
-                      ? "0.5px solid gray"
-                      : "",
-                  paddingTop: i === combinationOfFees?.length - 1 ? "8px" : "",
                 }}
               >
-                <Typography variant="caption">{x.serviceName}</Typography>
-                <Typography variant="body2">{x.serviceAmount}</Typography>
+                <Typography variant="caption" sx={{ fontSize: "10px" }}>
+                  {x.serviceName}
+                </Typography>
+                <Typography variant="caption">{x.serviceAmount}</Typography>
               </span>
             );
           })}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              borderTop: "0.5px solid gray",
+              mt: 1,
+              pt: 1,
+            }}
+          >
+            <Typography variant="caption" sx={{ fontSize: "10px" }}>
+              Total in INR
+            </Typography>
+            <Typography variant="caption" sx={{ fontSize: "12px" }}>
+              {totalAmtStr ?? ""}
+            </Typography>
+          </Box>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{ mt: 1 }}
+            onClick={() => setSelectedAction("ADD_ANOTHER_SERVICE")}
+          >
+            Add another service
+          </Button>
         </Box>
       </GlassBG>
     );
@@ -71,7 +200,7 @@ const Payment = ({ control, errors, formValues, setValue }) => {
 
   return (
     <>
-      <GlassBG cardStyles={{ width: "240px", m: 1, height: "auto" }}>
+      <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
           text="Payment Information"
@@ -114,9 +243,18 @@ const Payment = ({ control, errors, formValues, setValue }) => {
           rules={{}}
           label="Transaction ID"
         />
-        <PaymentSummary />
-        <PaymentStatus sx={{ mt: 2 }} status={formValues?.paymentStatus} />
+        {paymentCharges?.length > 0 && (
+          <>
+            <PaymentSummary />
+            <PaymentStatus sx={{ mt: 2 }} status={formValues?.paymentStatus} />
+          </>
+        )}
       </GlassBG>
+      {showDialog.show && (
+        <Dialog maxWidth={showDialog.modalWidth} fullWidth open={true}>
+          <DialogContent sx={{ m: 1 }}>{component}</DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

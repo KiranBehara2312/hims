@@ -30,9 +30,8 @@ const F_Select = ({
       sx={{
         mt: 1,
         mb: 1,
-        ml: "5px",
-        maxWidth: props.maxWidth ?? "230px",
-        minWidth: props.minWidth ?? "230px",
+        maxWidth: props.maxWidth ?? "100%",
+        minWidth: props.minWidth ?? "100%",
       }}
       error={!!errors?.[name]}
     >

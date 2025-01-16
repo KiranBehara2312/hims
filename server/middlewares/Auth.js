@@ -15,7 +15,7 @@ const isAuthenticated = (req, res, next) => {
         err: "ITP",
       });
     }
-    req.user = user;
+    req.loggedInUser = user;
     next();
   });
 };

@@ -13,6 +13,7 @@ export default function HeaderWithSearch({
   headerText = "Default Value",
   headerIcon = null,
   html = null,
+  notScrollable = false,
 }) {
   const handleInputChange = (event) => {
     searchedInput(event.target.value);
@@ -34,12 +35,14 @@ export default function HeaderWithSearch({
       sx={{
         p: "0 10px",
         mb: 1.7,
-        mt: 1,
+        mt: notScrollable ? 0 : 1,
+        zIndex: notScrollable ? 2 : 'auto',
         display: "flex",
         alignItems: "center",
         minHeight: "40px",
+        width: notScrollable ? "calc(100% - 34px)" : "calc(100% - 20px)",
         justifyContent: "space-between",
-        position: "relative",
+        position: notScrollable ? "absolute" : "relative",
         boxShadow:
           "rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px !important",
       }}

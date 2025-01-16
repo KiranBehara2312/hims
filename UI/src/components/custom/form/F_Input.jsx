@@ -15,6 +15,7 @@ const F_Input = ({
   readOnly = false,
   multiline = false,
   maxRows = 1,
+  placeholder = "",
   ...props
 }) => {
   return (
@@ -26,8 +27,8 @@ const F_Input = ({
       sx={{
         mt: 0.25,
         mb: 0.25,
-        maxWidth: props.maxWidth ?? "230px",
-        minWidth: props.minWidth ?? "230px",
+        maxWidth: props.maxWidth ?? "100%",
+        minWidth: props.minWidth ?? "100%",
       }}
     >
       <Controller
@@ -43,6 +44,7 @@ const F_Input = ({
             value={value}
             label={label}
             fullWidth
+            placeholder={placeholder ?? ""}
             size="small"
             error={!!errors?.[name]}
             autoComplete="off"

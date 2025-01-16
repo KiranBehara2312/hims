@@ -21,4 +21,24 @@ const calculateAge = (birthDate = new Date()) => {
   };
 };
 
-module.exports = { calculateAge };
+const convertTo24HourFormat = (timeString) => {
+  const date = new Date(`1970-01-01T${timeString}:00Z`);
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+  return `${hours < 10 ? "0" : ""}${hours}:${
+    minutes < 10 ? "0" : ""
+  }${minutes}`;
+};
+
+const convertTo12HourFormat = (time) => {
+  // time = "2024-12-25T14:30:00";
+  let hours = time.getHours();
+  const minutes = time.getMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  const minutesFormatted = minutes < 10 ? "0" + minutes : minutes;
+  return `${hours}:${minutesFormatted} ${ampm}`;
+};
+
+module.exports = { calculateAge, convertTo24HourFormat, convertTo12HourFormat };

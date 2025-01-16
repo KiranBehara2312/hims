@@ -78,33 +78,100 @@ const BLOOD_GROUPS = [
 
 const WEEK_DAYS_LIST = [
   {
+    label: "Sunday",
+    value: "Sunday",
+    shortName: "Sun",
+  },
+  {
     label: "Monday",
     value: "Monday",
+    shortName: "Mon",
   },
   {
     label: "Tuesday",
     value: "Tuesday",
+    shortName: "Tue",
   },
   {
     label: "Wednesday",
     value: "Wednesday",
+    shortName: "Wed",
   },
   {
     label: "Thursday",
     value: "Thursday",
+    shortName: "Thu",
   },
   {
     label: "Friday",
     value: "Friday",
+    shortName: "Fri",
   },
   {
     label: "Saturday",
     value: "Saturday",
+    shortName: "Sat",
+  },
+];
+
+const DOCTOR_DEPARTMENTS = [
+  { label: "Anaesthesiology", value: "Anaesthesiology" },
+  { label: "Cardiology", value: "Cardiology" },
+  { label: "Cardiothoracic Surgery", value: "Cardiothoracic Surgery" },
+  { label: "Deglutologist", value: "Deglutologist" },
+  { label: "Dental", value: "Dental" },
+  { label: "Dermatology", value: "Dermatology" },
+  { label: "Dietician", value: "Dietician" },
+  { label: "Endocrinology", value: "Endocrinology" },
+  { label: "Ent", value: "Ent" },
+  { label: "Gastro Enterology", value: "Gastro Enterology" },
+  { label: "General Medicine", value: "General Medicine" },
+  { label: "General Physician", value: "General Physician" },
+  { label: "General Surgery", value: "General Surgery" },
+  { label: "Gynaec Oncology", value: "Gynaec Oncology" },
+  { label: "Gynaecology", value: "Gynaecology" },
+  { label: "Head And Neck Oncology", value: "Head And Neck Oncology" },
+  {
+    label: "Hematology And Hemato-oncology",
+    value: "Hematology And Hemato-oncology",
   },
   {
-    label: "Sunday",
-    value: "Sunday",
+    label: "Interventional Gastroenterologist & Hepatologist",
+    value: "Interventional Gastroenterologist & Hepatologist",
   },
+  { label: "Medical Oncology", value: "Medical Oncology" },
+  { label: "Medical Services", value: "Medical Services" },
+  { label: "Micro Biology", value: "Micro Biology" },
+  { label: "Neo Natology", value: "Neo Natology" },
+  { label: "Nephrology", value: "Nephrology" },
+  { label: "Neuro Psychiatrist", value: "Neuro Psychiatrist" },
+  { label: "Neuro Surgery", value: "Neuro Surgery" },
+  { label: "Neurology", value: "Neurology" },
+  { label: "Nuclear Medicine", value: "Nuclear Medicine" },
+  { label: "Nurophysician", value: "Nurophysician" },
+  { label: "Oncology", value: "Oncology" },
+  { label: "Ophthalmology", value: "Ophthalmology" },
+  { label: "Ortho Oncology", value: "Ortho Oncology" },
+  { label: "Orthopaedics", value: "Orthopaedics" },
+  { label: "Paediatrics", value: "Paediatrics" },
+  { label: "Pathology", value: "Pathology" },
+  { label: "Pet Ct", value: "Pet Ct" },
+  { label: "Physiotheraphy", value: "Physiotheraphy" },
+  {
+    label: "Plastic And Reconstructive Surgery",
+    value: "Plastic And Reconstructive Surgery",
+  },
+  { label: "Plastic Surgery", value: "Plastic Surgery" },
+  { label: "Psychiatry", value: "Psychiatry" },
+  { label: "Pulmanology", value: "Pulmanology" },
+  { label: "Radiation Oncology", value: "Radiation Oncology" },
+  { label: "Radiologist", value: "Radiologist" },
+  { label: "Radiology", value: "Radiology" },
+  { label: "Surgical Gastro", value: "Surgical Gastro" },
+  { label: "Surgical Oncology", value: "Surgical Oncology" },
+  { label: "Uro Oncology", value: "Uro Oncology" },
+  { label: "Urology", value: "Urology" },
+  { label: "Vascular Surgery", value: "Vascular Surgery" },
 ];
 
 const DOCTOR_DESIGNATIONS = [
@@ -137,9 +204,26 @@ const DOCTOR_DESIGNATIONS = [
   { label: "Orthopaedist", value: "Orthopaedist" },
 ];
 const DAILY_SHIFT = [
-  { label: "Shift A (6AM - 2PM)", value: "Shift A" },
-  { label: "Shift B (2PM - 10PM)", value: "Shift B" },
-  { label: "Shift C (10PM - 6AM)", value: "Shift C" },
+  {
+    label: "Shift A (6AM - 2PM)",
+    value: "Shift A",
+    shiftTimingsFrom: "06:00",
+    shiftTimingsTo: "14:00",
+  },
+  {
+    label: "Shift B (2PM - 10PM)",
+    value: "Shift B",
+    shiftTimingsFrom: "14:00",
+    shiftTimingsTo: "22:00",
+  },
+  ,
+  {
+    label: "Shift C (10PM - 6AM)",
+    value: "Shift C",
+    shiftTimingsFrom: "22:00",
+    shiftTimingsTo: "06:00",
+  },
+  ,
 ];
 
 const PAYMENT_TYPES = [
@@ -195,6 +279,51 @@ const PATIENT_TYPES = [
     label: "Emergency",
     value: "Emergency",
     shortName: "ER",
+  },
+];
+
+const APPOINTMENT_BOOKING_STATUS = [
+  {
+    label: "Free",
+    value: "Free",
+    code: "ABS001",
+    color: "#078307", // Bright Green
+  },
+  {
+    label: "Hold",
+    value: "Hold",
+    code: "ABS003",
+    color: "#bd702c", // Bright Yellow
+  },
+  {
+    label: "Booked",
+    value: "Booked",
+    code: "ABS004",
+    color: "#0e0e93", // Bright Blue
+  },
+  {
+    label: "Cancelled",
+    value: "Cancelled",
+    code: "ABS005",
+    color: "#a71111", // Bright Red
+  },
+  {
+    label: "Rescheduled",
+    value: "Rescheduled",
+    code: "ABS006",
+    color: "#800080", // Bright Purple
+  },
+  {
+    label: "Completed",
+    value: "Completed",
+    code: "ABS007",
+    color: "#0997cf", // Bright Green
+  },
+  {
+    label: "No Show",
+    value: "No Show",
+    code: "ABS008",
+    color: "#55474a", // Bright Pink
   },
 ];
 
@@ -274,6 +403,51 @@ const PAYMENT_STATUSES = [
   },
 ];
 
+const APPT_SOURCE_TYPES = [
+  {
+    label: "Call Center",
+    value: "Call Center",
+  },
+  {
+    label: "Direct Walkin",
+    value: "Direct Walkin",
+  },
+  {
+    label: "Telephone",
+    value: "Telephone",
+  },
+];
+const APPT_VISIT_FOR = [
+  {
+    label: "Consultation",
+    value: "Consultation",
+  },
+  {
+    label: "Counselling",
+    value: "Counselling",
+  },
+  {
+    label: "Cross Consultation",
+    value: "Cross Consultation",
+  },
+  {
+    label: "Dressing",
+    value: "Dressing",
+  },
+  {
+    label: "Opinion",
+    value: "Opinion",
+  },
+  {
+    label: "Review with reports",
+    value: "Review with reports",
+  },
+  {
+    label: "Second Opinion",
+    value: "Second Opinion",
+  },
+];
+
 export {
   GENDER_LIST,
   BLOOD_GROUPS,
@@ -288,4 +462,8 @@ export {
   VISIT_TYPES,
   PAYMENT_STATUSES,
   APP_USER_TYPES,
+  DOCTOR_DEPARTMENTS,
+  APPOINTMENT_BOOKING_STATUS,
+  APPT_VISIT_FOR,
+  APPT_SOURCE_TYPES,
 };

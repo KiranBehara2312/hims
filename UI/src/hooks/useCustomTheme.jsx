@@ -3,9 +3,9 @@ import { createTheme } from "@mui/material";
 // Define your custom theme configuration
 // nurse = #86320d
 // doctor = #860d74
-// admin = #86690d
+// admin = #0d6986
 // staff = #0d8672
-const useCustomTheme = (curmode = "light", dColor = "#0d8672") => {
+const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
   const theme = createTheme({
     palette: {
       mode: curmode,
@@ -39,11 +39,27 @@ const useCustomTheme = (curmode = "light", dColor = "#0d8672") => {
       borderRadius: 8,
     },
     components: {
+      MuiToolbar: {
+        styleOverrides: {
+          root: {
+            borderRadius: "none !important",
+          },
+        },
+      },
       MuiFormHelperText: {
         styleOverrides: {
           root: {
             fontSize: "11px",
             marginTop: "-1px",
+          },
+        },
+      },
+      MuiInputAdornment: {
+        styleOverrides: {
+          root: {
+            "& p": {
+              fontSize: "12px",
+            },
           },
         },
       },
@@ -100,10 +116,26 @@ const useCustomTheme = (curmode = "light", dColor = "#0d8672") => {
           },
         },
       },
+      MuiDialog: {
+        styleOverrides: {
+          paper: {
+            height: "auto",
+            maxHeight: "calc(100% - 44px)",
+            zIndex: 999,
+          },
+        },
+      },
       MuiDialogContent: {
         styleOverrides: {
           root: {
             padding: "0px !important",
+          },
+        },
+      },
+      MuiAutocomplete: {
+        styleOverrides: {
+          listbox: {
+            fontSize: "13px",
           },
         },
       },
@@ -124,7 +156,7 @@ const useCustomTheme = (curmode = "light", dColor = "#0d8672") => {
       MuiTextField: {
         styleOverrides: {
           root: {
-            margin: 4.5,
+            margin: "4px 0px",
             "& .MuiInputBase-root": {
               fontSize: "0.875rem",
               padding: "0 0",

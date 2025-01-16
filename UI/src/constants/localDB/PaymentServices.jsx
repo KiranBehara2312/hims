@@ -1,7 +1,35 @@
-const REGISTRATION_CHARGES = {
-  serviceName: "Registration Fee",
-  serviceAmount: 50,
-  discountAppliedinPercent: 0,
-};
+const SERVICE_LOCATIONS = [
+  {
+    label: "REGISTRATION",
+    value: "REGISTRATION",
+    description:
+      "This includes all payments that are paid under registration location.",
+  },
+  {
+    label: "REPORTS",
+    value: "REPORTS",
+    description: "",
+  },
+  {
+    label: "RAPID_TESTS",
+    value: "RAPID_TESTS",
+    description: "This includes covid test, sugar, BP, heart rate monitoring",
+  },
+  {
+    label: "PHARMACY",
+    value: "PHARMACY",
+    description: "",
+  },
+  {
+    label: "OP",
+    value: "OP",
+    description: "",
+  },
+  {
+    label: "IP",
+    value: "IP",
+    description: "",
+  },
+];
 
-export { REGISTRATION_CHARGES };
+export { SERVICE_LOCATIONS };

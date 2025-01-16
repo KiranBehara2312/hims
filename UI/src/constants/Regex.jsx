@@ -18,6 +18,7 @@ const REGEX_PATTERNS = {
   BLOOD_PRESSURE: /^([0-9]{1,3})\/([0-9]{1,3})$/,
   BODY_TEMPERATURE:
     /^(9[5-9]\.\d{1,2}|[1][0-9]{2}\.\d{1,2}|[9][5-9]{1}\d{0,1})$/,
+  HH_MM: /^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$/,
 };
 
 export { REGEX_PATTERNS };

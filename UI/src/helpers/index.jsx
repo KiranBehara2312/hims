@@ -7,6 +7,16 @@ const formatDate = (formatStr = "dd/MM/yyyy", date = new Date()) => {
   return moment(date).format(formatStr);
 };
 
+const compareDate = (date1 = new Date(), date2 = new Date()) => {
+  if (date1.getTime() < date2.getTime()) {
+    return 1
+  } else if (date1.getTime() > date2.getTime()) {
+    return -1
+  } else {
+    return 0
+  }
+};
+
 const calculateAge = (birthDate = new Date()) => {
   const today = new Date();
   const birth = new Date(birthDate);
@@ -29,6 +39,11 @@ const calculateAge = (birthDate = new Date()) => {
     string: `${years}y ${months}m ${days}d`,
   };
 };
+function addDaysToCurrentDate(daysToAdd = 0) {
+  const currentDate = new Date();
+  currentDate.setDate(currentDate.getDate() + daysToAdd);
+  return currentDate;
+}
 
 const convertMongoDBDate = (isoDateString) => {
   const date = new Date(isoDateString);
@@ -69,7 +84,7 @@ const errorAlert = (
   });
 const successAlert = (
   message = "This is default message",
-  options = { autoClose: 5000, pauseOnFocusLoss: false }
+  options = { autoClose: 1500, pauseOnFocusLoss: false }
 ) =>
   toast.success(message, {
     autoClose: options.autoClose,
@@ -77,7 +92,7 @@ const successAlert = (
   });
 const infoAlert = (
   message = "This is default message",
-  options = { autoClose: 5000, pauseOnFocusLoss: false }
+  options = { autoClose: 1500, pauseOnFocusLoss: false }
 ) =>
   toast.info(message, {
     autoClose: options.autoClose,
@@ -85,7 +100,7 @@ const infoAlert = (
   });
 const warnAlert = (
   message = "This is default message",
-  options = { autoClose: 5000, pauseOnFocusLoss: false }
+  options = { autoClose: 1500, pauseOnFocusLoss: false }
 ) =>
   toast.warn(message, {
     autoClose: options.autoClose,
@@ -93,7 +108,7 @@ const warnAlert = (
   });
 const defaultAlert = (
   message = "This is default message",
-  options = { autoClose: 5000, pauseOnFocusLoss: false }
+  options = { autoClose: 1500, pauseOnFocusLoss: false }
 ) =>
   toast(message, {
     autoClose: options.autoClose,
@@ -111,5 +126,7 @@ export {
   infoAlert,
   camelToTitle,
   convertMongoDBDate,
-  calculateAge
+  calculateAge,
+  addDaysToCurrentDate,
+  compareDate,
 };

@@ -4,6 +4,8 @@ import F_Select from "../../../components/custom/form/F_Select";
 import { postData } from "../../../helpers/http";
 import { Box, Typography } from "@mui/material";
 import F_Input from "../../../components/custom/form/F_Input";
+import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
+import DoctorInformationCard from "../../../components/shared/DoctorInformationCard";
 
 const Doctor = ({
   control,
@@ -47,7 +49,7 @@ const Doctor = ({
 
   const DocInfoCard = () => {
     return (
-      <GlassBG cardStyles={{ width: "200px", height: "auto" }}>
+      <GlassBG cardStyles={{ width: "210px", height: "auto" }}>
         <Box
           sx={{
             display: "flex",
@@ -125,7 +127,7 @@ const Doctor = ({
   };
   return (
     <>
-      <GlassBG cardStyles={{ width: "240px", m: 1, height: "auto" }}>
+      <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
           text="Doctor Information"
@@ -133,7 +135,7 @@ const Doctor = ({
           sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
         />
 
-        <F_Select
+        <F_Autocomplete
           control={control}
           name={"doctor"}
           label={"Doctor"}
@@ -145,7 +147,7 @@ const Doctor = ({
         />
 
         {formValues?.doctor !== null && formValues?.doctor !== "" && (
-          <DocInfoCard />
+          <DoctorInformationCard selectedDoctor={selectedDoc} />
         )}
       </GlassBG>
     </>

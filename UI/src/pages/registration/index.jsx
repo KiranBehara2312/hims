@@ -7,8 +7,7 @@ import { useForm } from "react-hook-form";
 import Doctor from "./Details/Doctor";
 import Payment from "./Details/Payment";
 import Primary from "./Details/Primary";
-import { formatDate, successAlert } from "../../helpers";
-import { REGISTRATION_CHARGES } from "../../constants/localDB/PaymentServices";
+import { errorAlert, formatDate, successAlert } from "../../helpers";
 import { postData } from "../../helpers/http";
 import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
 import IconWrapper from "../../components/custom/IconWrapper";
@@ -54,6 +53,7 @@ const Registration = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const [paymentChargeDetails, setPaymentChargeDetails] = useState([]);
   const loggedInUser = useSelector((state) => state?.userDetails?.user);
   const {
     register,
@@ -71,7 +71,6 @@ const Registration = ({
   const formValues = watch();
 
   useEffect(() => {
-    console.log(loggedInUser);
     if (selectedPatient !== null) return;
     const interval = setInterval(() => {
       setValue("registrationDate", formatDate("DD/MM/YYYY HH:mm"));
@@ -99,31 +98,35 @@ const Registration = ({
 
   const getPaymentDetails = (formData) => {
     const paymentDate = formatDate("DD/MM/YYYY hh:mm:ss");
-    const DOC_CONSULT_CHARGES = {
-      serviceName: "Doctor Consultation Charges",
-      serviceAmount: +formData.doctorConsultationFee,
-      discountAppliedinPercent: 0,
-      payeeName: formData.payeeName,
-      paymentType: formData.paymentType,
-      transactionId: formData.transactionId,
-      paymentDate,
-    };
-    return [
-      {
-        ...REGISTRATION_CHARGES,
-        payeeName: formData.payeeName,
-        paymentType: formData.paymentType,
-        transactionId: formData.transactionId,
-        paymentDate,
-      },
-      DOC_CONSULT_CHARGES,
-    ];
+    let finalPaymentDetails = [];
+    if (paymentChargeDetails?.length > 0) {
+      paymentChargeDetails?.map((x) => {
+        if (x.serviceName !== "Total") {
+          finalPaymentDetails.push({
+            serviceAmount: x.serviceAmount,
+            serviceName: x.serviceName,
+            serviceCode: x.serviceCode,
+            serviceLocation: x.serviceLocation,
+            discountAppliedinPercent: 0,
+            payeeName: formData.payeeName,
+            paymentType: formData.paymentType,
+            transactionId: formData.transactionId,
+            paymentDate,
+          });
+        }
+      });
+    }
+    return finalPaymentDetails;
   };
 
   const onSubmit = async (formData) => {
+    const payments = getPaymentDetails(formData);
+    if (payments?.length === 0) {
+      return errorAlert("Payment Details are empty", { autoClose: 1500 });
+    }
     const payload = {
       ...formData,
-      payments: getPaymentDetails(formData),
+      payments: payments,
     };
     const response = await postData("/registration/create", payload);
     successAlert(response.message, { autoClose: 1500 });
@@ -187,7 +190,16 @@ const Registration = ({
             }
           />
 
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              flexWrap: "wrap",
+              height: "calc(100vh - 130px)",
+              overflow: "auto",
+              gap: 1,
+            }}
+          >
             <Primary
               control={control}
               errors={errors}
@@ -219,6 +231,7 @@ const Registration = ({
                 errors={errors}
                 formValues={formValues}
                 setValue={setValue}
+                setPaymentChargeDetails={setPaymentChargeDetails}
               />
             )}
           </Box>

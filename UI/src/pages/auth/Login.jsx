@@ -1,16 +1,18 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { TextField, Button, Box } from "@mui/material";
+import { TextField, Button, Box, useMediaQuery } from "@mui/material";
 import { GlassBG, MyHeading } from "../../components/custom";
 import { useNavigate } from "react-router-dom";
 import { postData } from "../../helpers/http";
 import { successAlert } from "../../helpers";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../../redux/slices/userDetailsSlice";
+import useNotification from "../../hooks/useCustomNotification";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const lessThanMd = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const {
     register,
     handleSubmit,
@@ -22,10 +24,13 @@ const Login = () => {
       userName,
       password,
     };
-    const response = await postData("/auth/login", loginObj);
-    successAlert(response.message, { autoClose: 1500 });
-    dispatch(setUserDetails(response.token));
-    localStorage.setItem("authToken", response.token);
+    const response = await postData("/auth/login", loginObj, "Logging in...");
+    const welcomeMsg = `Welcome ${
+      response?.user?.role === "DOCTOR" ? "Dr." : ""
+    } ${response?.user?.firstName} ${response?.user?.lastName}`;
+    successAlert(welcomeMsg, { autoClose: 1500 });
+    dispatch(setUserDetails(response?.token));
+    localStorage.setItem("authToken", response?.token);
     navigate("/pages/home");
   };
 
@@ -39,7 +44,9 @@ const Login = () => {
         alignItems: "center",
       }}
     >
-      <GlassBG cardStyles={{ width: "300px", height: "auto" }}>
+      <GlassBG
+        cardStyles={{ width: lessThanMd ? "90%" : "300px", height: "auto" }}
+      >
         <MyHeading
           alignCenter
           text="Login"
@@ -70,17 +77,17 @@ const Login = () => {
             helperText={errors.password ? errors.password.message : ""}
           />
 
-          <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+          <Button type="submit" variant="outlined" fullWidth sx={{ mt: 2 }}>
             Submit
           </Button>
-          <Button
+          {/* <Button
             type="button"
             fullWidth
             sx={{ mt: 2 }}
             onClick={() => navigate("/auth/signup")}
           >
             Register? Click here
-          </Button>
+          </Button> */}
         </form>
       </GlassBG>
     </Box>

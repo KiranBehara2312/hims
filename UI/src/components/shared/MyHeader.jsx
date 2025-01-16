@@ -16,12 +16,14 @@ import {
   alpha,
   Popover,
   Button,
+  Collapse,
 } from "@mui/material";
-import { MdAccountCircle, MdMenu } from "react-icons/md";
+import { MdExpandLess, MdExpandMore, MdMenu } from "react-icons/md";
 import { META } from "../../constants/projects";
 import { MENU_ITEMS } from "../../constants/Menu/MenuItems";
 import { useNavigate } from "react-router-dom";
 import { IoLogOutSharp } from "react-icons/io5";
+import { IoIosMail } from "react-icons/io";
 import useConfirmation from "../../hooks/useConfirmation";
 import IconWrapper from "../custom/IconWrapper";
 import HospitalDetailsLogo from "./HospitalDetailsLogo";
@@ -30,18 +32,24 @@ import { emptyUserDetails } from "../../redux/slices/userDetailsSlice";
 import { FaUserAlt, FaUserCog, FaUserNurse } from "react-icons/fa";
 import MyHeading from "../custom/MyHeading";
 import { FaUserDoctor } from "react-icons/fa6";
+import { formatDate } from "../../helpers";
+import { WEEK_DAYS_LIST } from "../../constants/localDB/MastersDB";
 
 const MyHeader = () => {
   const loggedInUser = useSelector((state) => state.userDetails.user);
+  const [openMenu, setOpenMenu] = useState(null);
+  const [currentDateTime, setCurrentDateTime] = useState(null);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
   const theme = useTheme();
   const dispatch = useDispatch();
+  const [autoLogoutMsg, setAutoLogoutMsg] = useState("");
   const [selectedMenuItem, setSelectedMenuItem] = useState("");
   const { DialogComponent, openDialog } = useConfirmation();
 
-  const logoutHanlder = () => {
+  const logoutHanlder = (confirmed) => {
+    if (!confirmed) return;
     navigate("/auth/login");
     dispatch(emptyUserDetails());
     localStorage.removeItem("authToken");
@@ -49,13 +57,71 @@ const MyHeader = () => {
 
   useEffect(() => {
     let inte = setInterval(() => {
+      const dateWithTime = formatDate("DD MMM YYYY - hh:mm a");
+      const day = WEEK_DAYS_LIST[new Date().getDay()]?.label;
       const currentURL = window.location.pathname.split("/pages/")[1];
       setSelectedMenuItem(currentURL);
+      setCurrentDateTime(`${dateWithTime} | ${day}`);
     }, 1000);
     return () => {
       clearInterval(inte);
     };
   }, []);
+
+  const handleClick = (label, url) => {
+    setOpenMenu((prev) => (prev === label ? null : label));
+    if (url === null) return;
+    routeChangeHandler(url);
+  };
+
+  const renderListItem = (item, level = 0) => {
+    const { label, icon, url, children } = item;
+    const isOpen = openMenu === label;
+    return (
+      <>
+        <ListItem
+          key={label}
+          disablePadding
+          onClick={() => handleClick(label, url)}
+          sx={{ pl: level * 2 }}
+        >
+          <ListItemButton
+            sx={{
+              background:
+                selectedMenuItem === url
+                  ? alpha(theme.palette.primary.main, 0.2)
+                  : "",
+            }}
+          >
+            <ListItemIcon>
+              <IconWrapper
+                icon={icon}
+                color={
+                  selectedMenuItem === url ? theme.palette.primary.main : null
+                }
+              />
+            </ListItemIcon>
+            <ListItemText
+              sx={{ fontSize: "0.5rem !important" }}
+              primary={label}
+            />
+            {children?.length > 0 &&
+              (openMenu ? <MdExpandLess /> : <MdExpandMore />)}
+          </ListItemButton>
+        </ListItem>
+
+        {children?.length > 0 && (
+          <Collapse in={isOpen} timeout="auto" unmountOnExit>
+            <List>
+              {children.map((childItem) =>
+                renderListItem(childItem, level + 1)
+              )}
+            </List>
+          </Collapse>
+        )}
+      </>
+    );
+  };
 
   const DrawerList = () => {
     const FILTERED_ITEMS_BY_ROLE = MENU_ITEMS.filter((item) =>
@@ -63,70 +129,32 @@ const MyHeader = () => {
     );
     return (
       <Box
-        sx={{ width: 250, display: "flex", flexDirection: "column" }}
+        sx={{ width: 300, display: "flex", flexDirection: "column" }}
         role="presentation"
-        onClick={() => setOpen(false)}
       >
-        <Box sx={{ m: 1 }}>
+        <Box sx={{ m: 1, maxHeight: "50px" }}>
           <HospitalDetailsLogo />
         </Box>
         <Divider />
 
-        <List sx={{ height: "calc(98.8vh - 125px)", overflowY: "auto" }}>
-          {FILTERED_ITEMS_BY_ROLE.map(({ label, icon, url }, index) => (
-            <ListItem
-              key={label}
-              disablePadding
-              onClick={() => routeChangeHandler(url)}
-            >
-              <ListItemButton
-                sx={{
-                  background:
-                    selectedMenuItem === url
-                      ? alpha(theme.palette.primary.main, 0.2)
-                      : "",
-                }}
-              >
-                <ListItemIcon>
-                  <IconWrapper
-                    icon={icon}
-                    color={
-                      selectedMenuItem === url
-                        ? theme.palette.primary.main
-                        : null
-                    }
-                  />
-                </ListItemIcon>
-                <ListItemText primary={label} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+        <List sx={{ height: "calc(100vh - 100px)", overflowY: "auto" }}>
+          {FILTERED_ITEMS_BY_ROLE.map(
+            ({ label, icon, url, children }, index) => (
+              <React.Fragment key={label}>
+                {renderListItem({ label, icon, url, children })}
+              </React.Fragment>
+            )
+          )}
         </List>
-        <Divider />
-        <ListItem
-          disablePadding
-          onClick={() =>
-            openDialog("Are you sure you want to logout?", logoutHanlder)
-          }
-        >
-          <ListItemButton>
-            <ListItemIcon>
-              <IconWrapper
-                icon={
-                  <IoLogOutSharp size={20} color={theme.palette.primary.main} />
-                }
-              />
-            </ListItemIcon>
-            <ListItemText primary={"Logout"} />
-          </ListItemButton>
-        </ListItem>
       </Box>
     );
   };
 
   const routeChangeHandler = (url) => {
+    if (url === null) return;
     navigate(url);
     setSelectedMenuItem(url);
+    setOpen(false);
   };
 
   const accountClickHandler = (event) => {
@@ -160,8 +188,8 @@ const MyHeader = () => {
             {META.PROJECT_TITLE}
           </Typography>
 
+          <MyHeading variant="body2" text={currentDateTime} sx={{ pr: 1 }} />
           <IconButton color="inherit" onClick={accountClickHandler}>
-            {/* <MdAccountCircle /> */}
             {getIconByRole(loggedInUser?.role, 25)}
           </IconButton>
         </Toolbar>
@@ -240,31 +268,50 @@ const MyHeader = () => {
           <Divider />
           <Box
             sx={{
+              flexDirection: "column",
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "flex-start",
               alignItems: "center",
               pt: 1,
               cursor: "pointer",
             }}
           >
             <Button
-              variant="text"
+              variant="outlined"
               fullWidth
               size="small"
               onClick={() =>
                 openDialog("Are you sure you want to logout?", logoutHanlder)
               }
+              sx={{ display: "flex", justifyContent: "flex-start" }}
             >
               <IconWrapper
                 icon={
                   <IoLogOutSharp
                     size={20}
-                    style={{ paddingRight: "10px" }}
+                    style={{ paddingRight: "10px", paddingTop: "5px" }}
                     color={theme.palette.primary.main}
                   />
                 }
               />
               Logout
+            </Button>
+            <Button
+              variant="outlined"
+              fullWidth
+              size="small"
+              sx={{ mt: 1, display: "flex", justifyContent: "flex-start" }}
+            >
+              <IconWrapper
+                icon={
+                  <IoIosMail
+                    size={20}
+                    style={{ paddingRight: "10px", paddingTop: "5px" }}
+                    color={theme.palette.primary.main}
+                  />
+                }
+              />
+              Issues / Feedback
             </Button>
           </Box>
         </Box>

@@ -1,6 +1,8 @@
 // src/http.js
 import axios from "axios";
 import { errorAlert, successAlert, infoAlert, warnAlert } from "./index";
+import { store } from "../redux/store";
+import { hideLoader, showLoader } from "../redux/slices/loaderSlice";
 
 const apiClient = axios.create({
   baseURL: "http://localhost:3000",
@@ -43,7 +45,7 @@ apiClient.interceptors.response.use(
       console.error("API Error:", error.response.data.message || error.message);
     } else {
       errorAlert(error.message);
-      if (err?.err === "ADNTP" || err?.err === "ITP") {
+      if (error?.err === "ADNTP" || error?.err === "ITP") {
         errorAlert(error.message);
         setTimeout(() => {
           window.location.href = window.location.origin + "/auth/login";
@@ -57,21 +59,35 @@ apiClient.interceptors.response.use(
 );
 
 // Common function to make API calls
-const httpRequest = async (method, url, data = null) => {
+const httpRequest = async (
+  method,
+  url,
+  data = null,
+  headers = {},
+  loaderMessage = ""
+) => {
   try {
+    store.dispatch(showLoader(`${loaderMessage}`));
     const response = await apiClient({
       method,
       url,
       data,
+      headers: headers,
     });
+    store.dispatch(hideLoader());
     return response;
   } catch (error) {
+    store.dispatch(hideLoader());
     throw error;
   }
 };
 
-const getData = (endpoint) => httpRequest("GET", endpoint);
+const getData = (endpoint, headers = {}, loaderMessage = "") => {
+  return httpRequest("GET", endpoint, null, headers, loaderMessage);
+};
 
-const postData = (endpoint, payload) => httpRequest("POST", endpoint, payload);
+const postData = (endpoint, payload, loaderMessage = "") => {
+  return httpRequest("POST", endpoint, payload, {}, loaderMessage);
+};
 
 export { getData, postData, httpRequest };

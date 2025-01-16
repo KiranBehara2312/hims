@@ -10,6 +10,10 @@ import Masters from "../pages/Masters";
 import Doctor from "../pages/Doctor";
 import PaymentLedger from "../pages/PaymentLedger";
 import Patients from "../pages/patients";
+import Appointment from "../pages/Appointment";
+import ApptMainScreen from "../pages/Appointment/Main";
+import Pnf from "../components/shared/PageNotFound";
+import AllAppointments from "../pages/Tracking/AllAppointments";
 
 const AppRoutes = () => {
   const routes = useRoutes([
@@ -43,7 +47,7 @@ const AppRoutes = () => {
         },
         {
           path: "appointment",
-          element: <>appointment</>,
+          element: <ApptMainScreen />,
         },
         {
           path: "doctor",
@@ -60,6 +64,19 @@ const AppRoutes = () => {
         {
           path: "masters",
           element: <Masters />,
+        },
+        {
+          path: "tracking",
+          children: [
+            {
+              path: "allAppointments",
+              element: <AllAppointments />,
+            },
+          ],
+        },
+        {
+          path: "*",
+          element: <Pnf />,
         },
       ],
     },
