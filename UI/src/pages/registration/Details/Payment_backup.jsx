@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { GlassBG, MyHeading } from "../../../components/custom";
 import {
   PAYMENT_STATUSES,
@@ -23,6 +23,7 @@ const Payment = ({
   const [paymentCharges, setPaymentCharges] = useState([]);
   const [selectedAction, setSelectedAction] = useState("");
   const [totalAmtStr, setTotalAmtStr] = useState("");
+
   const [component, setComponent] = useState(null);
   const [showDialog, setShowDialog] = useState({
     show: false,
@@ -30,38 +31,84 @@ const Payment = ({
     modalWidth: "md",
   });
 
-  // Use callback to prevent unnecessary re-renders
-  const actionClickHandler = useCallback(
-    (action) => {
-      console.log("action" + action);
-      switch (action) {
-        case "ADD_ANOTHER_SERVICE":
-          return (
-            <PaymentServicesChooser
-              dialogCloseBtn={<CloseBtnHtml />}
-              headerText={`Choose Payment Services`}
-              selectedRow={null}
-              action={"ADD_ANOTHER_SERVICE"}
-              paymentCharges={paymentCharges}
-              setPaymentCharges={setPaymentCharges}
-              setShowDialog={setShowDialog}
+  useEffect(() => {
+    if (selectedAction === "") return;
+    console.log("1 " + selectedAction);
+    setComponent((prev) => actionClickHandler(selectedAction));
+
+    return () => {
+      setSelectedAction(() => "");
+      setComponent(() => null);
+      setShowDialog((prev) => {
+        return { rerender: false, show: false, modalWidth: "md" };
+      });
+    };
+  }, [selectedAction]);
+
+  useEffect(() => {
+    // Then show the dialog
+    if (component !== null) {
+      setShowDialog((prev) => {
+        return {
+          rerender: false,
+          show: true,
+          modalWidth: "md",
+        };
+      });
+    }
+  }, [component]);
+
+  useEffect(() => {
+    if (!showDialog.show) {
+      setSelectedAction(() => "");
+      setComponent(() => null);
+    }
+  }, [showDialog.show]);
+
+  useEffect(() => {
+    if (formValues?.doctor?.length > 0) {
+      fetchPaymentDetails();
+    } else {
+      setPaymentCharges(() => []);
+    }
+  }, [formValues.doctor]);
+
+  useEffect(() => {
+    if (showDialog.rerender) {
+      calculateTotalAmount(paymentCharges);
+      setComponent((prev) => null);
+      setSelectedAction((prev) => "");
+    }
+  }, [showDialog.rerender]);
+
+  const actionClickHandler = (action) => {
+    console.log("action" + action);
+    switch (action) {
+      case "ADD_ANOTHER_SERVICE":
+        return (
+          <PaymentServicesChooser
+            dialogCloseBtn={<CloseBtnHtml />}
+            headerText={`Choose Payment Services`}
+            selectedRow={null}
+            action={"ADD_ANOTHER_SERVICE"}
+            paymentCharges={paymentCharges}
+            setPaymentCharges={setPaymentCharges}
+            setShowDialog={setShowDialog}
+          />
+        );
+      default:
+        return (
+          <>
+            <HeaderWithSearch
+              hideSearchBar
+              headerText={action}
+              html={<CloseBtnHtml />}
             />
-          );
-        default:
-          return (
-            <>
-              <HeaderWithSearch
-                hideSearchBar
-                headerText={action}
-                html={<CloseBtnHtml />}
-              />
-              <WorkInProgress />
-            </>
-          );
-      }
-    },
-    [paymentCharges]
-  );
+            <WorkInProgress />
+          </>
+        );
+    }
+  };
 
   const CloseBtnHtml = () => {
     return (
@@ -75,7 +122,7 @@ const Payment = ({
           minWidth: "30px !important",
           width: "30px !important",
         }}
-        onClick={closeDialog}
+        onClick={() => closeDialog()}
       >
         X
       </Button>
@@ -83,82 +130,44 @@ const Payment = ({
   };
 
   const closeDialog = () => {
-    setShowDialog((prev) => ({ ...prev, show: false }));
-    setSelectedAction("");
-    setComponent(null);
+    setShowDialog((prev) => {
+      return {
+        ...prev,
+        show: false,
+      };
+    });
+    setSelectedAction(() => "");
+    setComponent(() => null);
   };
 
-  // Fetch payment details
   const fetchPaymentDetails = async () => {
     const response = await postData("/payment/registrationCharges", {
       serviceLocation: "REGISTRATION",
       doctor: formValues?.doctor,
     });
     const charges = response?.data ?? [];
-    if (!charges.length) return;
+    if (!charges && charges?.length === 0) return;
     setPaymentCharges(charges);
     calculateTotalAmount(charges);
   };
 
-  // Calculate total amount from charges
   const calculateTotalAmount = (charges) => {
     const totalAmount = charges?.reduce(
       (acc, cur) => acc + cur.serviceAmount,
       0
     );
-    setPaymentChargeDetails(charges);
-    setTotalAmtStr(`${totalAmount}`);
+    setPaymentChargeDetails(() => charges);
+    setTotalAmtStr(() => `${totalAmount}`);
   };
-
-  // Side effects to handle dialog and selectedAction
-  useEffect(() => {
-    if (!selectedAction) return;
-    console.log("1 " + selectedAction);
-    const componentToRender = actionClickHandler(selectedAction);
-    setComponent(componentToRender);
-
-    return () => {
-      setSelectedAction("");
-      setComponent(null);
-      setShowDialog((prev) => ({
-        rerender: false,
-        show: false,
-        modalWidth: "md",
-      }));
-    };
-  }, [selectedAction, actionClickHandler]);
-
-  useEffect(() => {
-    if (component !== null) {
-      setShowDialog((prev) => ({
-        rerender: false,
-        show: true,
-        modalWidth: "md",
-      }));
-    }
-  }, [component]);
-
-  useEffect(() => {
-    if (formValues?.doctor?.length > 0) {
-      fetchPaymentDetails();
-    } else {
-      setPaymentCharges([]);
-    }
-  }, [formValues.doctor]);
-
-  useEffect(() => {
-    if (showDialog.rerender) {
-      calculateTotalAmount(paymentCharges);
-      setComponent(null);
-      setSelectedAction("");
-    }
-  }, [showDialog.rerender, paymentCharges]);
-
-  // Payment Summary component
   const PaymentSummary = () => {
     return (
       <GlassBG cardStyles={{ width: "190px", mt: 2, height: "auto" }}>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <span
             style={{
               display: "flex",
@@ -169,21 +178,23 @@ const Payment = ({
             <Typography variant="caption">Service</Typography>
             <Typography variant="caption">Amount</Typography>
           </span>
-          {paymentCharges?.map((x, i) => (
-            <span
-              key={i}
-              style={{
-                display: "flex",
-                marginTop: "8px",
-                justifyContent: "space-between",
-              }}
-            >
-              <Typography variant="caption" sx={{ fontSize: "10px" }}>
-                {x.serviceName}
-              </Typography>
-              <Typography variant="caption">{x.serviceAmount}</Typography>
-            </span>
-          ))}
+          {paymentCharges?.map((x, i) => {
+            return (
+              <span
+                key={i}
+                style={{
+                  display: "flex",
+                  marginTop: "8px",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant="caption" sx={{ fontSize: "10px" }}>
+                  {x.serviceName}
+                </Typography>
+                <Typography variant="caption">{x.serviceAmount}</Typography>
+              </span>
+            );
+          })}
           <Box
             sx={{
               display: "flex",
@@ -204,7 +215,9 @@ const Payment = ({
             variant="outlined"
             size="small"
             sx={{ mt: 1 }}
-            onClick={() => setSelectedAction("ADD_ANOTHER_SERVICE")}
+            onClick={() => {
+              setSelectedAction((prev) => "ADD_ANOTHER_SERVICE");
+            }}
           >
             Add another service
           </Button>

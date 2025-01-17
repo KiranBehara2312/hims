@@ -140,9 +140,10 @@ const PaymentServicesChooser = ({
               variant="body1"
               sx={{ mt: -1 }}
             />
-            {incomingPaymentCharges?.map((x) => {
+            {incomingPaymentCharges?.map((x, i) => {
               return (
                 <Box
+                  key={x.serviceCode}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -209,6 +210,7 @@ const PaymentServicesChooser = ({
             {paymentServices?.map((x) => {
               return (
                 <Box
+                  key={x.serviceCode}
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",

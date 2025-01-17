@@ -39,7 +39,7 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
   };
 
   const closeDialog = (event, reason) => {
-    if (reason === "backdropClick") {
+    if (reason === "backdropClick" || reason === "escapeKeyDown") {
       return;
     }
     setNotificationDialog(false);
@@ -93,7 +93,7 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
             display: "flex",
             flexDirection: "column",
             gap: 1,
-            margin : "0px 2px",
+            margin: "0px 2px",
             paddingTop: "50px",
           }}
         >
