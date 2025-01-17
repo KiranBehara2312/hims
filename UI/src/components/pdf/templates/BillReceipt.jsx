@@ -14,10 +14,13 @@ import PdfLogoDetails from "./defaults/LogoDetails";
 import PdfPatientDetails from "./defaults/PatientDetails";
 import PdfHeader from "./defaults/Header";
 import PdfPayeeDetails from "./defaults/PayeeDetails";
+import PdfPaymentServiceDetails from "./defaults/paymentServiceDetails";
+import PdfFooter from "./defaults/Footer";
 
 const styles = StyleSheet.create({
   page: {
     padding: "16px",
+    height: "100%",
     backgroundColor: "#f3f3f3",
   },
   header: {
@@ -70,19 +73,31 @@ const styles = StyleSheet.create({
   },
 });
 
-const BillReceiptTemplate = ({ patientName = "Sample Kira ", billDetails }) => {
+const BillReceiptTemplate = ({
+  pdfName = "",
+  UHID = "",
+  payeeDetails = {},
+  billsArray = [],
+}) => {
   return (
     <Document>
       <Page style={styles.page}>
         <PdfLogoDetails />
-        <PdfHeader />
-        <PdfPatientDetails />
+        <PdfHeader header={pdfName} />
 
-        <View style={{ margin: "10px 0" }}>
-          <PdfPayeeDetails />
+        <View style={{ margin: "5px 0" }}>
+          <PdfPatientDetails UHID={UHID} />
         </View>
 
-        
+        <View style={{ margin: "5px 0" }}>
+          <PdfPayeeDetails payeeDetails={payeeDetails} />
+        </View>
+
+        <View style={{ margin: "5px 0" }}>
+          <PdfPaymentServiceDetails billsArray={billsArray} />
+        </View>
+
+        <PdfFooter />
       </Page>
     </Document>
   );

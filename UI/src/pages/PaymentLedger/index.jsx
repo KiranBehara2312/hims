@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
 import IconWrapper from "../../components/custom/IconWrapper";
 import { Alert, Box, Button, Popover, useTheme } from "@mui/material";
-import { FaEdit, FaEye, FaPrint, FaTrash } from "react-icons/fa";
+import { FaEdit, FaEye, FaFilter, FaPrint, FaTrash } from "react-icons/fa";
 import MyTable from "../../components/custom/MyTable";
 import { postData } from "../../helpers/http";
 import { SiCashapp } from "react-icons/si";
@@ -14,6 +14,9 @@ import F_Autocomplete from "../../components/custom/form/F_AutoComplete";
 import { MyHeading } from "../../components/custom";
 import { FaLocationDot, FaLocationPin } from "react-icons/fa6";
 import { ADMIN, STAFF } from "../../constants/roles";
+import PDFGenerator from "../../components/pdf/PDFGenerator";
+import BillReceiptTemplate from "../../components/pdf/templates/BillReceipt";
+import F_Input from "../../components/custom/form/F_Input";
 
 const LIMIT = 10;
 const ACTIONS = [
@@ -37,12 +40,13 @@ const PaymentLedger = () => {
     reset,
     formState: { errors },
   } = useForm({
-    defaultValues: { serviceLocation: "All" },
+    defaultValues: { serviceLocation: "All", searchString: "" },
     mode: "all",
     reValidateMode: "onBlur",
   });
   const formValues = watch();
   const [anchorPosition, setAnchorPosition] = useState(null);
+  const [printsAnchorPosition, setPrintsAnchorPosition] = useState(null);
 
   const [showAddDoc, setShowAddDoc] = useState({
     show: false,
@@ -66,14 +70,27 @@ const PaymentLedger = () => {
       page: 1,
       limit: LIMIT,
       serviceLocation: formValues?.serviceLocation,
+      searchString: formValues?.searchString,
     });
   }, [showAddDoc.rerender]);
 
-  const onSubmit = ({ serviceLocation }) => {
+  const onSubmit = ({ serviceLocation, searchString }) => {
     fetchPaymentLedgers({
       page: 1,
       limit: LIMIT,
       serviceLocation: serviceLocation,
+      searchString: searchString,
+    });
+    setAnchorPosition(null);
+  };
+
+  const resetFilter = () => {
+    reset();
+    fetchPaymentLedgers({
+      page: 1,
+      limit: LIMIT,
+      serviceLocation: "All",
+      searchString: "",
     });
     setAnchorPosition(null);
   };
@@ -81,6 +98,10 @@ const PaymentLedger = () => {
   const showServiceLocationSelector = (event) => {
     const { clientX, clientY } = event;
     setAnchorPosition({ top: clientY, left: clientX });
+  };
+  const showPrintsPopover = (event) => {
+    const { clientX, clientY } = event;
+    setPrintsAnchorPosition({ top: clientY, left: clientX });
   };
 
   const Buttons = () => {
@@ -91,20 +112,20 @@ const PaymentLedger = () => {
           size="small"
           onClick={(event) => showServiceLocationSelector(event)}
         >
-          <FaLocationDot size={15} style={{ marginRight: "8px" }} /> Service
-          Location
+          <FaFilter size={15} style={{ marginRight: "8px" }} /> Filters
         </Button>
-        <Button variant="outlined" size="small" onClick={addDoctorHandler}>
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={(event) => showPrintsPopover(event)}
+        >
           <FaPrint size={15} style={{ marginRight: "8px" }} /> Print
         </Button>
       </Box>
     );
   };
   const fetchPaymentLedgers = async (paginationObj) => {
-    const response = await postData(`/paymentledger/history`, {
-      ...paginationObj,
-      serviceLocation: formValues?.serviceLocation,
-    });
+    const response = await postData(`/paymentledger/history`, paginationObj);
     if (response) {
       const oneObj = response?.data?.[0];
       if (!oneObj) {
@@ -137,16 +158,6 @@ const PaymentLedger = () => {
         defaultPage: 0,
       });
     }
-  };
-  const addDoctorHandler = () => {
-    setSelectedDoc({
-      action: "Add",
-      data: null,
-    });
-    setShowAddDoc({
-      show: true,
-      rerender: false,
-    });
   };
 
   const actionsHandler = (action, row) => {
@@ -182,6 +193,8 @@ const PaymentLedger = () => {
             fetchPaymentLedgers({
               page: newPage,
               limit: LIMIT,
+              serviceLocation: formValues?.serviceLocation,
+              searchString: formValues?.searchString,
             });
           }}
         />
@@ -216,6 +229,15 @@ const PaymentLedger = () => {
               }}
             >
               <MyHeading alignCenter variant="body1" text="Service Location" />
+              <F_Input
+                control={control}
+                name={"searchString"}
+                label={"UHID / Patient No / Bill No"}
+                rules={{}}
+                maxWidth="140px"
+                isRequired={true}
+                errors={errors}
+              />
               <F_Autocomplete
                 control={control}
                 name={"serviceLocation"}
@@ -226,15 +248,68 @@ const PaymentLedger = () => {
                 isRequired={true}
                 errors={errors}
               />
-              <Button variant="outlined" size="small" fullWidth type="submit">
-                Search
-              </Button>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  width: "100%",
+                  gap: 1,
+                }}
+              >
+                <Button variant="outlined" size="small" fullWidth type="submit">
+                  Search
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  onClick={() => resetFilter()}
+                >
+                  Reset
+                </Button>
+              </Box>
               <Alert severity="info" sx={{ mt: 2 }}>
                 Service Location is the place where the payment gets completed,
                 filter according to the location and then use the print option
               </Alert>
             </Box>
           </form>
+        </Popover>
+      )}
+      {Boolean(printsAnchorPosition) && (
+        <Popover
+          open={true}
+          anchorReference="anchorPosition"
+          anchorPosition={printsAnchorPosition}
+          onClose={() => setPrintsAnchorPosition(null)}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <Box sx={{ p: 1 }}>
+            <MyHeading
+              alignCenter
+              text="Report Options"
+              variant="body1"
+              sx={{ mb: 2 }}
+            />
+            <PDFGenerator
+              document={
+                <BillReceiptTemplate
+                  pdfName="Bill Receipt"
+                  billsArray={tableObj?.data ?? []}
+                  UHID={tableObj?.data?.[0]?.UHID ?? null}
+                  payeeDetails={tableObj?.data?.[0] ?? null}
+                />
+              }
+              fileName="Bill_Receipt.pdf"
+            />
+          </Box>
         </Popover>
       )}
     </>

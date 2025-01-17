@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { postData } from "../../../../helpers/http";
 
 const styles = StyleSheet.create({
   gridContainer: {
@@ -47,7 +48,22 @@ const styles = StyleSheet.create({
   },
 });
 
-const PdfPatientDetails = () => {
+const PdfPatientDetails = ({ UHID = null }) => {
+  const [patientDetails, setPatientDetails] = useState(null);
+  useEffect(() => {
+    fetchPatientDetails();
+  }, []);
+
+  const fetchPatientDetails = async () => {
+    if (UHID === null) {
+      return;
+    }
+    const response = await postData("/patients/patientById", {
+      searchString: UHID,
+    });
+    setPatientDetails(response?.data ?? null);
+  };
+
   return (
     <View style={styles.table}>
       <View style={[styles.table]}>
@@ -67,13 +83,15 @@ const PdfPatientDetails = () => {
             <Text style={styles.label}>Name</Text>
           </View>
           <View style={[styles.tableValueCell]}>
-            <Text style={styles.label}>Behara Sayi Venkata Radha Kiran</Text>
+            <Text style={styles.label}>{patientDetails?.fullName}</Text>
           </View>
           <View style={[styles.tableHeaderCell]}>
             <Text style={styles.label}>Gender (Age)</Text>
           </View>
           <View style={[styles.tableValueCell]}>
-            <Text style={styles.label}>Male (27y 10m 2d)</Text>
+            <Text style={styles.label}>
+              {patientDetails?.gender} ({patientDetails?.ageString})
+            </Text>
           </View>
         </View>
         {/* row ends */}
@@ -84,13 +102,13 @@ const PdfPatientDetails = () => {
             <Text style={styles.label}>UHID</Text>
           </View>
           <View style={[styles.tableValueCell]}>
-            <Text style={styles.label}>Behara Sayi Venkata Radha Kiran</Text>
+            <Text style={styles.label}>{UHID}</Text>
           </View>
           <View style={[styles.tableHeaderCell]}>
             <Text style={styles.label}>Patient No</Text>
           </View>
           <View style={[styles.tableValueCell]}>
-            <Text style={styles.label}>Male (27y 10m 2d)</Text>
+            <Text style={styles.label}>{patientDetails?.patientNo}</Text>
           </View>
         </View>
         {/* row ends */}
@@ -101,13 +119,13 @@ const PdfPatientDetails = () => {
             <Text style={styles.label}>Phone No</Text>
           </View>
           <View style={[styles.tableValueCell]}>
-            <Text style={styles.label}>Behara Sayi Venkata Radha Kiran</Text>
+            <Text style={styles.label}>{patientDetails?.contactNumber}</Text>
           </View>
           <View style={[styles.tableHeaderCell]}>
             <Text style={styles.label}>Registration Date</Text>
           </View>
           <View style={[styles.tableValueCell]}>
-            <Text style={styles.label}>Male (27y 10m 2d)</Text>
+            <Text style={styles.label}>{patientDetails?.registrationDate}</Text>
           </View>
         </View>
         {/* row ends */}

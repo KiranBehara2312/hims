@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const PdfPayeeDetails = () => {
+const PdfPayeeDetails = ({ payeeDetails = null }) => {
   return (
     <View style={styles.table}>
       <View style={[styles.table]}>
@@ -66,13 +66,13 @@ const PdfPayeeDetails = () => {
             <Text style={styles.label}>Name</Text>
           </View>
           <View style={[styles.tableValueCell]}>
-            <Text style={styles.label}>Behara Sayi Venkata Radha Kiran</Text>
+            <Text style={styles.label}>{payeeDetails?.payeeName}</Text>
           </View>
           <View style={[styles.tableHeaderCell]}>
             <Text style={styles.label}>Payment Type</Text>
           </View>
           <View style={[styles.tableValueCell]}>
-            <Text style={styles.label}>Male (27y 10m 2d)</Text>
+            <Text style={styles.label}>{payeeDetails?.paymentType}</Text>
           </View>
         </View>
         {/* row ends */}
@@ -83,13 +83,13 @@ const PdfPayeeDetails = () => {
             <Text style={styles.label}>Payment Date</Text>
           </View>
           <View style={[styles.tableValueCell]}>
-            <Text style={styles.label}>Behara Sayi Venkata Radha Kiran</Text>
+            <Text style={styles.label}>{payeeDetails?.paymentDate}</Text>
           </View>
           <View style={[styles.tableHeaderCell]}>
             <Text style={styles.label}>Transaction ID</Text>
           </View>
           <View style={[styles.tableValueCell]}>
-            <Text style={styles.label}>Male (27y 10m 2d)</Text>
+            <Text style={styles.label}>{payeeDetails?.transactionId}</Text>
           </View>
         </View>
         {/* row ends */}

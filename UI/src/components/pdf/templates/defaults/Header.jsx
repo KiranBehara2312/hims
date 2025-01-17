@@ -4,7 +4,6 @@ import { Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 const styles = StyleSheet.create({
   border: {
     border: "1px solid #ccc",
-    marginBottom: 10,
     textAlign: "center",
   },
   reportLabel: {
