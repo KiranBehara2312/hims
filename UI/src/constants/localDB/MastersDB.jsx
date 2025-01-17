@@ -403,6 +403,29 @@ const PAYMENT_STATUSES = [
   },
 ];
 
+const NOTIFICATION_PRIORITY = [
+  {
+    label: "Catastrophic",
+    value: "Catastrophic",
+  },
+  {
+    label: "High",
+    value: "High",
+  },
+  {
+    label: "Medium",
+    value: "Medium",
+  },
+  {
+    label: "Low",
+    value: "Low",
+  },
+  {
+    label: "Normal",
+    value: "Normal",
+  },
+];
+
 const APPT_SOURCE_TYPES = [
   {
     label: "Call Center",
@@ -466,4 +489,5 @@ export {
   APPOINTMENT_BOOKING_STATUS,
   APPT_VISIT_FOR,
   APPT_SOURCE_TYPES,
+  NOTIFICATION_PRIORITY,
 };

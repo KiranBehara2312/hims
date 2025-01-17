@@ -39,6 +39,14 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
       borderRadius: 8,
     },
     components: {
+      MuiBadge: {
+        styleOverrides: {
+          badge: {
+            fontSize: "0.7rem !important",
+            borderRadius: "50%",
+          },
+        },
+      },
       MuiToolbar: {
         styleOverrides: {
           root: {

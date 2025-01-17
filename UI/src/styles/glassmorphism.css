@@ -7,7 +7,7 @@
     0.1
   ) !important; /* Semi-transparent white background */
   border-radius: 10px !important; /* Rounded corners */
-  padding: 20px 16px !important; /* Padding around content */
+  padding: 16px 16px !important; /* Padding around content */
   backdrop-filter: blur(
     10px
   ) !important; /* Applies the blur effect to the background */
@@ -18,8 +18,10 @@
   /* box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px,
     rgba(17, 17, 26, 0.05) 0px 8px 32px !important; */
   border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Light border for contrast */
-  box-shadow: rgb(0 0 0 / 19%) 0px 10px 20px -10px inset,
-    rgba(0, 0, 0, 0.3) 0px 0px 70px -45px inset;
+  /* box-shadow: rgb(0 0 0 / 19%) 0px 10px 20px -10px inset,
+    rgba(0, 0, 0, 0.3) 0px 0px 70px -45px inset; */
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
 /* Optional: Styling for the content within the glassmorphism element */

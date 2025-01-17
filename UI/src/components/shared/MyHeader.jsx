@@ -17,7 +17,12 @@ import {
   Popover,
   Button,
   Collapse,
+  Badge,
+  Dialog,
+  DialogContent,
 } from "@mui/material";
+import { IoNotificationsSharp } from "react-icons/io5";
+import socketIOClient from "socket.io-client";
 import { MdExpandLess, MdExpandMore, MdMenu } from "react-icons/md";
 import { META } from "../../constants/projects";
 import { MENU_ITEMS } from "../../constants/Menu/MenuItems";
@@ -34,19 +39,70 @@ import MyHeading from "../custom/MyHeading";
 import { FaUserDoctor } from "react-icons/fa6";
 import { formatDate } from "../../helpers";
 import { WEEK_DAYS_LIST } from "../../constants/localDB/MastersDB";
+import Notifications from "./Notification/Notifications";
+import { MdMore } from "react-icons/md";
+import { ADMIN, DOCTOR, NURSE, STAFF } from "../../constants/roles";
+import { TbReport } from "react-icons/tb";
+import { AiFillMessage } from "react-icons/ai";
+import SendNotification from "./Notification/SendNotification";
+import HeaderWithSearch from "../custom/HeaderWithSearch";
+import WorkInProgress from "./WorkInProgress";
 
 const MyHeader = () => {
+  const MORE_ACTIONS = [
+    {
+      name: "Send Notifications",
+      privilege: "SEND_NOTIFICATION",
+      icon: <IconWrapper defaultColor icon={<AiFillMessage size={18} />} />,
+      disabled: false,
+      access: [ADMIN, STAFF, NURSE, DOCTOR],
+      modalWidth: "xs",
+    },
+    {
+      name: "Reports",
+      privilege: "REPORTS",
+      icon: <IconWrapper defaultColor icon={<TbReport size={18} />} />,
+      disabled: false,
+      access: [ADMIN, STAFF, NURSE, DOCTOR],
+      modalWidth: "md",
+    },
+  ];
+
   const loggedInUser = useSelector((state) => state.userDetails.user);
+  const [showDialog, setShowDialog] = useState({
+    show: false,
+    rerender: false,
+    modalWidth: "md",
+  });
   const [openMenu, setOpenMenu] = useState(null);
+  const [selectedMoreAction, setSelectedMoreAction] = useState(null);
+  const [notificationDialog, setNotificationDialog] = useState(false);
   const [currentDateTime, setCurrentDateTime] = useState(null);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [moreActionsEl, setMoreActionsEl] = useState(null);
   const navigate = useNavigate();
   const theme = useTheme();
+  const [showNotiBadge, setShowNotiBadge] = useState(false);
   const dispatch = useDispatch();
   const [autoLogoutMsg, setAutoLogoutMsg] = useState("");
   const [selectedMenuItem, setSelectedMenuItem] = useState("");
   const { DialogComponent, openDialog } = useConfirmation();
+
+  // const socket = socketIOClient("http://localhost:3000");
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     socket.on("notificationCount", (count) => {
+  //       setShowNotiBadge(true);
+  //     });
+
+  //     return () => {
+  //       socket.disconnect();
+  //       setShowNotiBadge(false);
+  //     };
+  //   }, 3000);
+  // }, []);
 
   const logoutHanlder = (confirmed) => {
     if (!confirmed) return;
@@ -67,6 +123,55 @@ const MyHeader = () => {
       clearInterval(inte);
     };
   }, []);
+
+  const closeDialog = () => {
+    setShowDialog({ rerender: false, show: false });
+    setSelectedMoreAction(null);
+  };
+
+  const CloseBtnHtml = () => {
+    return (
+      <Button
+        size="small"
+        type="button"
+        variant="outlined"
+        color="error"
+        sx={{
+          maxWidth: "30px !important",
+          minWidth: "30px !important",
+          width: "30px !important",
+        }}
+        onClick={() => closeDialog()}
+      >
+        X
+      </Button>
+    );
+  };
+
+  const getDialogContent = (action) => {
+    switch (action) {
+      case "SEND_NOTIFICATION":
+        return (
+          <SendNotification
+            dialogCloseBtn={<CloseBtnHtml />}
+            headerText={`Send Notification`}
+            action={selectedMoreAction}
+            setShowDialog={setShowDialog}
+          />
+        );
+      default:
+        return (
+          <>
+            <HeaderWithSearch
+              hideSearchBar
+              headerText={action}
+              html={<CloseBtnHtml />}
+            />
+            <WorkInProgress />
+          </>
+        );
+    }
+  };
 
   const handleClick = (label, url) => {
     setOpenMenu((prev) => (prev === label ? null : label));
@@ -160,6 +265,19 @@ const MyHeader = () => {
   const accountClickHandler = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const moreActionClickHandler = (event) => {
+    setMoreActionsEl(event.currentTarget);
+  };
+
+  const moreActionOptionClickHandler = (action, modalWidth) => {
+    setSelectedMoreAction(action);
+    setShowDialog({
+      show: true,
+      rerender: false,
+      modalWidth: modalWidth,
+    });
+    setMoreActionsEl(null);
+  };
 
   const getIconByRole = (role = "STAFF", size = 75) => {
     const ICON_BY_ROLE = {
@@ -189,6 +307,21 @@ const MyHeader = () => {
           </Typography>
 
           <MyHeading variant="body2" text={currentDateTime} sx={{ pr: 1 }} />
+
+          <IconButton
+            color="inherit"
+            onClick={() => setNotificationDialog(true)}
+          >
+            <Badge
+              color="secondary"
+              variant={showNotiBadge ? "dot" : "standard"}
+            >
+              <IoNotificationsSharp size={20} />
+            </Badge>
+          </IconButton>
+          <IconButton color="inherit" onClick={moreActionClickHandler}>
+            <MdMore size={20} />
+          </IconButton>
           <IconButton color="inherit" onClick={accountClickHandler}>
             {getIconByRole(loggedInUser?.role, 25)}
           </IconButton>
@@ -316,6 +449,78 @@ const MyHeader = () => {
           </Box>
         </Box>
       </Popover>
+
+      <Popover
+        open={Boolean(moreActionsEl)}
+        anchorEl={moreActionsEl}
+        onClose={() => setMoreActionsEl(null)}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <Box
+          sx={{
+            minWidth: "200px",
+          }}
+        >
+          {/* <MyHeading
+            alignCenter
+            text="More Actions"
+            variant="body1"
+          /> */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              p: 1,
+            }}
+          >
+            {MORE_ACTIONS?.map((x, i) => {
+              return (
+                <Box
+                  key={i}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    minWidth: "120px",
+                    width: "200px",
+                    maxWidth: "370px",
+                    m: 1,
+                    cursor: x.disabled ? "no-drop" : "pointer",
+                    opacity: x.disabled ? 0.2 : 1,
+                    pointerEvents: x.disabled ? "none" : "all",
+                  }}
+                  onClick={() =>
+                    moreActionOptionClickHandler(x.privilege, x.modalWidth)
+                  }
+                >
+                  <span style={{ flexBasis: "15%" }}>{x.icon}</span>
+                  <MyHeading variant="body2" text={x.name} />
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
+      </Popover>
+
+      {notificationDialog && (
+        <Notifications setNotificationDialog={setNotificationDialog} />
+      )}
+
+      {showDialog.show && (
+        <Dialog maxWidth={showDialog.modalWidth} fullWidth open={true}>
+          <DialogContent sx={{ m: 1 }}>
+            {getDialogContent(selectedMoreAction)}
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

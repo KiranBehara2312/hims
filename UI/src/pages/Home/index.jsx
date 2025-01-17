@@ -33,23 +33,16 @@ const Home = () => {
       sx={{
         display: "flex",
         gap: 1,
+        mt:1,
         flexWrap: "wrap",
         justifyContent: "center",
       }}
     >
       {cards?.map((x, i) => {
         return (
-          <Box
+          <GlassBG
             key={i}
-            sx={{
-              width: "200px",
-              height: "60px",
-              borderRadius: "10px",
-              p: 2,
-              m: 0.5,
-              boxShadow:
-                "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset",
-            }}
+            cardStyles={{minWidth : "200px"}}
           >
             <Grid
               spacing={2}
@@ -67,7 +60,7 @@ const Home = () => {
                 <MyHeading text={x.label} variant="body2" sx={{ pt: 0.5 }} />
               </Grid>
             </Grid>
-          </Box>
+          </GlassBG>
         );
       })}
     </Box>

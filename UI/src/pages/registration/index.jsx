@@ -150,8 +150,8 @@ const Registration = ({
       <Box
         sx={{
           width: "100%",
-          minHeight: "94%",
-          height: "94%",
+          // minHeight: "94%",
+          // height: "94%",
         }}
       >
         <form
@@ -195,9 +195,11 @@ const Registration = ({
               display: "flex",
               justifyContent: "center",
               flexWrap: "wrap",
-              height: "calc(100vh - 130px)",
+              height: "calc(100vh - 120px)",
               overflow: "auto",
               gap: 1,
+              pb:1,
+              pt:0.5
             }}
           >
             <Primary
