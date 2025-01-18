@@ -20,14 +20,14 @@ import F_Input from "../../components/custom/form/F_Input";
 
 const LIMIT = 10;
 const ACTIONS = [
-  {
-    name: "Edit",
-    privilege: "EDIT",
-    icon: <IconWrapper defaultColor icon={<FaEdit size={18} />} />,
-    disabled: false,
-    access: [ADMIN, STAFF],
-    modalWidth: "md",
-  },
+  // {
+  //   name: "Edit",
+  //   privilege: "EDIT",
+  //   icon: <IconWrapper defaultColor icon={<FaEdit size={18} />} />,
+  //   disabled: false,
+  //   access: [ADMIN, STAFF],
+  //   modalWidth: "md",
+  // },
 ];
 const PaymentLedger = () => {
   const theme = useTheme();
@@ -228,11 +228,11 @@ const PaymentLedger = () => {
                 maxWidth: "350px",
               }}
             >
-              <MyHeading alignCenter variant="body1" text="Service Location" />
+              <MyHeading alignCenter variant="body1" text="Filters" />
               <F_Input
                 control={control}
                 name={"searchString"}
-                label={"UHID / Patient No / Bill No"}
+                label={"UHID / Bill No"}
                 rules={{}}
                 maxWidth="140px"
                 isRequired={true}

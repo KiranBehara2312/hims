@@ -94,7 +94,6 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
             flexDirection: "column",
             gap: 1,
             margin: "0px 2px",
-            paddingTop: "50px",
           }}
         >
           {notifications?.data?.length === 0 && <NoDataFound />}

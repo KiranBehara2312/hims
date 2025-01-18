@@ -9,11 +9,12 @@ import SignUp from "../pages/auth/Signup";
 import Masters from "../pages/Masters";
 import Doctor from "../pages/Doctor";
 import PaymentLedger from "../pages/PaymentLedger";
-import Patients from "../pages/patients";
-import Appointment from "../pages/Appointment";
 import ApptMainScreen from "../pages/Appointment/Main";
 import Pnf from "../components/shared/PageNotFound";
+import Patients from "../pages/Tracking/Patients";
 import AllAppointments from "../pages/Tracking/AllAppointments";
+import WorkInProgress from "../components/shared/WorkInProgress";
+import ServiceBilling from "../pages/ServiceBilling";
 
 const AppRoutes = () => {
   const routes = useRoutes([
@@ -50,16 +51,16 @@ const AppRoutes = () => {
           element: <ApptMainScreen />,
         },
         {
+          path: "serviceBilling",
+          element: <ServiceBilling />,
+        },
+        {
           path: "doctor",
           element: <Doctor />,
         },
         {
           path: "paymentLedger",
           element: <PaymentLedger />,
-        },
-        {
-          path: "patients",
-          element: <Patients />,
         },
         {
           path: "masters",
@@ -71,6 +72,10 @@ const AppRoutes = () => {
             {
               path: "allAppointments",
               element: <AllAppointments />,
+            },
+            {
+              path: "patients",
+              element: <Patients />,
             },
           ],
         },

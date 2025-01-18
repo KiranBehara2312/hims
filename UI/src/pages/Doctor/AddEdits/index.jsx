@@ -98,7 +98,7 @@ const DoctorInformation = ({
       />
       <form
         onSubmit={handleSubmit(action === "ADD" ? onSubmit : onUpdate)}
-        style={{ width: "100%", paddingTop: "50px" }}
+        style={{ width: "100%" }}
       >
         <Box
           sx={{

@@ -426,6 +426,58 @@ const NOTIFICATION_PRIORITY = [
   },
 ];
 
+const DISABILITY_TYPES = [
+  {
+    label: "Vision Impairment",
+    value: "Vision Impairment",
+  },
+  {
+    label: "Deaf or Hard of Hearing",
+    value: "Deaf or Hard of Hearing",
+  },
+  {
+    label: "Mental Health Conditions",
+    value: "Mental Health Conditions",
+  },
+  {
+    label: "Intellectual Disability",
+    value: "Intellectual Disability",
+  },
+  {
+    label: "Acquired Brain Injury",
+    value: "Acquired Brain Injury",
+  },
+  {
+    label: "Autism Spectrum Disorder",
+    value: "Autism Spectrum Disorder",
+  },
+  {
+    label: "Physical Disability",
+    value: "Physical Disability",
+  },
+  {
+    label: "Dyslexia",
+    value: "Dyslexia",
+  },
+  {
+    label: "Dysgraphia",
+    value: "Dysgraphia",
+  },
+  {
+    label: "Dyscalculia",
+    value: "Dyscalculia",
+  },
+  {
+    label: "Attention Deficit Hyperactive Disorder (ADHD)",
+    value: "Attention Deficit Hyperactive Disorder (ADHD)",
+  },
+  {
+    label: "Neurodevelopmental Motor Disorders",
+    value: "Neurodevelopmental Motor Disorders",
+  },
+];
+
+
 const APPT_SOURCE_TYPES = [
   {
     label: "Call Center",
@@ -490,4 +542,5 @@ export {
   APPT_VISIT_FOR,
   APPT_SOURCE_TYPES,
   NOTIFICATION_PRIORITY,
+  DISABILITY_TYPES,
 };

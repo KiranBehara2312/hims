@@ -67,7 +67,7 @@ const PaymentService = ({
         html={<>{dialogCloseBtn}</>}
       />
       <Box sx={{ display: "flex", gap: 1, m: 1 }}>
-        <GlassBG cardStyles={{ width: "100%", height: "auto", mt: 6 }}>
+        <GlassBG cardStyles={{ width: "100%", height: "auto" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <F_Autocomplete
               control={control}

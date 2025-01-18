@@ -71,6 +71,7 @@ const paymentRoutes = require("./modules/payment/routes");
 const dummyRoutes = require("./modules/Dummy/routes");
 const notificationRoutes = require("./modules/Notification/routes");
 const Notifications = require("./models/Notification");
+const serviceBillingRoutes = require("./modules/ServiceBilling/routes");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -101,6 +102,7 @@ app.use("/paymentledger", isAuthenticated, paymentLedgerRoutes);
 app.use("/patients", isAuthenticated, patientRoutes);
 app.use("/payment", isAuthenticated, paymentRoutes);
 app.use("/notifications", isAuthenticated, notificationRoutes);
+app.use("/serviceBilling", isAuthenticated, serviceBillingRoutes);
 app.use("/api", isAuthenticated, routes);
 
 // //Notification count logic (emits notification count every 10 seconds)

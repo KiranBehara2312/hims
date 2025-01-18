@@ -15,8 +15,6 @@ const PatientInformationCard = ({ patient = null }) => {
           <Skeleton variant="text" sx={{ fontSize: "2rem" }} />
           <Skeleton variant="text" sx={{ fontSize: "2rem" }} />
           <Skeleton variant="text" sx={{ fontSize: "2rem" }} />
-          <Skeleton variant="text" sx={{ fontSize: "2rem" }} />
-          <Skeleton variant="text" sx={{ fontSize: "2rem" }} />
         </>
       )}
       {patient !== null && (

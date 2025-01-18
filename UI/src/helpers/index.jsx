@@ -76,7 +76,7 @@ const getUserInfo = () => {
 
 const errorAlert = (
   message = "This is default message",
-  options = { autoClose: 5000, pauseOnFocusLoss: true }
+  options = { autoClose: 1500, pauseOnFocusLoss: true }
 ) =>
   toast.error(message, {
     autoClose: options.autoClose,

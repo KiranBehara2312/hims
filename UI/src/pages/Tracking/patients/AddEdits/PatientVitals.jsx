@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import HeaderWithSearch from "../../../components/custom/HeaderWithSearch";
-import IconWrapper from "../../../components/custom/IconWrapper";
+import HeaderWithSearch from "../../../../components/custom/HeaderWithSearch";
+import IconWrapper from "../../../../components/custom/IconWrapper";
 import { MdNoteAlt } from "react-icons/md";
 import { useForm } from "react-hook-form";
 import {
@@ -14,15 +14,15 @@ import {
 } from "@mui/material";
 import { FaArrowCircleDown, FaExpand, FaHistory } from "react-icons/fa";
 import { IoIosArrowDropupCircle } from "react-icons/io";
-import DisplayData from "../../../components/shared/DisplayData";
-import { getData, postData } from "../../../helpers/http";
-import { GlassBG, MyHeading } from "../../../components/custom";
-import F_Select from "../../../components/custom/form/F_Select";
-import F_Input from "../../../components/custom/form/F_Input";
-import { REGEX_PATTERNS } from "../../../constants/Regex";
-import { formatDate, successAlert } from "../../../helpers";
-import MyTable from "../../../components/custom/MyTable";
-import NoDataFound from "../../../components/shared/NoDataFound";
+import DisplayData from "../../../../components/shared/DisplayData";
+import { getData, postData } from "../../../../helpers/http";
+import { GlassBG, MyHeading } from "../../../../components/custom";
+import F_Select from "../../../../components/custom/form/F_Select";
+import F_Input from "../../../../components/custom/form/F_Input";
+import { REGEX_PATTERNS } from "../../../../constants/Regex";
+import { formatDate, successAlert } from "../../../../helpers";
+import MyTable from "../../../../components/custom/MyTable";
+import NoDataFound from "../../../../components/shared/NoDataFound";
 
 const DEFAULT_VAL = {};
 
@@ -127,7 +127,7 @@ const PatientVitals = ({
       <Accordion
         expanded={expanded}
         onChange={() => setExpanded(!expanded)}
-        sx={{ mb: 1, pt: "40px" }}
+        sx={{ mb: 1 }}
       >
         <AccordionSummary
           expandIcon={<FaArrowCircleDown style={{ color: "white" }} />}

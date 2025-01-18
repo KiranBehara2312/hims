@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
-import IconWrapper from "../../components/custom/IconWrapper";
+import HeaderWithSearch from "../../../components/custom/HeaderWithSearch";
+import IconWrapper from "../../../components/custom/IconWrapper";
 import {
   Button,
   Dialog,
@@ -20,18 +20,18 @@ import {
   FaUsers,
 } from "react-icons/fa";
 import { GrNotes } from "react-icons/gr";
-import MyTable from "../../components/custom/MyTable";
-import { postData } from "../../helpers/http";
+import MyTable from "../../../components/custom/MyTable";
+import { postData } from "../../../helpers/http";
 import { SiCashapp } from "react-icons/si";
 import { MdNoteAlt, MdPersonAdd } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import Registration from "../registration";
+import Registration from "../../registration";
 import { useSelector } from "react-redux";
-import { ADMIN, DOCTOR, NURSE, STAFF } from "../../constants/roles";
-import { camelToTitle } from "../../helpers";
+import { ADMIN, DOCTOR, NURSE, STAFF } from "../../../constants/roles";
+import { camelToTitle } from "../../../helpers";
 import PatientVitals from "./AddEdits/PatientVitals";
-import NoDataFound from "../../components/shared/NoDataFound";
-import WorkInProgress from "../../components/shared/WorkInProgress";
+import NoDataFound from "../../../components/shared/NoDataFound";
+import WorkInProgress from "../../../components/shared/WorkInProgress";
 import PatientRegnCard from "./AddEdits/PatientRegnCard";
 
 const ACTIONS = [

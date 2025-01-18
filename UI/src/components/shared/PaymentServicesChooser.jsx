@@ -19,6 +19,7 @@ import IconWrapper from "../custom/IconWrapper";
 import { useForm } from "react-hook-form";
 import F_Input from "../custom/form/F_Input";
 import { errorAlert, warnAlert } from "../../helpers";
+import NoDataFound from "./NoDataFound";
 
 const PaymentServicesChooser = ({
   dialogCloseBtn = null,
@@ -26,7 +27,7 @@ const PaymentServicesChooser = ({
   headerText = "Add Vitals",
   selectedRow = null,
   action = null,
-  paymentCharges = [], // incoming from parent
+  paymentCharges = [],
   setPaymentCharges = () => {},
 }) => {
   const {
@@ -42,6 +43,7 @@ const PaymentServicesChooser = ({
     reValidateMode: "onBlur",
   });
   const formValues = watch();
+  const [addButtonClicked, setAddButtonClicked] = useState(false);
   const [paymentServices, setPaymentServices] = useState([]);
   const [incomingPaymentCharges, setIncomingPaymentCharges] = useState([]);
 
@@ -116,9 +118,20 @@ const PaymentServicesChooser = ({
   };
 
   const addButtonHandler = () => {
-    setPaymentCharges(incomingPaymentCharges);
-    setShowDialog({ show: false, rerender: true });
+    setPaymentCharges(() => incomingPaymentCharges);
+    setShowDialog(() => {
+      return { show: false, rerender: true };
+    });
+    setAddButtonClicked((prev) => false);
+    reset();
+    setPaymentServices(() => []);
   };
+
+  useEffect(() => {
+    if (addButtonClicked) {
+      addButtonHandler();
+    }
+  }, [incomingPaymentCharges, addButtonClicked]);
 
   return (
     <Box>
@@ -131,46 +144,51 @@ const PaymentServicesChooser = ({
         headerText={headerText}
         html={<>{dialogCloseBtn}</>}
       />
-      <Grid container spacing={1} sx={{ pt: 6, m: 1 }}>
+      <Grid container spacing={1} sx={{ m: 1 }}>
         <Grid size={6}>
           <GlassBG cardStyles={{ height: "100%" }}>
             <MyHeading
               alignCenter
-              text="Service's in use"
+              text={`Service's in use (${incomingPaymentCharges?.length})`}
               variant="body1"
               sx={{ mt: -1 }}
             />
-            {incomingPaymentCharges?.map((x, i) => {
-              return (
-                <Box
-                  key={x.serviceCode}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    pr: 2,
-                    alignItems: "center",
-                  }}
-                >
-                  <span>
-                    <Checkbox
-                      size="small"
-                      checked={x.checked ?? true}
-                      disabled={
-                        x.canUncheck === undefined ? true : !x.canUncheck
-                      }
-                      onChange={(event) =>
-                        removeCheckedItem(event.target.checked, x.serviceCode)
-                      }
-                    />
-                    <MyHeading
-                      variant="caption"
-                      text={`${x.serviceName} (${x.serviceCode})`}
-                    />
-                  </span>
-                  <MyHeading variant="caption" text={x.serviceAmount} />
-                </Box>
-              );
-            })}
+            {incomingPaymentCharges?.length === 0 && (
+              <NoDataFound headingVariant="body2" />
+            )}
+            <Box sx={{ maxHeight: "180px", overflowY: "auto" }}>
+              {incomingPaymentCharges?.map((x, i) => {
+                return (
+                  <Box
+                    key={x.serviceCode}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      pr: 2,
+                      alignItems: "center",
+                    }}
+                  >
+                    <span>
+                      <Checkbox
+                        size="small"
+                        checked={x.checked ?? true}
+                        disabled={
+                          x.canUncheck === undefined ? true : !x.canUncheck
+                        }
+                        onChange={(event) =>
+                          removeCheckedItem(event.target.checked, x.serviceCode)
+                        }
+                      />
+                      <MyHeading
+                        variant="caption"
+                        text={`${x.serviceName} (${x.serviceCode})`}
+                      />
+                    </span>
+                    <MyHeading variant="caption" text={x.serviceAmount} />
+                  </Box>
+                );
+              })}
+            </Box>
           </GlassBG>
         </Grid>
         <Grid size={6}>
@@ -207,49 +225,47 @@ const PaymentServicesChooser = ({
                 </Button>
               </Grid>
             </Grid>
-            {paymentServices?.map((x) => {
-              return (
-                <Box
-                  key={x.serviceCode}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    pr: 2,
-                    alignItems: "center",
-                  }}
-                >
-                  <span>
-                    <Checkbox
-                      size="small"
-                      checked={x?.checked ?? false}
-                      onChange={(event) =>
-                        markItemAsChecked(event.target.checked, x.serviceCode)
-                      }
-                    />
-                    <MyHeading
-                      variant="caption"
-                      text={`${x.serviceName} (${x.serviceCode})`}
-                    />
-                  </span>
-                  <MyHeading variant="caption" text={x.serviceAmount} />
-                </Box>
-              );
-            })}
+            <Box sx={{ maxHeight: "120px", overflowY: "auto" }}>
+              {paymentServices?.map((x) => {
+                return (
+                  <Box
+                    key={x.serviceCode}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      pr: 2,
+                      alignItems: "center",
+                    }}
+                  >
+                    <span>
+                      <Checkbox
+                        size="small"
+                        checked={x?.checked ?? false}
+                        onChange={(event) =>
+                          markItemAsChecked(event.target.checked, x.serviceCode)
+                        }
+                      />
+                      <MyHeading
+                        variant="caption"
+                        text={`${x.serviceName} (${x.serviceCode})`}
+                      />
+                    </span>
+                    <MyHeading variant="caption" text={x.serviceAmount} />
+                  </Box>
+                );
+              })}
+            </Box>
           </GlassBG>
         </Grid>
       </Grid>
-      <Box sx={{ pt: 5 }}></Box>
       <Button
         variant="outlined"
         fullWidth
-        onClick={() => addButtonHandler()}
-        sx={{ mt: 2 }}
+        onClick={() => setAddButtonClicked(() => true)}
+        sx={{ mt: 5 }}
       >
         Add
       </Button>
-      <Alert severity="info" sx={{ mt: 2 }}>
-        Disabled services are the default services for this procedure.
-      </Alert>
     </Box>
   );
 };

@@ -47,6 +47,21 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
           },
         },
       },
+      MuiTooltip: {
+        styleOverrides: {
+          tooltip: {
+            backgroundColor: dColor,
+            color: "#fff",
+            fontSize: "0.875rem",
+            borderRadius: "8px",
+            padding: "8px 12px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+          },
+          arrow: {
+            color: dColor,
+          },
+        },
+      },
       MuiToolbar: {
         styleOverrides: {
           root: {

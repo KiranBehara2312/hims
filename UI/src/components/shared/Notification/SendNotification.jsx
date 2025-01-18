@@ -69,7 +69,7 @@ const SendNotification = ({
         html={<>{dialogCloseBtn}</>}
       />
 
-      <GlassBG cardStyles={{ marginTop: "50px" }}>
+      <GlassBG>
         <form onSubmit={handleSubmit(onSubmit)}>
           <F_Input
             name="header"

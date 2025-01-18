@@ -7,8 +7,12 @@ import {
 } from "../../../constants/localDB/MastersDB";
 import F_Input from "../../../components/custom/form/F_Input";
 import F_Select from "../../../components/custom/form/F_Select";
-import { InputAdornment } from "@mui/material";
+import { Box, InputAdornment, Tooltip } from "@mui/material";
 import { FaSearch } from "react-icons/fa";
+import F_Checkbox from "../../../components/custom/form/F_Checkbox";
+import IconWrapper from "../../../components/custom/IconWrapper";
+import { FaCircleInfo } from "react-icons/fa6";
+import MyTootlip from "../../../components/shared/MyTootlip";
 
 const Primary = ({ control, errors, readOnly = "" }) => {
   return (
@@ -104,6 +108,32 @@ const Primary = ({ control, errors, readOnly = "" }) => {
             </InputAdornment>
           }
         />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <F_Checkbox
+            minWidth="95%"
+            name="isMlc"
+            label="MLC"
+            control={control}
+            errors={errors}
+            rules={{}}
+          />
+          <MyTootlip
+            title={`MLC stands for Medico-Legal Certificate. It is a medical record that is required by law in cases of injury or ailment that may have legal implications. Some examples are \n
+               - Injuries due to battery\n
+               - Injuries due to accidents, such as industrial or vehicular accidents\n
+               - Injuries due to firearms\n
+               - Suspected or evident suicides or homicides\n
+               - Suspected or evident poisoning or intoxication`}
+          >
+            <IconWrapper defaultColor icon={<FaCircleInfo />} />
+          </MyTootlip>
+        </Box>
       </GlassBG>
     </>
   );

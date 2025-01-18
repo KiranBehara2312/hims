@@ -2,6 +2,7 @@ import React from "react";
 import { GlassBG, MyHeading } from "../../../components/custom";
 import {
   BLOOD_GROUPS,
+  DISABILITY_TYPES,
   GENDER_LIST,
   MARITAL_STATUS,
   SALUTATIONS,
@@ -97,6 +98,16 @@ const Personal = ({ control, errors, readOnly = false }) => {
           name={"maritalStatus"}
           label={"Marital Status"}
           list={MARITAL_STATUS}
+          rules={{}}
+          errors={errors}
+          readOnly={readOnly}
+        />
+
+        <F_Select
+          control={control}
+          name={"disableType"}
+          label={"Disablity Type"}
+          list={DISABILITY_TYPES}
           rules={{}}
           errors={errors}
           readOnly={readOnly}

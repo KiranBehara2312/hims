@@ -6,6 +6,11 @@ const SERVICE_LOCATIONS = [
       "This includes all payments that are paid under registration location.",
   },
   {
+    label: "RENEWAL",
+    value: "RENEWAL",
+    description: "",
+  },
+  {
     label: "REPORTS",
     value: "REPORTS",
     description: "",

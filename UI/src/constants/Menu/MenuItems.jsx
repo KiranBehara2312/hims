@@ -10,6 +10,8 @@ import {
 import { MdPersonAdd, MdCalendarMonth } from "react-icons/md";
 import { FaUserDoctor } from "react-icons/fa6";
 import { SiCashapp } from "react-icons/si";
+import { FaHandHoldingUsd } from "react-icons/fa";
+
 import { ADMIN, DOCTOR, NURSE, STAFF } from "../roles";
 
 const MENU_ITEMS = [
@@ -31,6 +33,13 @@ const MENU_ITEMS = [
     label: "New Appointment",
     icon: <MdCalendarMonth size={20} />,
     url: "appointment",
+    children: [],
+    access: [ADMIN, STAFF],
+  },
+  {
+    label: "Service Billing",
+    icon: <FaHandHoldingUsd size={20} />,
+    url: "serviceBilling",
     children: [],
     access: [ADMIN, STAFF],
   },
@@ -59,16 +68,17 @@ const MENU_ITEMS = [
         url: "tracking/allAppointments",
         access: [ADMIN, STAFF],
       },
+      {
+        label: "Patients",
+        icon: <FaUsers size={20} />,
+        url: "tracking/patients",
+        children: [],
+        access: [ADMIN, NURSE, STAFF, DOCTOR],
+      },
     ],
     access: [ADMIN, STAFF],
   },
-  {
-    label: "Patients",
-    icon: <FaUsers size={20} />,
-    url: "patients",
-    children: [],
-    access: [ADMIN, NURSE, STAFF, DOCTOR],
-  },
+
   {
     label: "Masters",
     icon: <FaDharmachakra size={20} />,
