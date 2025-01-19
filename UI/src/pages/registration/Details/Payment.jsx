@@ -6,12 +6,20 @@ import {
 } from "../../../constants/localDB/MastersDB";
 import F_Input from "../../../components/custom/form/F_Input";
 import F_Select from "../../../components/custom/form/F_Select";
-import { Box, Button, Dialog, DialogContent, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  InputAdornment,
+  Typography,
+} from "@mui/material";
 import PaymentStatus from "../../../components/custom/PaymentStatus";
 import { postData } from "../../../helpers/http";
 import PaymentServicesChooser from "../../../components/shared/PaymentServicesChooser";
 import HeaderWithSearch from "../../../components/custom/HeaderWithSearch";
 import WorkInProgress from "../../../components/shared/WorkInProgress";
+import { FaPencilAlt } from "react-icons/fa";
 
 const Payment = ({
   control,
@@ -249,6 +257,20 @@ const Payment = ({
           rules={{ required: "Payee Name is required" }}
           label="Payee Name"
           isRequired={true}
+          endAdornment={
+            <InputAdornment
+              position="start"
+              sx={{ cursor: "pointer" }}
+              onClick={() =>
+                setValue(
+                  "payeeName",
+                  `${formValues?.firstName} ${formValues?.middleName} ${formValues?.lastName}`
+                )
+              }
+            >
+              <FaPencilAlt />
+            </InputAdornment>
+          }
         />
 
         <F_Input

@@ -36,16 +36,16 @@ import PatientRegnCard from "./AddEdits/PatientRegnCard";
 
 const ACTIONS = [
   {
-    name: "Edit",
-    privilege: "EDIT",
+    name: "Registration Edit",
+    privilege: "REGISTRATION_EDIT",
     icon: <IconWrapper defaultColor icon={<FaEdit size={18} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
     modalWidth: "xl",
   },
   {
-    name: "View",
-    privilege: "VIEW",
+    name: "Registration View",
+    privilege: "REGISTRATION_VIEW",
     icon: <IconWrapper defaultColor icon={<FaEye size={18} />} />,
     disabled: false,
     access: [ADMIN, STAFF, NURSE, DOCTOR],
@@ -212,8 +212,8 @@ const Patients = () => {
 
   const getDialogContent = (action) => {
     switch (action) {
-      case "VIEW":
-      case "EDIT":
+      case "REGISTRATION_VIEW":
+      case "REGISTRATION_EDIT":
         return (
           <Registration
             dialogCloseBtn={<CloseBtnHtml />}

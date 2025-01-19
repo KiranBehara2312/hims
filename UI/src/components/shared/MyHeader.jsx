@@ -34,7 +34,7 @@ import IconWrapper from "../custom/IconWrapper";
 import HospitalDetailsLogo from "./HospitalDetailsLogo";
 import { useDispatch, useSelector } from "react-redux";
 import { emptyUserDetails } from "../../redux/slices/userDetailsSlice";
-import { FaUserAlt, FaUserCog, FaUserNurse } from "react-icons/fa";
+import { FaHome, FaUserAlt, FaUserCog, FaUserNurse } from "react-icons/fa";
 import MyHeading from "../custom/MyHeading";
 import { FaUserDoctor } from "react-icons/fa6";
 import { formatDate } from "../../helpers";
@@ -47,6 +47,7 @@ import { AiFillMessage } from "react-icons/ai";
 import SendNotification from "./Notification/SendNotification";
 import HeaderWithSearch from "../custom/HeaderWithSearch";
 import WorkInProgress from "./WorkInProgress";
+import MyTooltip from "./MyTootlip";
 
 const MyHeader = () => {
   const MORE_ACTIONS = [
@@ -308,6 +309,10 @@ const MyHeader = () => {
 
           <MyHeading variant="body2" text={currentDateTime} sx={{ pr: 1 }} />
 
+          <IconButton color="inherit" onClick={() => navigate("/pages/home")}>
+            <FaHome size={20} />
+          </IconButton>
+
           <IconButton
             color="inherit"
             onClick={() => setNotificationDialog(true)}
@@ -319,9 +324,13 @@ const MyHeader = () => {
               <IoNotificationsSharp size={20} />
             </Badge>
           </IconButton>
-          <IconButton color="inherit" onClick={moreActionClickHandler}>
-            <MdMore size={20} />
-          </IconButton>
+
+          <MyTooltip title="More Actions">
+            <IconButton color="inherit" onClick={moreActionClickHandler}>
+              <MdMore size={20} />
+            </IconButton>
+          </MyTooltip>
+
           <IconButton color="inherit" onClick={accountClickHandler}>
             {getIconByRole(loggedInUser?.role, 25)}
           </IconButton>
@@ -414,7 +423,10 @@ const MyHeader = () => {
               fullWidth
               size="small"
               onClick={() =>
-                openDialog("Are you sure you want to logout?", logoutHanlder)
+                openDialog({
+                  message: "Are you sure you want to logout?",
+                  confirmCallback: logoutHanlder,
+                })
               }
               sx={{ display: "flex", justifyContent: "flex-start" }}
             >

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogActions,
@@ -13,15 +13,34 @@ const useConfirmation = () => {
   const [onConfirm, setOnConfirm] = useState(null);
   const [message, setMessage] = useState("");
   const [title, setTitle] = useState("");
+  const [justDisplayModal, setJustDisplayModal] = useState(false);
+  const [component, setComponent] = useState(null);
 
-  const openDialog = (message, confirmCallback) => {
-    setMessage(message);
+  useEffect(() => {
+    console.log("Just", justDisplayModal);
+  }, [justDisplayModal]);
+
+  const openDialog = ({
+    message = "",
+    justDisplayModal = false,
+    component = null,
+    confirmCallback,
+  }) => {
+    setMessage(() => message);
+    setJustDisplayModal(() => justDisplayModal);
     setOnConfirm(() => confirmCallback);
+    setComponent(() => component);
     setOpen(true);
   };
 
-  const closeDialog = () => {
+  const closeDialog = (event, reason) => {
+    if (reason === "backdropClick" || reason === "escapeKeyDown") {
+      return;
+    }
     setOpen(false);
+    setMessage(() => "");
+    setJustDisplayModal(() => false);
+    setComponent(() => null);
   };
 
   const handleConfirm = () => {
@@ -44,15 +63,44 @@ const useConfirmation = () => {
         Message from {META.PROJECT_TITLE}
       </DialogTitle>
       <DialogContent sx={{ padding: "4px 20px !important" }}>
-        <p>{message}</p>
+        <div style={{ whiteSpace: "pre-line" }}>{message}</div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleReject} color="primary">
-          No
-        </Button>
-        <Button onClick={handleConfirm} color="primary" autoFocus>
-          Yes
-        </Button>
+        {!justDisplayModal && (
+          <>
+            <Button
+              onClick={handleReject}
+              color="primary"
+              size="small"
+              variant="outlined"
+            >
+              No
+            </Button>
+            <Button
+              onClick={handleConfirm}
+              color="primary"
+              autoFocus
+              size="small"
+              variant="outlined"
+            >
+              Yes
+            </Button>
+          </>
+        )}
+        {justDisplayModal && (
+          <>
+            <Button
+              onClick={handleConfirm}
+              color="primary"
+              autoFocus
+              size="small"
+              variant="outlined"
+            >
+              Okay
+            </Button>
+          </>
+        )}
+        {component !== null && component}
       </DialogActions>
     </Dialog>
   );

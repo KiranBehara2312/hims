@@ -21,11 +21,15 @@ registrationRoutes.post("/create", async (req, res) => {
     });
     await newPatient.save();
     const { payments } = req.body;
-    await PatRegnController.insertPayments(payments, newUHID);
+    const insertedPayments = await PatRegnController.insertPayments(
+      payments,
+      newUHID
+    );
     res.status(201).json({
       message: "Patient registered successfully",
       UHID: newUHID,
       patientNo: newPatinetNo,
+      insertedPayments: insertedPayments,
     });
   } catch (err) {
     console.log(err);

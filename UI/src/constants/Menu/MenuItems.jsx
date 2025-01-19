@@ -16,13 +16,6 @@ import { ADMIN, DOCTOR, NURSE, STAFF } from "../roles";
 
 const MENU_ITEMS = [
   {
-    label: "Home",
-    icon: <FaHome size={20} />,
-    url: "home",
-    children: [],
-    access: [ADMIN, DOCTOR, NURSE, STAFF],
-  },
-  {
     label: "New Registration",
     icon: <MdPersonAdd size={20} />,
     url: "registration",

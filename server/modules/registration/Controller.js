@@ -62,9 +62,9 @@ const PatRegnController = {
         })
       );
       // Insert all payment documents at once using insertMany
-      await PaymentLedger.insertMany(paymentDocs);
-
+      const insertedPayments = await PaymentLedger.insertMany(paymentDocs);
       console.log("All payments inserted successfully!");
+      return insertedPayments ?? [];
     } catch (error) {
       console.error("Error inserting payments:", error);
     }

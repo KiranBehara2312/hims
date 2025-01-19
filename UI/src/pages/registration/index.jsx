@@ -14,6 +14,9 @@ import IconWrapper from "../../components/custom/IconWrapper";
 import { FaUserPlus } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import useConfirmation from "../../hooks/useConfirmation";
+import PDFGenerator from "../../components/pdf/PDFGenerator";
+import BillReceiptTemplate from "../../components/pdf/templates/BillReceipt";
 
 const DEFAULT_VAL = {
   UHID: "",
@@ -53,6 +56,7 @@ const Registration = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { DialogComponent, openDialog } = useConfirmation();
   const [paymentChargeDetails, setPaymentChargeDetails] = useState([]);
   const loggedInUser = useSelector((state) => state?.userDetails?.user);
   const {
@@ -129,9 +133,30 @@ const Registration = ({
       payments: payments,
     };
     const response = await postData("/registration/create", payload);
-    successAlert(response.message, { autoClose: 1500 });
+    openDialog({
+      message: `${response?.message} \n UHID \t\t ${response?.UHID} \n Patient No ${response?.patientNo}`,
+      confirmCallback: afterRegHandler,
+      justDisplayModal: true,
+      component: (
+        <PDFGenerator
+          document={
+            <BillReceiptTemplate
+              pdfName="Bill Receipt"
+              billsArray={response?.insertedPayments}
+              UHID={response?.UHID ?? null}
+              payeeDetails={response?.insertedPayments?.[0]}
+            />
+          }
+          fileName="Bill_Receipt.pdf"
+        />
+      ),
+    });
+  };
+
+  const afterRegHandler = (confirmed) => {
+    if (!confirmed) return;
     resetForm();
-    navigate("/pages/patients");
+    navigate("/pages/tracking/patients");
   };
 
   const onUpdate = async (formData) => {
@@ -237,6 +262,7 @@ const Registration = ({
           </Box>
         </form>
       </Box>
+      {DialogComponent}
     </>
   );
 };
