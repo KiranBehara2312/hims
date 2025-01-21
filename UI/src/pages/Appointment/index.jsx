@@ -42,7 +42,6 @@ import { ADMIN, STAFF } from "../../constants/roles";
 import WorkInProgress from "../../components/shared/WorkInProgress";
 import useConfirmation from "../../hooks/useConfirmation";
 import GenerateSlots from "../Doctor/AddEdits/GenerateSlots";
-import { setDoctorsInCache } from "../../redux/slices/apiCacheSlice";
 import { ApptContext } from "./ApptContext";
 
 const ACTIONS = [

@@ -1,23 +1,33 @@
-require("dotenv").config(); // Load environment variables
+const mysql = require("mysql2");
 
-const mongoose = require("mongoose");
-let connection;
+const pool = mysql.createPool({
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PWD,
+  database: process.env.MYSQL_DATABASE,
+  waitForConnections: true,
+  connectionLimit: 15,
+  queueLimit: 0,
+});
 
-const connectDB = async () => {
-  try {
-    const dbURI = process.env.MONGO_URI; 
-    connection = await mongoose.connect(dbURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    if (connection) {
-      console.log("MongoDB Connected Successfully!");
-      return connection.connection.db;
+const promisePool = pool.promise();
+
+module.exports = {
+  query: async (sql, params) => {
+    try {
+      const [rows] = await promisePool.query(sql, params);
+      return rows;
+    } catch (err) {
+      console.error("Database query error:", err.message);
+      throw err;
     }
-  } catch (err) {
-    console.error("MongoDB connection error:", err.message);
-    process.exit(1);
-  }
+  },
+  close: async () => {
+    try {
+      await pool.end();
+      console.log("Database pool closed");
+    } catch (err) {
+      console.error("Error closing the database pool:", err.message);
+    }
+  },
 };
-
-module.exports = connectDB;

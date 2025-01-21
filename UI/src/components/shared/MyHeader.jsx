@@ -25,7 +25,6 @@ import { IoNotificationsSharp } from "react-icons/io5";
 import socketIOClient from "socket.io-client";
 import { MdExpandLess, MdExpandMore, MdMenu } from "react-icons/md";
 import { META } from "../../constants/projects";
-import { MENU_ITEMS } from "../../constants/Menu/MenuItems";
 import { useNavigate } from "react-router-dom";
 import { IoLogOutSharp } from "react-icons/io5";
 import { IoIosMail } from "react-icons/io";
@@ -48,6 +47,9 @@ import SendNotification from "./Notification/SendNotification";
 import HeaderWithSearch from "../custom/HeaderWithSearch";
 import WorkInProgress from "./WorkInProgress";
 import MyTooltip from "./MyTootlip";
+import { postData } from "../../helpers/http";
+import DynamicIcon from "./DynamicIcon";
+import { setOrgData } from "../../redux/slices/apiCacheSlice";
 
 const MyHeader = () => {
   const MORE_ACTIONS = [
@@ -75,6 +77,7 @@ const MyHeader = () => {
     rerender: false,
     modalWidth: "md",
   });
+  const [menuItems, setMenuItems] = useState([]);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedMoreAction, setSelectedMoreAction] = useState(null);
   const [notificationDialog, setNotificationDialog] = useState(false);
@@ -86,24 +89,8 @@ const MyHeader = () => {
   const theme = useTheme();
   const [showNotiBadge, setShowNotiBadge] = useState(false);
   const dispatch = useDispatch();
-  const [autoLogoutMsg, setAutoLogoutMsg] = useState("");
   const [selectedMenuItem, setSelectedMenuItem] = useState("");
   const { DialogComponent, openDialog } = useConfirmation();
-
-  // const socket = socketIOClient("http://localhost:3000");
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     socket.on("notificationCount", (count) => {
-  //       setShowNotiBadge(true);
-  //     });
-
-  //     return () => {
-  //       socket.disconnect();
-  //       setShowNotiBadge(false);
-  //     };
-  //   }, 3000);
-  // }, []);
 
   const logoutHanlder = (confirmed) => {
     if (!confirmed) return;
@@ -113,17 +100,25 @@ const MyHeader = () => {
   };
 
   useEffect(() => {
+    loadMenuItems();
     let inte = setInterval(() => {
       const dateWithTime = formatDate("DD MMM YYYY - hh:mm a");
       const day = WEEK_DAYS_LIST[new Date().getDay()]?.label;
       const currentURL = window.location.pathname.split("/pages/")[1];
-      setSelectedMenuItem(currentURL);
+      setSelectedMenuItem(`/pages/${currentURL}`);
       setCurrentDateTime(`${dateWithTime} | ${day}`);
     }, 1000);
     return () => {
       clearInterval(inte);
     };
   }, []);
+
+  const loadMenuItems = async () => {
+    const response = await postData("/init/menu", {});
+    const response2 = await postData("/init/orgData", {});
+    dispatch(setOrgData(response2?.data ?? []));
+    setMenuItems(response?.data ?? []);
+  };
 
   const closeDialog = () => {
     setShowDialog({ rerender: false, show: false });
@@ -174,42 +169,46 @@ const MyHeader = () => {
     }
   };
 
-  const handleClick = (label, url) => {
-    setOpenMenu((prev) => (prev === label ? null : label));
+  const handleClick = (label, url, isParent) => {
+    if (isParent === 1) {
+      setOpenMenu((prev) => (prev === label ? null : label));
+    }
     if (url === null) return;
     routeChangeHandler(url);
   };
 
   const renderListItem = (item, level = 0) => {
-    const { label, icon, url, children } = item;
-    const isOpen = openMenu === label;
+    const { menuName, menuId, menuIcon, menuUrl, isParent, children } = item;
+    const isOpen = openMenu === menuName;
     return (
       <>
         <ListItem
-          key={label}
+          key={menuId}
           disablePadding
-          onClick={() => handleClick(label, url)}
+          onClick={() => handleClick(menuName, menuUrl, isParent)}
           sx={{ pl: level * 2 }}
         >
           <ListItemButton
             sx={{
               background:
-                selectedMenuItem === url
+                selectedMenuItem === menuUrl
                   ? alpha(theme.palette.primary.main, 0.2)
                   : "",
             }}
           >
             <ListItemIcon>
               <IconWrapper
-                icon={icon}
+                icon={<DynamicIcon icon={menuIcon} />}
                 color={
-                  selectedMenuItem === url ? theme.palette.primary.main : null
+                  selectedMenuItem === menuUrl
+                    ? theme.palette.primary.main
+                    : null
                 }
               />
             </ListItemIcon>
             <ListItemText
               sx={{ fontSize: "0.5rem !important" }}
-              primary={label}
+              primary={menuName}
             />
             {children?.length > 0 &&
               (openMenu ? <MdExpandLess /> : <MdExpandMore />)}
@@ -230,9 +229,6 @@ const MyHeader = () => {
   };
 
   const DrawerList = () => {
-    const FILTERED_ITEMS_BY_ROLE = MENU_ITEMS.filter((item) =>
-      item.access.includes(loggedInUser?.role)
-    );
     return (
       <Box
         sx={{ width: 300, display: "flex", flexDirection: "column" }}
@@ -244,13 +240,11 @@ const MyHeader = () => {
         <Divider />
 
         <List sx={{ height: "calc(100vh - 100px)", overflowY: "auto" }}>
-          {FILTERED_ITEMS_BY_ROLE.map(
-            ({ label, icon, url, children }, index) => (
-              <React.Fragment key={label}>
-                {renderListItem({ label, icon, url, children })}
-              </React.Fragment>
-            )
-          )}
+          {menuItems?.map((item, index) => (
+            <React.Fragment key={item.menuId}>
+              {renderListItem(item)}
+            </React.Fragment>
+          ))}
         </List>
       </Box>
     );
@@ -266,6 +260,7 @@ const MyHeader = () => {
   const accountClickHandler = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const moreActionClickHandler = (event) => {
     setMoreActionsEl(event.currentTarget);
   };
@@ -280,14 +275,14 @@ const MyHeader = () => {
     setMoreActionsEl(null);
   };
 
-  const getIconByRole = (role = "STAFF", size = 75) => {
+  const getIconByRole = (icon, size = 75) => {
     const ICON_BY_ROLE = {
-      ADMIN: <FaUserCog size={size} />,
-      DOCTOR: <FaUserDoctor size={size} />,
-      STAFF: <FaUserAlt size={size} />,
-      NURSE: <FaUserNurse size={size} />,
+      FaUserCog: <FaUserCog size={size} />,
+      FaUserDoctor: <FaUserDoctor size={size} />,
+      FaUserAlt: <FaUserAlt size={size} />,
+      FaUserNurse: <FaUserNurse size={size} />,
     };
-    return ICON_BY_ROLE[role];
+    return ICON_BY_ROLE[icon];
   };
 
   return (
@@ -332,7 +327,7 @@ const MyHeader = () => {
           </MyTooltip>
 
           <IconButton color="inherit" onClick={accountClickHandler}>
-            {getIconByRole(loggedInUser?.role, 25)}
+            {getIconByRole(loggedInUser?.iconName, 25)}
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -365,7 +360,7 @@ const MyHeader = () => {
             alignCenter
             text={
               <IconWrapper
-                icon={getIconByRole(loggedInUser?.role)}
+                icon={getIconByRole(loggedInUser?.iconName)}
                 color={theme.palette.primary.main}
               />
             }
@@ -374,16 +369,24 @@ const MyHeader = () => {
             alignCenter
             sx={{ pt: 1 }}
             variant="h6"
-            text={`${loggedInUser?.role === "DOCTOR" ? "Dr." : ""} ${
-              loggedInUser?.firstName
-            } ${loggedInUser?.lastName}`}
+            text={loggedInUser?.fullName}
           />
           <Box sx={{ display: "flex", justifyContent: "space-between", pt: 2 }}>
-            <MyHeading alignCenter variant="caption" text={"User Name"} />
+            <MyHeading alignCenter variant="caption" text={"Contact"} />
             <MyHeading
               alignCenter
               variant="caption"
-              text={loggedInUser?.userName}
+              text={loggedInUser?.userPhone}
+            />
+          </Box>
+          <Box
+            sx={{ display: "flex", justifyContent: "space-between", pt: 0.5 }}
+          >
+            <MyHeading alignCenter variant="caption" text={"User ID"} />
+            <MyHeading
+              alignCenter
+              variant="caption"
+              text={loggedInUser?.userId}
             />
           </Box>
           <Box
@@ -393,7 +396,7 @@ const MyHeader = () => {
             <MyHeading
               alignCenter
               variant="caption"
-              text={loggedInUser?.role}
+              text={loggedInUser?.roleName}
             />
           </Box>
           <Box

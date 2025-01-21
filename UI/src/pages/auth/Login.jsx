@@ -4,7 +4,7 @@ import { TextField, Button, Box, useMediaQuery } from "@mui/material";
 import { GlassBG, MyHeading } from "../../components/custom";
 import { useNavigate } from "react-router-dom";
 import { postData } from "../../helpers/http";
-import { successAlert } from "../../helpers";
+import { infoAlert, successAlert } from "../../helpers";
 import { useDispatch } from "react-redux";
 import { setUserDetails } from "../../redux/slices/userDetailsSlice";
 import useNotification from "../../hooks/useCustomNotification";
@@ -19,20 +19,30 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async ({ userName, password }) => {
+  const onSubmit = async ({ userId, password }) => {
     const loginObj = {
-      userName,
-      password,
+      userId: userId,
+      userPassword: password,
     };
     const response = await postData("/auth/login", loginObj, "Logging in...");
-    const welcomeMsg = `Welcome ${
-      response?.user?.role === "DOCTOR" ? "Dr." : ""
-    } ${response?.user?.firstName} ${response?.user?.lastName}`;
-    successAlert(welcomeMsg, { autoClose: 1500 });
     dispatch(setUserDetails(response?.token));
+    infoAlert(showGreeting());
     localStorage.setItem("authToken", response?.token);
     navigate("/pages/home");
   };
+
+  function showGreeting() {
+    const currentHour = new Date().getHours();
+    if (currentHour >= 5 && currentHour < 12) {
+      return "Good Morning...!";
+    } else if (currentHour >= 12 && currentHour < 17) {
+      return "Good Afternoon...!";
+    } else if (currentHour >= 17 && currentHour < 21) {
+      return "Good Evening...!";
+    } else {
+      return "Good Night...!";
+    }
+  }
 
   return (
     <Box
@@ -55,14 +65,14 @@ const Login = () => {
         />
         <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
           <TextField
-            {...register("userName", { required: "User Name is required" })}
-            label="User Name"
+            {...register("userId", { required: "User ID is required" })}
+            label="User ID"
             fullWidth
             margin="normal"
             size="small"
-            error={!!errors.userName}
+            error={!!errors.userId}
             autoComplete="off"
-            helperText={errors.userName ? errors.userName.message : ""}
+            helperText={errors.userId ? errors.userId.message : ""}
           />
 
           <TextField
@@ -80,14 +90,6 @@ const Login = () => {
           <Button type="submit" variant="outlined" fullWidth sx={{ mt: 2 }}>
             Submit
           </Button>
-          {/* <Button
-            type="button"
-            fullWidth
-            sx={{ mt: 2 }}
-            onClick={() => navigate("/auth/signup")}
-          >
-            Register? Click here
-          </Button> */}
         </form>
       </GlassBG>
     </Box>

@@ -1,10 +1,10 @@
 import { createTheme } from "@mui/material";
 
 // Define your custom theme configuration
-// nurse = #86320d
+// nurse = #0aa270
 // doctor = #860d74
 // admin = #0d6986
-// staff = #0d8672
+// staff = #1d0d86
 const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
   const theme = createTheme({
     palette: {

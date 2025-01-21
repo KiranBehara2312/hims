@@ -2,17 +2,17 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const apiCacheSlice = createSlice({
   name: "apiCache",
-  initialState: { doctors: [], users: [] },
+  initialState: { orgData: [], users: [] },
   reducers: {
-    setDoctorsInCache: (state, { payload }) => {
-      state.doctors = payload ?? [];
+    setOrgData: (state, { payload }) => {
+      state.orgData = payload ?? [];
     },
-    getDoctorsFromCache: (state, { payload }) => {
-      return state.doctors ?? [];
+    getOrgData: (state, { payload }) => {
+      return state.orgData ?? [];
     },
   },
 });
 
-export const { setDoctorsInCache, getDoctorsFromCache } = apiCacheSlice.actions;
+export const { setOrgData, getOrgData } = apiCacheSlice.actions;
 
 export default apiCacheSlice.reducer;

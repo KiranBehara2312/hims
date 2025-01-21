@@ -51,20 +51,21 @@ const AppRoutes = () => {
           element: <ApptMainScreen />,
         },
         {
-          path: "serviceBilling",
-          element: <ServiceBilling />,
-        },
-        {
           path: "doctor",
           element: <Doctor />,
         },
         {
-          path: "paymentLedger",
-          element: <PaymentLedger />,
-        },
-        {
           path: "masters",
           element: <Masters />,
+        },
+        {
+          path: "billing",
+          children: [
+            {
+              path: "serviceBilling",
+              element: <ServiceBilling />,
+            },
+          ],
         },
         {
           path: "tracking",
@@ -76,6 +77,10 @@ const AppRoutes = () => {
             {
               path: "patients",
               element: <Patients />,
+            },
+            {
+              path: "paymentLedger",
+              element: <PaymentLedger />,
             },
           ],
         },
