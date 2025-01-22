@@ -31,12 +31,12 @@ import { FaLocationDot } from "react-icons/fa6";
 const MASTERS_ITEMS = [
   {
     label: "State",
-    collection: "states",
+    collection: "allStates",
     icon: <HiMiniBuildingLibrary size={25} />,
     category: null,
   },
   {
-    label: "Application Users",
+    label: "Users",
     collection: "users",
     icon: <FaUsers size={25} />,
     category: null,
@@ -55,25 +55,25 @@ const MASTERS_ITEMS = [
   },
   {
     label: "Genders",
-    collection: GENDER_LIST,
+    collection: "gender",
     icon: <FaTransgenderAlt size={25} />,
     category: null,
   },
   {
     label: "Blood Groups",
-    collection: BLOOD_GROUPS,
+    collection: "bloodGroup",
     icon: <MdBloodtype size={25} />,
     category: null,
   },
   {
     label: "Marital Status",
-    collection: MARITAL_STATUS,
+    collection: "maritalStatus",
     icon: <FaPeopleArrows size={25} />,
     category: null,
   },
   {
     label: "Doctor Designations",
-    collection: DOCTOR_DESIGNATIONS,
+    collection: "doctorDesignation",
     icon: <FaAddressCard size={25} />,
     category: null,
   },
@@ -85,7 +85,7 @@ const MASTERS_ITEMS = [
   },
   {
     label: "Salutations",
-    collection: SALUTATIONS,
+    collection: "salutation",
     icon: <FaHandshake size={25} />,
     category: null,
   },
@@ -96,14 +96,14 @@ const MASTERS_ITEMS = [
     category: null,
   },
   {
-    label: "App user Types",
-    collection: APP_USER_TYPES,
+    label: "Roles",
+    collection: "roles",
     icon: <FaUsersCog size={25} />,
     category: null,
   },
   {
     label: "Appointment Booking Status",
-    collection: APPOINTMENT_BOOKING_STATUS,
+    collection: "apptStatus",
     icon: <VscTypeHierarchy size={25} />,
     category: null,
   },

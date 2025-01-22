@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   Stack,
+  TextField,
   useTheme,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
@@ -21,6 +22,10 @@ import WorkInProgress from "../../components/shared/WorkInProgress";
 const LIMIT = 10;
 const Masters = () => {
   const theme = useTheme();
+  const [masterSearchVal, setMasterSearchVal] = useState("");
+  const [masterItems, setMasterItems] = useState(
+    MASTERS_ITEMS.sort((a, b) => a.label.localeCompare(b.label))
+  );
   const [component, setComponent] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [showDialog, setShowDialog] = useState({
@@ -32,8 +37,10 @@ const Masters = () => {
   const [tableObj, setTableObj] = useState({
     columns: [],
     data: [],
-    totalCount: 0,
-    defaultPage: 0,
+    totalRecords: 0,
+    totalPages: 0,
+    currentPage: 0,
+    pageSize: 0,
     isServerSidePagination: true,
   });
 
@@ -58,6 +65,16 @@ const Masters = () => {
       setSelectedAction(null);
     };
   }, [selectedAction]);
+
+  useEffect(() => {
+    if (masterSearchVal !== "") {
+      searchMasterItemHanlder();
+    } else {
+      setMasterItems(
+        MASTERS_ITEMS.sort((a, b) => a.label.localeCompare(b.label))
+      );
+    }
+  }, [masterSearchVal]);
 
   const actionClickHandler = (action) => {
     switch (action) {
@@ -127,18 +144,20 @@ const Masters = () => {
           };
         }),
         data: selectedMenuCard?.collection ?? [],
-        totalCount: Math.ceil(selectedMenuCard?.collection?.length / LIMIT),
-        defaultPage: 1,
+        totalPages: Math.ceil(selectedMenuCard?.collection?.length / LIMIT),
+        currentPage: 1,
+        totalRecords: selectedMenuCard?.collection?.length,
+        pageSize: LIMIT,
         isServerSidePagination: false,
       });
     }
   }, [selectedMenuCard]);
 
   const fetchMastersData = async (paginationObj) => {
-    const response = await postData(
-      `/masters/${selectedMenuCard.collection}`,
-      paginationObj
-    );
+    const response = await postData(`/masters/data`, {
+      ...paginationObj,
+      type: selectedMenuCard.collection,
+    });
     if (response) {
       const oneObj = response?.data?.[0];
       setTableObj({
@@ -152,22 +171,31 @@ const Masters = () => {
           };
         }),
         data: response?.data ?? [],
-        totalCount: response?.totalPages || 0,
-        defaultPage: response?.page || 0,
-        isServerSidePagination: true,
+        ...response?.pagination,
       });
     } else {
-      setTableObj({
-        columns: [],
-        data: [],
-        totalCount: 0,
-        isServerSidePagination: true,
-        defaultPage: 0,
+      setTableObj(() => {
+        return {
+          columns: [],
+          data: [],
+          totalPages: 0,
+          currentPage: 0,
+          totalRecords: 0,
+          pageSize: 0,
+          isServerSidePagination: true,
+        };
       });
     }
   };
 
-  const MasterItems = () => {
+  const searchMasterItemHanlder = () => {
+    const filteredItems = MASTERS_ITEMS.filter((item) =>
+      item.label.toLowerCase().includes(masterSearchVal)
+    );
+    setMasterItems(filteredItems);
+  };
+
+  const MasterItemsJsx = () => {
     return (
       <Stack
         direction={"row"}
@@ -178,48 +206,60 @@ const Masters = () => {
           justifyContent: "space-around",
         }}
       >
-        {MASTERS_ITEMS.sort((a, b) => a.label.localeCompare(b.label)).map(
-          (x, i) => {
-            return (
-              <Box onClick={() => setSelectedMenuCard(x)} key={i}>
-                <GlassBG
-                  cardStyles={{
-                    height: "40px",
-                    cursor: "pointer",
-                    minWidth: "95px",
-                    maxWidth: "95px",
-                  }}
-                >
-                  <MyHeading
-                    text={
-                      <IconWrapper
-                        icon={x.icon}
-                        color={
-                          selectedMenuCard === x
-                            ? theme.palette.primary.main
-                            : null
-                        }
-                      />
-                    }
-                    alignCenter
-                    variant="body1"
-                  />
-                  <MyHeading
-                    text={
-                      x.label?.length > 15 ? (
-                        <marquee scrollamount={3}>{x.label}</marquee>
-                      ) : (
-                        x.label
-                      )
-                    }
-                    alignCenter
-                    variant="caption"
-                  />
-                </GlassBG>
-              </Box>
-            );
-          }
-        )}
+        <TextField
+          size="small"
+          label="Search Master"
+          variant="outlined"
+          fullWidth
+          autoFocus
+          value={masterSearchVal}
+          onChange={(e) => setMasterSearchVal(e.target.value)}
+          sx={{ mt: 1 }}
+        />
+        {masterItems?.length === 0 && <NoDataFound sx={{ mt: 20 }} />}
+        {masterItems?.map((x, i) => {
+          return (
+            <Box onClick={() => setSelectedMenuCard(x)} key={i}>
+              <GlassBG
+                cardStyles={{
+                  height: "40px",
+                  cursor: "pointer",
+                  minWidth:
+                    i % 2 === 0 && i+1 === masterItems?.length ? "240px" : "95px",
+                  maxWidth:
+                    i % 2 === 0 && i+1 === masterItems?.length ? "240px" : "95px",
+                  // maxWidth: "95px",
+                }}
+              >
+                <MyHeading
+                  text={
+                    <IconWrapper
+                      icon={x.icon}
+                      color={
+                        selectedMenuCard === x
+                          ? theme.palette.primary.main
+                          : null
+                      }
+                    />
+                  }
+                  alignCenter
+                  variant="body1"
+                />
+                <MyHeading
+                  text={
+                    x.label?.length > 15 ? (
+                      <marquee scrollamount={3}>{x.label}</marquee>
+                    ) : (
+                      x.label
+                    )
+                  }
+                  alignCenter
+                  variant="caption"
+                />
+              </GlassBG>
+            </Box>
+          );
+        })}
       </Stack>
     );
   };
@@ -255,9 +295,10 @@ const Masters = () => {
           height: "calc(100vh - 55px)",
           overflowY: "auto",
           maxWidth: "20%",
+          minWidth: "20%",
         }}
       >
-        <MasterItems />
+        <MasterItemsJsx />
       </Box>
       {selectedMenuCard === null && <NoDataFound sx={{ mt: 20 }} />}
       {selectedMenuCard && (

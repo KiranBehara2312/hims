@@ -8,6 +8,7 @@ const db = require("./db");
 const authRouter = require("./modules/auth/router");
 const errorHandler = require("./middlewares/ErrorHandler");
 const initRouter = require("./modules/init/router");
+const masterRouter = require("./modules/masters/router");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 
 app.use("/auth", authRouter);
 app.use("/init", isAuthenticated, initRouter)
+app.use("/masters", isAuthenticated, masterRouter)
 app.use(errorHandler);
 
 const startServer = async () => {

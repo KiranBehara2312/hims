@@ -49,7 +49,12 @@ import WorkInProgress from "./WorkInProgress";
 import MyTooltip from "./MyTootlip";
 import { postData } from "../../helpers/http";
 import DynamicIcon from "./DynamicIcon";
-import { setOrgData } from "../../redux/slices/apiCacheSlice";
+import {
+  setGenderData,
+  setMaritalStatus,
+  setOrgData,
+  setSalutationData,
+} from "../../redux/slices/apiCacheSlice";
 
 const MyHeader = () => {
   const MORE_ACTIONS = [
@@ -101,6 +106,7 @@ const MyHeader = () => {
 
   useEffect(() => {
     loadMenuItems();
+    loadCacheData();
     let inte = setInterval(() => {
       const dateWithTime = formatDate("DD MMM YYYY - hh:mm a");
       const day = WEEK_DAYS_LIST[new Date().getDay()]?.label;
@@ -118,6 +124,22 @@ const MyHeader = () => {
     const response2 = await postData("/init/orgData", {});
     dispatch(setOrgData(response2?.data ?? []));
     setMenuItems(response?.data ?? []);
+  };
+
+  const loadCacheData = async () => {
+    try {
+      const [res1, res2] = await Promise.all([
+        postData("/masters/data", { type: "gender" }),
+        postData("/masters/data", { type: "salutation" }),
+        postData("/masters/data", { type: "maritalStatus" }),
+      ]);
+
+      dispatch(setGenderData(res1?.data ?? []));
+      dispatch(setSalutationData(res2?.data ?? []));
+      dispatch(setMaritalStatus(res3?.data ?? []));
+    } catch (error) {
+      console.error("Error loading menu items for cache:", error);
+    }
   };
 
   const closeDialog = () => {

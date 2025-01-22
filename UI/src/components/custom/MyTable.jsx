@@ -23,8 +23,9 @@ import { FaCircle } from "react-icons/fa";
 export default function ({
   columns = [],
   data = [],
-  totalCount = 1,
-  defaultPage = 1,
+  totalPages = 1,
+  totalRecords = 0,
+  currentPage = 1,
   isServerSidePagination = true,
   changedPage = () => {},
   actions = [],
@@ -32,7 +33,6 @@ export default function ({
   actionWithRecord = () => {},
   ...props
 }) {
-  const theme = useTheme();
   const [localPage, setLocalPage] = React.useState(1);
   const [localData, setLocalData] = React.useState([]);
   const [anchorPosition, setAnchorPosition] = React.useState(null);
@@ -40,6 +40,7 @@ export default function ({
 
   React.useEffect(() => {
     if (isServerSidePagination) {
+      console.log(data);
       setLocalData(data);
     } else {
       setLocalData(localPagination(data, 1, 10));
@@ -87,6 +88,17 @@ export default function ({
     } else {
       return val;
     }
+  };
+
+  const getCountInformation = () => {
+    if (data?.length === 0) {
+      return "";
+    }
+    let string = "";
+    const startRecord = (currentPage - 1) * 10 + 1;
+    const endRecord = Math.min(currentPage * 10, totalRecords);
+    string += `${startRecord} - ${endRecord} rows of ${totalRecords}`;
+    return string;
   };
 
   return (
@@ -181,15 +193,21 @@ export default function ({
         >
           {helperNote ?? ""}
         </Typography>
-        <Pagination
-          sx={{ m: 1, float: "right" }}
-          variant="outlined"
-          color="primary"
-          shape="rounded"
-          count={totalCount}
-          page={isServerSidePagination ? defaultPage : localPage}
-          onChange={paginationChangeHandler}
-        />
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <Typography variant="body2" sx={{ fontSize: "12px" }}>
+            {getCountInformation()}
+          </Typography>
+          <Pagination
+            sx={{ m: 1, float: "right" }}
+            variant="outlined"
+            size="small"
+            color="primary"
+            shape="rounded"
+            count={totalPages} // totalPages
+            page={isServerSidePagination ? currentPage : localPage}
+            onChange={paginationChangeHandler}
+          />
+        </Box>
       </Box>
 
       <Popover
