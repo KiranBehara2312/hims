@@ -51,7 +51,6 @@ const login = asyncHandler(async (req, res) => {
 const register = asyncHandler(async (req, res) => {
   const { userPhone, userPassword } = req.body;
   const existingUser = await getUserByUserPhone(userPhone);
-  console.log(existingUser);
   if (existingUser && existingUser.length > 0) {
     return res.status(400).json({ message: "User already exists" });
   }

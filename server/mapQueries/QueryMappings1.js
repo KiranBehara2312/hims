@@ -1,6 +1,6 @@
 const SQL1 = {
   GET_USER_BY_USER_ID: `SELECT * FROM ORG_USR_DETAILS WHERE userId = ?;`,
-  GET_USERS_LIST: `SELECT * FROM ORG_USR_DETAILS WHERE isActive = '1'`,
+  GET_USERS_LIST: `SELECT userId, orgId, firstName, middleName, lastName, fullName, userPhone, roleId, userAadhar, isActive, isBlocked, isLocked, incorrectPwdAttempts FROM ORG_USR_DETAILS WHERE isActive = '1'`,
   GET_COUNTRY_DATA: `SELECT * FROM GBL_CTRY_DETAILS WHERE isActive = '1'`,
   GET_ALL_STATE_DATA: `SELECT * FROM GBL_STAT_DETAILS WHERE isActive = '1'`,
   GET_ROLE_DATA_BY_ROLE_ID: `SELECT * FROM GBL_USR_ROLES WHERE roleId = ?;`,
@@ -8,8 +8,8 @@ const SQL1 = {
   UPDATE_INCORRECT_PWD_ATTEMPTS: `UPDATE ORG_USR_DETAILS SET incorrectPwdAttempts = incorrectPwdAttempts + 1 WHERE userId = ?;`,
   LOCK_USER: `UPDATE ORG_USR_DETAILS SET isLocked = 1 WHERE userId = ?;`,
   UNLOCK_USER: `UPDATE ORG_USR_DETAILS SET isLocked = 0, incorrectPwdAttempts = 0 WHERE userId = ?;`,
-  CREATE_USER_PROC:
-    "CALL CREATE_USER_PROC(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+  CREATE_UPDATE_USER_PROC:
+    "CALL CREATE_UPDATE_USER_PROC(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
   GET_PARENT_SIDENAV_MENU: `SELECT * FROM ORG_SNV_PRT_ITEMS WHERE isActive = '1';`,
   GET_CHILD_SIDENAV_MENU: `SELECT * FROM ORG_SNV_CHL_ITEMS where parentId = ? AND isActive = '1';`,
   GET_ORG_DETAILS: `SELECT * FROM GBL_ORG_DETAILS`,
@@ -20,6 +20,10 @@ const SQL1 = {
   GET_BLOOD_GRP_DATA: `SELECT bloodGroupId as id, bloodGroupName as name, shortName  FROM GBL_BLD_GROUPS WHERE isActive = '1'`,
   GET_DOC_DESIGNATION: `SELECT designationId as id, designationName as name FROM GBL_DOC_DESIGNATIONS WHERE isActive = '1'`,
   GET_APPT_STATUS_DATA: `SELECT apptStatusId,apptStatusName,color FROM GBL_APPT_STATUS WHERE isActive = '1'`,
+  GBL_NOT_PRIORITY: `SELECT priorityId as id, priorityName as name FROM GBL_NOT_PRIORITY WHERE isActive = '1'`,
+  CREATE_UPDATE_NOTIFICATION_PROC: `CALL UPSERT_NTF_HISTORY_PROC(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+  GET_ALL_NOTIFICATIONS_BY_USER: `SELECT * FROM USR_NTF_HISTORY WHERE ntfTaggedUserId IS NULL OR ntfTaggedUserId = '' OR ntfTaggedUserId = ? `,
+  GET_ALL_NOTIFICATIONS_BY_ADMIN: `SELECT * FROM USR_NTF_HISTORY `,
 };
 
 module.exports = SQL1;

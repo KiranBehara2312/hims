@@ -1,10 +1,13 @@
 import { Box, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import HospitalLogo from "../../assets/hospital/logo.png";
 import MyHeading from "../custom/MyHeading";
 import { META } from "../../constants/projects";
+import { useSelector } from "react-redux";
+import { c_org } from "../../redux/slices/apiCacheSlice";
 
 const HospitalDetailsLogo = () => {
+  const cachedOrgData = useSelector(c_org);
   return (
     <Box
       sx={{
@@ -23,7 +26,7 @@ const HospitalDetailsLogo = () => {
           height: 50,
         }}
       />
-      <MyHeading text={META.PROJECT_TITLE} variant="body1" />
+      <MyHeading text={cachedOrgData?.[0]?.orgName} variant="body1" />
     </Box>
   );
 };

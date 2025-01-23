@@ -14,10 +14,12 @@ import HeaderWithSearch from "../../components/custom/HeaderWithSearch";
 import { postData } from "../../helpers/http";
 import MyTable from "../../components/custom/MyTable";
 import IconWrapper from "../../components/custom/IconWrapper";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaUserPlus } from "react-icons/fa";
 import NoDataFound from "../../components/shared/NoDataFound";
 import PaymentService from "./AddEdits/PaymentService";
 import WorkInProgress from "../../components/shared/WorkInProgress";
+import ApplicationUser from "./AddEdits/AppUser";
+import Grid from "@mui/material/Grid2";
 
 const LIMIT = 10;
 const Masters = () => {
@@ -85,6 +87,16 @@ const Masters = () => {
             headerText={`New Payment Service`}
             selectedRow={null}
             action={"ADD_SERVICE_AGAINST_LOCATION"}
+            setShowDialog={setShowDialog}
+          />
+        );
+      case "ADD_USER":
+        return (
+          <ApplicationUser
+            dialogCloseBtn={<CloseBtnHtml />}
+            headerText={`Add Application User`}
+            selectedRow={null}
+            action={"ADD_USER"}
             setShowDialog={setShowDialog}
           />
         );
@@ -203,7 +215,7 @@ const Masters = () => {
           display: "flex",
           flexWrap: "wrap",
           gap: 0.75,
-          justifyContent: "space-around",
+          justifyContent: "space-between",
         }}
       >
         <TextField
@@ -217,62 +229,62 @@ const Masters = () => {
           sx={{ mt: 1 }}
         />
         {masterItems?.length === 0 && <NoDataFound sx={{ mt: 20 }} />}
-        {masterItems?.map((x, i) => {
-          return (
-            <Box onClick={() => setSelectedMenuCard(x)} key={i}>
-              <GlassBG
-                cardStyles={{
-                  height: "40px",
-                  cursor: "pointer",
-                  minWidth:
-                    i % 2 === 0 && i+1 === masterItems?.length ? "240px" : "95px",
-                  maxWidth:
-                    i % 2 === 0 && i+1 === masterItems?.length ? "240px" : "95px",
-                  // maxWidth: "95px",
-                }}
-              >
-                <MyHeading
-                  text={
-                    <IconWrapper
-                      icon={x.icon}
-                      color={
-                        selectedMenuCard === x
-                          ? theme.palette.primary.main
-                          : null
+        <Grid container spacing={1}>
+          {masterItems?.map((x, i) => {
+            return (
+              <Grid size={6}>
+                <Box onClick={() => setSelectedMenuCard(x)} key={i}>
+                  <GlassBG
+                    cardStyles={{
+                      height: "40px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <MyHeading
+                      text={
+                        <IconWrapper
+                          icon={x.icon}
+                          color={
+                            selectedMenuCard === x
+                              ? theme.palette.primary.main
+                              : null
+                          }
+                        />
                       }
+                      alignCenter
+                      variant="body1"
                     />
-                  }
-                  alignCenter
-                  variant="body1"
-                />
-                <MyHeading
-                  text={
-                    x.label?.length > 15 ? (
-                      <marquee scrollamount={3}>{x.label}</marquee>
-                    ) : (
-                      x.label
-                    )
-                  }
-                  alignCenter
-                  variant="caption"
-                />
-              </GlassBG>
-            </Box>
-          );
-        })}
+                    <MyHeading
+                      text={
+                        x.label?.length > 20 ? (
+                          <marquee scrollamount={2}>{x.label}</marquee>
+                        ) : (
+                          x.label
+                        )
+                      }
+                      alignCenter
+                      variant="caption"
+                    />
+                  </GlassBG>
+                </Box>
+              </Grid>
+            );
+          })}
+        </Grid>
       </Stack>
     );
   };
 
+  // get the action buttons which are present in the header above the table
   const getActionButtons = (action) => {
     const obj = {
-      "Application Users": (
+      Users: (
         <Button
           variant="outlined"
           size="small"
           onClick={() => setSelectedAction("ADD_USER")}
         >
-          <FaPlus size={15} style={{ marginRight: "8px" }} /> Add User
+          <FaUserPlus size={15} style={{ marginRight: "8px" }} /> Add User
         </Button>
       ),
       "Payment Services": (
@@ -289,48 +301,43 @@ const Masters = () => {
   };
 
   return (
-    <Stack sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-      <Box
-        sx={{
-          height: "calc(100vh - 55px)",
-          overflowY: "auto",
-          maxWidth: "20%",
-          minWidth: "20%",
-        }}
-      >
+    <Grid container spacing={1}>
+      <Grid size={3}>
         <MasterItemsJsx />
-      </Box>
-      {selectedMenuCard === null && <NoDataFound sx={{ mt: 20 }} />}
-      {selectedMenuCard && (
-        <Box sx={{ minWidth: "80%", maxWidth: "100%", overflowX: "auto" }}>
-          <HeaderWithSearch
-            headerText={selectedMenuCard.label}
-            hideSearchBar
-            headerIcon={
-              <IconWrapper
-                icon={selectedMenuCard.icon}
-                color={theme.palette.primary.main}
-              />
-            }
-            html={getActionButtons(selectedMenuCard.label)}
-          />
-          <MyTable
-            {...tableObj}
-            changedPage={(newPage) => {
-              fetchMastersData({
-                page: newPage,
-                limit: LIMIT,
-              });
-            }}
-          />
-        </Box>
-      )}
+      </Grid>
+      <Grid size={9}>
+        {selectedMenuCard === null && <NoDataFound sx={{ mt: 20 }} />}
+        {selectedMenuCard && (
+          <Box sx={{ overflowX: "auto" }}>
+            <HeaderWithSearch
+              headerText={selectedMenuCard.label}
+              hideSearchBar
+              headerIcon={
+                <IconWrapper
+                  icon={selectedMenuCard.icon}
+                  color={theme.palette.primary.main}
+                />
+              }
+              html={getActionButtons(selectedMenuCard.label)}
+            />
+            <MyTable
+              {...tableObj}
+              changedPage={(newPage) => {
+                fetchMastersData({
+                  page: newPage,
+                  limit: LIMIT,
+                });
+              }}
+            />
+          </Box>
+        )}
+      </Grid>
       {showDialog.show && (
         <Dialog maxWidth={showDialog.modalWidth} fullWidth open={true}>
           <DialogContent sx={{ m: 1 }}>{component}</DialogContent>
         </Dialog>
       )}
-    </Stack>
+    </Grid>
   );
 };
 

@@ -12,7 +12,7 @@ import { IoMaleFemale } from "react-icons/io5";
 import { HiMiniBuildingLibrary } from "react-icons/hi2";
 import { BsGlobeCentralSouthAsia } from "react-icons/bs";
 import { VscTypeHierarchy } from "react-icons/vsc";
-import { MdBloodtype, MdOutlineAccessTimeFilled } from "react-icons/md";
+import { MdBloodtype, MdNotificationImportant, MdOutlineAccessTimeFilled } from "react-icons/md";
 import {
   APP_USER_TYPES,
   APPOINTMENT_BOOKING_STATUS,
@@ -117,6 +117,12 @@ const MASTERS_ITEMS = [
     label: "Payment Services",
     collection: "paymentServices",
     icon: <FaServicestack size={25} />,
+    category: null,
+  },
+  {
+    label: "Notification Priority",
+    collection: "notificationPriority",
+    icon: <MdNotificationImportant size={25} />,
     category: null,
   },
 ];

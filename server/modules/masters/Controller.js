@@ -8,10 +8,11 @@ const MASTER_MAPPER = {
   roles: "GET_ROLES_DATA",
   bloodGroup: "GET_BLOOD_GRP_DATA",
   doctorDesignation: "GET_DOC_DESIGNATION",
-  users: "GET_USERS_LIST",
+  allUsers: "GET_USERS_LIST",
   countries: "GET_COUNTRY_DATA",
   apptStatus: "GET_APPT_STATUS_DATA",
   allStates: "GET_ALL_STATE_DATA",
+  notificationPriority: "GBL_NOT_PRIORITY",
 };
 
 const master = asyncHandler(async (req, res) => {

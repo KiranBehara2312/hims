@@ -1,15 +1,21 @@
 const db = require("../../db");
 const SQL1 = require("../../mapQueries/QueryMappings1");
 
-
-async function getOrgData(){
-  try{
+async function getOrgData() {
+  try {
     const QUERY = SQL1.GET_ORG_DETAILS;
     const result = await db.query(QUERY);
-    return result;
-  }catch(e){
-    console.log('Error fetching org data: ',e);
-    throw e
+    let finalRes = result?.map((x) => {
+      return {
+        ...x,
+        dropdownLabel: x.orgName,
+        dropdownValue: x.orgId,
+      };
+    });
+    return finalRes;
+  } catch (e) {
+    console.log("Error fetching org data: ", e);
+    throw e;
   }
 }
 

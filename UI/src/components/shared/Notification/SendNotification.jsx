@@ -10,7 +10,11 @@ import F_Select from "../../custom/form/F_Select";
 import { postData } from "../../../helpers/http";
 import { useSelector } from "react-redux";
 import { formatDate } from "../../../helpers";
-import { NOTIFICATION_PRIORITY } from "../../../constants/localDB/MastersDB";
+import {
+  c_allUsers,
+  c_notificationPriority,
+} from "../../../redux/slices/apiCacheSlice";
+import F_Autocomplete from "../../custom/form/F_AutoComplete";
 
 const DEFAULT_VAL = {
   header: "",
@@ -18,6 +22,7 @@ const DEFAULT_VAL = {
   priority: "",
   sentOn: "",
   sentBy: "",
+  taggedUserId: "",
   url: "",
 };
 
@@ -42,15 +47,30 @@ const SendNotification = ({
   });
   const formValues = watch();
   const loggedInUser = useSelector((state) => state.userDetails.user);
-
-  const onSubmit = async (formData) => {
-    const payload = {
-      ...formData,
-      sentBy: loggedInUser?.userName,
-      sentByName: loggedInUser?.firstName + " " + loggedInUser?.lastName,
-      sentOn: formatDate("DD/MM/YYYY hh:mm a"),
+  const cachedNotiPriority = useSelector(c_notificationPriority);
+  const cachedAllUsers = useSelector(c_allUsers);
+  const onSubmit = async ({
+    header,
+    message,
+    priority,
+    sentOn,
+    sentBy,
+    taggedUserId,
+    url,
+  }) => {
+    const newPayload = {
+      ntfCode: null,
+      ntfHeader: header,
+      ntfMessage: message,
+      ntfIsRead: 0,
+      ntfPriorityCode: priority,
+      ntfSentOn: formatDate("YYYY-MM-DD hh:mm:ss"),
+      ntfSentById: loggedInUser?.userId,
+      ntfUrl: url,
+      ntfIsUserTagged: taggedUserId?.length > 0 ? 1 : 0,
+      ntfTaggedUserId: taggedUserId,
     };
-    const reposnse = await postData("/notifications/add", payload);
+    const reposnse = await postData("/notification/create", newPayload);
     setShowDialog({
       show: false,
       rerender: false,
@@ -69,7 +89,7 @@ const SendNotification = ({
         html={<>{dialogCloseBtn}</>}
       />
 
-      <GlassBG>
+      <GlassBG cardStyles={{ mt: -1 }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <F_Input
             name="header"
@@ -105,7 +125,7 @@ const SendNotification = ({
             multiline
             label="Notification Message"
           />
-          <F_Select
+          <F_Autocomplete
             name="priority"
             control={control}
             errors={errors}
@@ -115,8 +135,18 @@ const SendNotification = ({
                 message: "Notification priority is required",
               },
             }}
-            list={NOTIFICATION_PRIORITY}
+            list={cachedNotiPriority}
             label="Notification Priority"
+          />
+          <F_Autocomplete
+            name="taggedUserId"
+            control={control}
+            errors={errors}
+            rules={{}}
+            list={cachedAllUsers?.filter(
+              (x) => x.dropdownValue !== loggedInUser?.userId
+            )}
+            label="Tag another user"
           />
           <F_Input
             name="url"

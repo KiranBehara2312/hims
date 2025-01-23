@@ -61,7 +61,7 @@ async function getUserByUserPhone(userPhone) {
 
 async function createNewUser(userData) {
   try {
-    const QUERY = SQL1.CREATE_USER_PROC;
+    const QUERY = SQL1.CREATE_UPDATE_USER_PROC;
     const {
       orgId,
       firstName,

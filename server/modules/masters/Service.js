@@ -11,9 +11,16 @@ async function getMasterData(SQL_MAPPING_NAME, page = 1, pageSize = 10) {
     const countResult = await db.query(countQuery);
     const totalRecords = Object.values(countResult[0])?.[0];
     const totalPages = Math.ceil(totalRecords / pageSize);
-
+    const finalArr =
+      result?.map((x) => {
+        return {
+          ...x,
+          dropdownLabel: x.name,
+          dropdownValue: x.id,
+        };
+      }) ?? [];
     return {
-      data: result,
+      data: finalArr,
       pagination: {
         totalRecords,
         totalPages,

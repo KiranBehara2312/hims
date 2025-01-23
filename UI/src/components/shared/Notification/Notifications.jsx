@@ -6,6 +6,7 @@ import {
   Divider,
   Pagination,
   Popover,
+  Avatar,
   useTheme,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
@@ -17,21 +18,31 @@ import HeaderWithSearch from "../../custom/HeaderWithSearch";
 import NoDataFound from "../NoDataFound";
 import { MdNotificationImportant } from "react-icons/md";
 import { grey, orange, pink, red, yellow } from "@mui/material/colors";
+import { useSelector } from "react-redux";
+import { formatDate } from "../../../helpers";
+import {
+  c_notificationPriority,
+  c_allUsers,
+  c_userRoles,
+} from "../../../redux/slices/apiCacheSlice";
 
 const LIMIT = 5;
 const Notifications = ({ setNotificationDialog = () => {} }) => {
   const [notifications, setNotifications] = useState([]);
+  const cachedNotiPriority = useSelector(c_notificationPriority);
+  const cachedAllUsers = useSelector(c_allUsers);
+  const cacheduserRoles = useSelector(c_userRoles);
   const theme = useTheme();
   useEffect(() => {
     fetchNotifications();
   }, []);
 
   const fetchNotifications = async (page = 1) => {
-    const response = await postData("/notifications/all", {
+    const response = await postData("/notification/all", {
       page: page,
       limit: LIMIT,
     });
-    setNotifications(response ?? []);
+    setNotifications(response?.data ?? []);
   };
 
   const paginationChangeHandler = (event, newPage) => {
@@ -45,15 +56,33 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
     setNotificationDialog(false);
   };
 
+  const GetPriorityCardDetails = ({ pri = "PRI0005" }) => {
+    const priority = cachedNotiPriority?.find((x) => x.id === pri)?.name;
+    console.log(priority, pri, cachedNotiPriority);
+    return <MyHeading variant="caption" text={priority} />;
+  };
+
   const getColorBasedOnPriority = (priority) => {
     const COLOR_OBJ = {
-      CATASTROPHIC: red[500],
-      HIGH: red[500],
-      MEDIUM: orange[500],
-      LOW: grey[500],
-      NORMAL: theme.palette.primary.main,
+      PRI0001: red[500],
+      PRI0002: red[500],
+      PRI0003: orange[500],
+      PRI0004: grey[500],
+      PRI0005: grey[500],
     };
     return COLOR_OBJ[priority.toString().toUpperCase()];
+  };
+
+  function stringAvatar(name) {
+    return {
+      children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+    };
+  }
+
+  const getUserBgColor = (userID) => {
+    const role = cachedAllUsers?.find((x) => x.userId === userID)?.roleId;
+    let color = cacheduserRoles?.find((x) => x.id === role)?.color;
+    return color;
   };
 
   return (
@@ -96,29 +125,38 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
             margin: "0px 2px",
           }}
         >
-          {notifications?.data?.length === 0 && <NoDataFound />}
-          {notifications?.data?.map((x) => {
+          {notifications?.length === 0 && <NoDataFound />}
+          {notifications?.map((x) => {
             return (
               <GlassBG>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <MyHeading variant="caption" text={x.header} />
+                  <MyHeading variant="caption" text={x.ntfHeader} />
                   <span
                     style={{ display: "flex", gap: 1, alignItems: "center" }}
                   >
-                    <MyHeading variant="caption" text={x.priority} />
-                    {x.priority === "Catastrophic" && (
-                      <IconWrapper
-                        color={getColorBasedOnPriority(x.priority)}
-                        icon={<MdNotificationImportant size={20} />}
-                      />
-                    )}
                     <IconWrapper
-                      color={getColorBasedOnPriority(x.priority)}
+                      color={getColorBasedOnPriority(x.ntfPriorityCode)}
                       icon={<MdNotificationImportant size={20} />}
                     />
+                    {<GetPriorityCardDetails pri={x.ntfPriorityCode} />}
+                    {x.ntfTaggedUserId !== null && (
+                      <>
+                        <Avatar
+                          variant="rounded"
+                          sx={{
+                            width: 24,
+                            height: 24,
+                            fontSize: "10px",
+                            ml: 1,
+                            background: getUserBgColor(x.ntfTaggedUserId),
+                          }}
+                          {...stringAvatar(x.ntfTaggedUserName)}
+                        />
+                      </>
+                    )}
                   </span>
                 </Box>
-                <MyHeading variant="body2" text={x.message} />
+                <MyHeading variant="body2" text={x.ntfMessage} />
 
                 <Box
                   sx={{
@@ -130,12 +168,15 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
                   <MyHeading
                     variant="caption"
                     sx={{ fontSize: "11px" }}
-                    text={`${x.sentByName} (${x.sentBy})`}
+                    text={`Sent by: ${x.ntfSentByName} (${x.ntfSentById})`}
                   />
                   <MyHeading
                     variant="caption"
                     sx={{ fontSize: "11px" }}
-                    text={`${x.sentOn}`}
+                    text={`Sent on: ${formatDate(
+                      "DD/MM/YYYY hh:mm a",
+                      new Date(x.ntfSentOn)
+                    )}`}
                   />
                 </Box>
               </GlassBG>

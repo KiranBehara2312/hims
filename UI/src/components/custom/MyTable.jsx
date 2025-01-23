@@ -35,17 +35,25 @@ export default function ({
 }) {
   const [localPage, setLocalPage] = React.useState(1);
   const [localData, setLocalData] = React.useState([]);
+  const [localColumns, setLocalColumns] = React.useState([]);
   const [anchorPosition, setAnchorPosition] = React.useState(null);
   const [selectedRow, setSelectedRow] = React.useState(null);
 
   React.useEffect(() => {
     if (isServerSidePagination) {
-      console.log(data);
       setLocalData(data);
     } else {
       setLocalData(localPagination(data, 1, 10));
     }
   }, [data]);
+
+  React.useEffect(() => {
+    setLocalColumns(
+      columns?.filter(
+        (x) => x.label !== "dropdownLabel" && x.label !== "dropdownValue"
+      )
+    );
+  }, [columns]);
 
   function localPagination(array, pageNumber, limit) {
     const startIndex = (pageNumber - 1) * limit;
@@ -115,7 +123,7 @@ export default function ({
             }}
           >
             <TableRow>
-              {columns.map((column) => (
+              {localColumns.map((column) => (
                 <TableCell
                   key={column.id}
                   style={{
@@ -146,7 +154,7 @@ export default function ({
                   key={i}
                   onContextMenu={(event) => openActions(event, row)}
                 >
-                  {columns.map((column) => {
+                  {localColumns.map((column) => {
                     const value = row[column.id];
                     return (
                       <TableCell
