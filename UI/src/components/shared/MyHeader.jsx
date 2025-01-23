@@ -21,6 +21,7 @@ import {
   Dialog,
   DialogContent,
 } from "@mui/material";
+import { BsHypnotize } from "react-icons/bs";
 import { IoNotificationsSharp } from "react-icons/io5";
 import socketIOClient from "socket.io-client";
 import { MdExpandLess, MdExpandMore, MdMenu } from "react-icons/md";
@@ -73,6 +74,14 @@ const MyHeader = () => {
       name: "Reports",
       privilege: "REPORTS",
       icon: <IconWrapper defaultColor icon={<TbReport size={18} />} />,
+      disabled: false,
+      access: [ADMIN, STAFF, NURSE, DOCTOR],
+      modalWidth: "md",
+    },
+    {
+      name: "Hypnotizer",
+      privilege: "HYPNOTIZER",
+      icon: <IconWrapper defaultColor icon={<BsHypnotize size={18} />} />,
       disabled: false,
       access: [ADMIN, STAFF, NURSE, DOCTOR],
       modalWidth: "md",
@@ -198,6 +207,28 @@ const MyHeader = () => {
             action={selectedMoreAction}
             setShowDialog={setShowDialog}
           />
+        );
+      case "HYPNOTIZER":
+        return (
+          <>
+            <HeaderWithSearch
+              hideSearchBar
+              headerText={"Hypnotizer"}
+              html={<CloseBtnHtml />}
+            />
+            <Box sx={{ overflow: "hidden" }}>
+              <Box
+                className="hypnotizer"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <IconWrapper defaultColor icon={<BsHypnotize size={500} />} />
+              </Box>
+            </Box>
+          </>
         );
       default:
         return (

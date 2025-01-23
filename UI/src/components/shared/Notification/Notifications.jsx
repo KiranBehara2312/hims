@@ -25,6 +25,7 @@ import {
   c_allUsers,
   c_userRoles,
 } from "../../../redux/slices/apiCacheSlice";
+import MyTooltip from "../MyTootlip";
 
 const LIMIT = 5;
 const Notifications = ({ setNotificationDialog = () => {} }) => {
@@ -141,17 +142,21 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
                     {<GetPriorityCardDetails pri={x.ntfPriorityCode} />}
                     {x.ntfTaggedUserId !== null && (
                       <>
-                        <Avatar
-                          variant="rounded"
-                          sx={{
-                            width: 24,
-                            height: 24,
-                            fontSize: "10px",
-                            ml: 1,
-                            background: getUserBgColor(x.ntfTaggedUserId),
-                          }}
-                          {...stringAvatar(x.ntfTaggedUserName)}
-                        />
+                        <MyTooltip
+                          title={`${x.ntfTaggedUserName} (${x.ntfTaggedUserId}) was tagged`}
+                        >
+                          <Avatar
+                            variant="rounded"
+                            sx={{
+                              width: 24,
+                              height: 24,
+                              ml:1,
+                              fontSize: "10px",
+                              background: getUserBgColor(x.ntfTaggedUserId),
+                            }}
+                            {...stringAvatar(x.ntfTaggedUserName)}
+                          />
+                        </MyTooltip>
                       </>
                     )}
                   </span>

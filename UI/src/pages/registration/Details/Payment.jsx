@@ -20,6 +20,7 @@ import PaymentServicesChooser from "../../../components/shared/PaymentServicesCh
 import HeaderWithSearch from "../../../components/custom/HeaderWithSearch";
 import WorkInProgress from "../../../components/shared/WorkInProgress";
 import { FaPencilAlt } from "react-icons/fa";
+import MyTooltip from "../../../components/shared/MyTootlip";
 
 const Payment = ({
   control,
@@ -268,7 +269,9 @@ const Payment = ({
                 )
               }
             >
-              <FaPencilAlt />
+              <MyTooltip title="Click to fill Payee Name">
+                <FaPencilAlt />
+              </MyTooltip>
             </InputAdornment>
           }
         />

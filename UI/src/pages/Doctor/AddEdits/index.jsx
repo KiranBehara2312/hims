@@ -1,21 +1,6 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  TextField,
-  Button,
-  InputLabel,
-  FormControl,
-  Select,
-  MenuItem,
-  FormHelperText,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Box,
-  useMediaQuery,
-  useTheme,
-  DialogTitle,
-} from "@mui/material";
+import { Button, Box, useMediaQuery, useTheme, Alert } from "@mui/material";
 import {
   DAILY_SHIFT,
   DOCTOR_DEPARTMENTS,
@@ -27,23 +12,32 @@ import { REGEX_PATTERNS } from "../../../constants/Regex";
 import { GlassBG, MyHeading } from "../../../components/custom";
 import F_Select from "../../../components/custom/form/F_Select";
 import F_Input from "../../../components/custom/form/F_Input";
-import { IoCloseCircle } from "react-icons/io5";
 import { postData } from "../../../helpers/http";
-import { camelToTitle, successAlert } from "../../../helpers";
+import { successAlert } from "../../../helpers";
 import HeaderWithSearch from "../../../components/custom/HeaderWithSearch";
 import { FaPlus } from "react-icons/fa";
 import IconWrapper from "../../../components/custom/IconWrapper";
 import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
 import F_DatePicker from "../../../components/custom/form/F_DatePicker";
+import { useSelector } from "react-redux";
+import { c_gender, c_org } from "../../../redux/slices/apiCacheSlice";
 
 const DoctorInformation = ({
   dialogCloseBtn = null,
   setShowDialog = () => {},
-  headerText = "Add Vitals",
+  headerText = "Add Doctor",
   selectedRow = null,
   action = null,
 }) => {
   const theme = useTheme();
+  const cachedGender = useSelector(c_gender);
+  const cachedOrgData = useSelector(c_org);
+  const [dropdownData, setDropdownData] = useState({
+    docDepartment: [],
+    docDesignation: [],
+    docQualification: [],
+    organisationShifts: [],
+  });
   const readOnly = action === "VIEW";
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const CARD_WIDTH = isSmallScreen ? "100%" : "250px";
@@ -54,6 +48,44 @@ const DoctorInformation = ({
     reset,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    loadDropdownItems();
+  }, []);
+
+  const loadDropdownItems = async () => {
+    try {
+      const [res1, res2, res3, res4] = await Promise.all([
+        postData("/masters/data", {
+          type: "doctorDepartments",
+          limit: "Infinity",
+        }),
+        postData("/masters/data", {
+          type: "doctorDesignation",
+          limit: "Infinity",
+        }),
+        postData("/masters/data", {
+          type: "doctorQualifications",
+          limit: "Infinity",
+        }),
+        postData("/masters/data", {
+          type: "orgShifts",
+          limit: "Infinity",
+        }),
+      ]);
+      setDropdownData((prev) => {
+        return {
+          ...prev,
+          docDepartment: res1?.data ?? [],
+          docDesignation: res2?.data ?? [],
+          docQualification: res3?.data ?? [],
+          organisationShifts: res4?.data ?? [],
+        };
+      });
+    } catch (error) {
+      console.error("Error loading menu items for :", error);
+    }
+  };
 
   useEffect(() => {
     if (selectedRow !== null) {
@@ -89,17 +121,49 @@ const DoctorInformation = ({
 
   return (
     <>
-      <HeaderWithSearch
-        notScrollable
-        hideSearchBar
-        headerIcon={<IconWrapper defaultColor icon={<FaPlus size={20} />} />}
-        headerText={headerText}
-        html={<>{dialogCloseBtn}</>}
-      />
       <form
         onSubmit={handleSubmit(action === "ADD" ? onSubmit : onUpdate)}
         style={{ width: "100%" }}
       >
+        <HeaderWithSearch
+          notScrollable
+          hideSearchBar
+          headerIcon={<IconWrapper defaultColor icon={<FaPlus size={20} />} />}
+          headerText={headerText}
+          html={
+            <>
+              {action !== "VIEW" && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    gap: 1,
+                    pr: 1,
+                  }}
+                >
+                  <Button
+                    type="submit"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                  >
+                    Submit
+                  </Button>
+                  <Button
+                    type="reset"
+                    onClick={() => reset()}
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                  >
+                    Reset
+                  </Button>
+                </Box>
+              )}
+              {dialogCloseBtn}
+            </>
+          }
+        />
         <Box
           sx={{
             display: "flex",
@@ -113,6 +177,16 @@ const DoctorInformation = ({
               text="Doctor Information"
               variant="h6"
               sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+            />
+            <F_Autocomplete
+              control={control}
+              name={"orgId"}
+              readOnly={readOnly}
+              label={"Organisation"}
+              list={cachedOrgData}
+              rules={{ required: "Organisation is required" }}
+              isRequired={true}
+              errors={errors}
             />
             <F_Input
               name="firstName"
@@ -141,12 +215,12 @@ const DoctorInformation = ({
               label="Date Of Birth"
             />
 
-            <F_Select
+            <F_Autocomplete
               control={control}
               name={"gender"}
               readOnly={readOnly}
               label={"Gender"}
-              list={GENDER_LIST}
+              list={cachedGender}
               rules={{ required: "Gender is required" }}
               isRequired={true}
               errors={errors}
@@ -188,12 +262,12 @@ const DoctorInformation = ({
               variant="h6"
               sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
             />
-            <F_Select
+            <F_Autocomplete
               control={control}
               readOnly={readOnly}
               name={"designation"}
               label={"Designation"}
-              list={DOCTOR_DESIGNATIONS}
+              list={dropdownData?.docDesignation}
               rules={{ required: "Designation is required" }}
               isRequired={true}
               errors={errors}
@@ -204,7 +278,7 @@ const DoctorInformation = ({
               readOnly={readOnly}
               name={"department"}
               label={"Department"}
-              list={DOCTOR_DEPARTMENTS}
+              list={dropdownData?.docDepartment}
               rules={{ required: "Department is required" }}
               isRequired={true}
               errors={errors}
@@ -220,16 +294,17 @@ const DoctorInformation = ({
               }}
               label="Specialization"
             />
-            <F_Input
-              name="qualification"
+            <F_Autocomplete
               control={control}
               readOnly={readOnly}
+              name={"qualification"}
+              label={"Qualification"}
+              list={dropdownData?.docQualification}
+              rules={{ required: "Qualification is required" }}
+              isRequired={true}
               errors={errors}
-              rules={{
-                required: "Qualification is required",
-              }}
-              label="Qualification"
             />
+
             <F_Input
               name="medicalLicenseNumber"
               control={control}
@@ -255,12 +330,12 @@ const DoctorInformation = ({
               sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
             />
 
-            <F_Select
+            <F_Autocomplete
               control={control}
               readOnly={readOnly}
               name={"shiftTimings"}
               label={"Shift Timings"}
-              list={DAILY_SHIFT}
+              list={dropdownData?.organisationShifts}
               rules={{ required: "Shift Timings is required" }}
               isRequired={true}
               errors={errors}
@@ -298,34 +373,9 @@ const DoctorInformation = ({
               }}
               label="Fee"
             />
-
-            {action !== "VIEW" && (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mt: 2,
-                }}
-              >
-                <Button
-                  type="submit"
-                  variant="contained"
-                  fullWidth
-                  sx={{ m: 0.5 }}
-                >
-                  Submit
-                </Button>
-                <Button
-                  type="reset"
-                  onClick={() => resetForm()}
-                  variant="contained"
-                  fullWidth
-                  sx={{ m: 0.5 }}
-                >
-                  Reset
-                </Button>
-              </Box>
-            )}
+            <Alert severity="info">
+              By creating a Doctor, a new user with Role DOCTOR will created.
+            </Alert>
           </GlassBG>
         </Box>
       </form>

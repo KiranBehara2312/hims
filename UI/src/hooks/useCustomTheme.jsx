@@ -52,7 +52,7 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
           tooltip: {
             backgroundColor: dColor,
             color: "#fff",
-            fontSize: "0.875rem",
+            fontSize: "0.7rem",
             borderRadius: "8px",
             padding: "8px 12px",
             boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",

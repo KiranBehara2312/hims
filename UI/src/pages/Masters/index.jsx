@@ -209,69 +209,53 @@ const Masters = () => {
 
   const MasterItemsJsx = () => {
     return (
-      <Stack
-        direction={"row"}
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 0.75,
-          justifyContent: "space-between",
-        }}
-      >
-        <TextField
-          size="small"
-          label="Search Master"
-          variant="outlined"
-          fullWidth
-          autoFocus
-          value={masterSearchVal}
-          onChange={(e) => setMasterSearchVal(e.target.value)}
-          sx={{ mt: 1 }}
-        />
-        {masterItems?.length === 0 && <NoDataFound sx={{ mt: 20 }} />}
-        <Grid container spacing={1}>
-          {masterItems?.map((x, i) => {
-            return (
-              <Grid size={6}>
-                <Box onClick={() => setSelectedMenuCard(x)} key={i}>
-                  <GlassBG
-                    cardStyles={{
-                      height: "40px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <MyHeading
-                      text={
-                        <IconWrapper
-                          icon={x.icon}
-                          color={
-                            selectedMenuCard === x
-                              ? theme.palette.primary.main
-                              : null
-                          }
-                        />
-                      }
-                      alignCenter
-                      variant="body1"
-                    />
-                    <MyHeading
-                      text={
-                        x.label?.length > 20 ? (
-                          <marquee scrollamount={2}>{x.label}</marquee>
-                        ) : (
-                          x.label
-                        )
-                      }
-                      alignCenter
-                      variant="caption"
-                    />
-                  </GlassBG>
-                </Box>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Stack>
+      <>
+        {masterItems?.length === 0 && <NoDataFound sx={{ mt: 10 }} />}
+        {masterItems?.length > 0 && (
+          <Grid container spacing={1}>
+            {masterItems?.map((x, i) => {
+              return (
+                <Grid size={6}>
+                  <Box onClick={() => setSelectedMenuCard(x)} key={i}>
+                    <GlassBG
+                      cardStyles={{
+                        height: "40px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <MyHeading
+                        text={
+                          <IconWrapper
+                            icon={x.icon}
+                            color={
+                              selectedMenuCard === x
+                                ? theme.palette.primary.main
+                                : null
+                            }
+                          />
+                        }
+                        alignCenter
+                        variant="body1"
+                      />
+                      <MyHeading
+                        text={
+                          x.label?.length > 18 ? (
+                            <marquee scrollamount={2}>{x.label}</marquee>
+                          ) : (
+                            x.label
+                          )
+                        }
+                        alignCenter
+                        variant="caption"
+                      />
+                    </GlassBG>
+                  </Box>
+                </Grid>
+              );
+            })}
+          </Grid>
+        )}
+      </>
     );
   };
 
@@ -302,11 +286,26 @@ const Masters = () => {
 
   return (
     <Grid container spacing={1}>
-      <Grid size={3}>
+      <Grid
+        size={3}
+        sx={{
+          p: 1,
+          height: "calc(100vh - 70px) !important",
+          overflow: "auto",
+        }}
+      >
+        <TextField
+          size="small"
+          label="Search Master"
+          variant="outlined"
+          fullWidth
+          value={masterSearchVal}
+          onChange={(e) => setMasterSearchVal(e.target.value)}
+        />
         <MasterItemsJsx />
       </Grid>
       <Grid size={9}>
-        {selectedMenuCard === null && <NoDataFound sx={{ mt: 20 }} />}
+        {selectedMenuCard === null && <NoDataFound />}
         {selectedMenuCard && (
           <Box sx={{ overflowX: "auto" }}>
             <HeaderWithSearch

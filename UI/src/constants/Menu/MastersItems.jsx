@@ -1,30 +1,28 @@
 import {
   FaAddressCard,
+  FaBuilding,
   FaCashRegister,
   FaHandshake,
   FaPeopleArrows,
   FaServicestack,
   FaTransgenderAlt,
+  FaUserGraduate,
   FaUsers,
   FaUsersCog,
+  FaWheelchair,
 } from "react-icons/fa";
 import { IoMaleFemale } from "react-icons/io5";
 import { HiMiniBuildingLibrary } from "react-icons/hi2";
 import { BsGlobeCentralSouthAsia } from "react-icons/bs";
 import { VscTypeHierarchy } from "react-icons/vsc";
-import { MdBloodtype, MdNotificationImportant, MdOutlineAccessTimeFilled } from "react-icons/md";
 import {
-  APP_USER_TYPES,
-  APPOINTMENT_BOOKING_STATUS,
-  BLOOD_GROUPS,
-  DAILY_SHIFT,
-  DOCTOR_DESIGNATIONS,
-  GENDER_LIST,
-  MARITAL_STATUS,
-  PATIENT_TYPES,
-  PAYMENT_TYPES,
-  SALUTATIONS,
-} from "../localDB/MastersDB";
+  MdBloodtype,
+  MdNotificationImportant,
+  MdOutlineAccessTimeFilled,
+} from "react-icons/md";
+import { FaArrowsDownToPeople } from "react-icons/fa6";
+import { GiPlayerTime } from "react-icons/gi";
+import { PATIENT_TYPES, PAYMENT_TYPES } from "../localDB/MastersDB";
 import { SERVICE_LOCATIONS } from "../localDB/PaymentServices";
 import { FaLocationDot } from "react-icons/fa6";
 
@@ -49,7 +47,7 @@ const MASTERS_ITEMS = [
   },
   {
     label: "Patient Type",
-    collection: PATIENT_TYPES,
+    collection: "patientTypes",
     icon: <VscTypeHierarchy size={25} />,
     category: null,
   },
@@ -78,12 +76,6 @@ const MASTERS_ITEMS = [
     category: null,
   },
   {
-    label: "Shifts",
-    collection: DAILY_SHIFT,
-    icon: <MdOutlineAccessTimeFilled size={25} />,
-    category: null,
-  },
-  {
     label: "Salutations",
     collection: "salutation",
     icon: <FaHandshake size={25} />,
@@ -91,7 +83,7 @@ const MASTERS_ITEMS = [
   },
   {
     label: "Payment Types",
-    collection: PAYMENT_TYPES,
+    collection: "paymentType",
     icon: <FaCashRegister size={25} />,
     category: null,
   },
@@ -123,6 +115,36 @@ const MASTERS_ITEMS = [
     label: "Notification Priority",
     collection: "notificationPriority",
     icon: <MdNotificationImportant size={25} />,
+    category: null,
+  },
+  {
+    label: "Doctor Qualififcation",
+    collection: "doctorQualifications",
+    icon: <FaUserGraduate size={25} />,
+    category: null,
+  },
+  {
+    label: "Organisation Shifts",
+    collection: "orgShifts",
+    icon: <GiPlayerTime size={25} />,
+    category: null,
+  },
+  {
+    label: "Patient Category",
+    collection: "patientCategory",
+    icon: <FaArrowsDownToPeople size={25} />,
+    category: null,
+  },
+  {
+    label: "Disability Status",
+    collection: "disabilityStatus",
+    icon: <FaWheelchair size={25} />,
+    category: null,
+  },
+  {
+    label: "Doctor Departments",
+    collection: "doctorDepartments",
+    icon: <FaBuilding size={25} />,
     category: null,
   },
 ];
