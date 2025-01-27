@@ -35,15 +35,15 @@ const DEFAULT_VAL = {
   salutation: "",
   middleName: "",
   patientNo: "",
-  patientType: "Out Patient",
+  patientType: "",
   payeeName: "",
   paymentType: "",
   pinCode: "",
-  registrationType: "New",
+  registrationType: "",
   state: "",
   transactionId: "",
   doctorConsultationFee: 0,
-  visitType: "New Case",
+  visitType: "",
   paymentStatus: "",
 };
 
@@ -242,6 +242,7 @@ const Registration = ({
               errors={errors}
               formValues={formValues}
               readOnly={action === "VIEW"}
+              setValue={setValue}
             />
             <Doctor
               control={control}

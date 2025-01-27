@@ -1,6 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Box, useMediaQuery, useTheme, Alert } from "@mui/material";
+import {
+  Button,
+  Box,
+  useMediaQuery,
+  useTheme,
+  Alert,
+  InputAdornment,
+} from "@mui/material";
 import {
   DAILY_SHIFT,
   DOCTOR_DEPARTMENTS,
@@ -100,7 +107,7 @@ const DoctorInformation = ({
   }, [selectedRow]);
 
   const onSubmit = async (formData) => {
-    const response = await postData("/doctor/add", formData);
+    const response = await postData("/doctor/upsert", formData);
     successAlert(response.message, { autoClose: 1500 });
     setShowDialog({
       show: false,
@@ -197,6 +204,14 @@ const DoctorInformation = ({
               label="First Name"
             />
             <F_Input
+              name="middleName"
+              readOnly={readOnly}
+              control={control}
+              errors={errors}
+              rules={{}}
+              label="Middle Name"
+            />
+            <F_Input
               name="lastName"
               readOnly={readOnly}
               control={control}
@@ -211,6 +226,7 @@ const DoctorInformation = ({
               control={control}
               errors={errors}
               type="date"
+              maxDate={new Date().toISOString().split("T")[0]}
               rules={{ required: "DOB is required" }}
               label="Date Of Birth"
             />
@@ -289,9 +305,7 @@ const DoctorInformation = ({
               control={control}
               readOnly={readOnly}
               errors={errors}
-              rules={{
-                required: "Specialization is required",
-              }}
+              rules={{}}
               label="Specialization"
             />
             <F_Autocomplete
@@ -354,14 +368,30 @@ const DoctorInformation = ({
             />
 
             <F_Input
-              name="slotTime"
+              name="slotTimeInMin"
               control={control}
               readOnly={readOnly}
               errors={errors}
               rules={{
                 required: "Slot Time is required",
+                max: {
+                  value: 30,
+                  message: "Maximum time for a slot should be less than 30",
+                },
+                pattern: {
+                  value: REGEX_PATTERNS.POSITIVE_NUMBER_ONLY,
+                  message: "Invalid Slot Time",
+                },
               }}
               label="Slot Time"
+              endAdornment={
+                <InputAdornment
+                  position="start"
+                  sx={{ cursor: "pointer", fontSize: "0.75rem !important" }}
+                >
+                  Min
+                </InputAdornment>
+              }
             />
             <F_Input
               name="fee"
@@ -370,8 +400,24 @@ const DoctorInformation = ({
               errors={errors}
               rules={{
                 required: "Fee is required",
+                max: {
+                  value: 5000,
+                  message: "Maximum amount exceeded",
+                },
+                pattern: {
+                  value: REGEX_PATTERNS.POSITIVE_NUMBER_ONLY,
+                  message: "Invalid Fee",
+                },
               }}
               label="Fee"
+              endAdornment={
+                <InputAdornment
+                  position="start"
+                  sx={{ cursor: "pointer", fontSize: "0.75rem !important" }}
+                >
+                  INR
+                </InputAdornment>
+              }
             />
             <Alert severity="info">
               By creating a Doctor, a new user with Role DOCTOR will created.

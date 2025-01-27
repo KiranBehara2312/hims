@@ -29,8 +29,8 @@ const F_Autocomplete = ({
       variant="outlined"
       size="small"
       sx={{
-        mt: 1,
-        mb: 1,
+        mt: 0.25,
+        mb: 0.25,
         maxWidth: props.maxWidth ?? "100%",
         minWidth: props.minWidth ?? "100%",
       }}
@@ -80,9 +80,6 @@ const F_Autocomplete = ({
                   sx={{
                     "& .MuiInputBase-input": {
                       fontSize: "13px",
-                    },
-                    "& .MuiInputBase-input:selected": {
-                      fontSize: "33px",
                     },
                   }}
                 />

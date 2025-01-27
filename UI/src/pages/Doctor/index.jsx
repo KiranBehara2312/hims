@@ -127,7 +127,7 @@ const Doctor = () => {
     );
   };
   const fetchDoctors = async (paginationObj) => {
-    const response = await postData(`/doctor/doctors`, paginationObj);
+    const response = await postData(`/doctor/all`, paginationObj);
     if (response) {
       const oneObj = response?.data?.[0];
       setTableObj({

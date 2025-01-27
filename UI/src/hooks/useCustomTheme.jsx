@@ -160,6 +160,39 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
           listbox: {
             fontSize: "13px",
           },
+          popper: {
+            // "& .MuiAutocomplete-option": {
+            //   padding: "8px 12px",
+            //   "&:hover": {
+            //     backgroundColor: `${dColor} !important`,
+            //     color: "white",
+            //   },
+            //   '&[aria-selected="true"]': {
+            //     backgroundColor: `${dColor} !important`,
+            //     color: "white",
+            //   },
+            //   "&.Mui-focused": {
+            //     backgroundColor: `${dColor} !important`,
+            //     color: "white",
+            //   },
+            //   "&.Mui-selected": {
+            //     backgroundColor: `${dColor} !important`,
+            //     color: "white",
+            //   },
+            // },
+            "& .MuiAutocomplete-option:hover": {
+              backgroundColor: `${dColor} !important`,
+              color: "white",
+            },
+            "& .MuiAutocomplete-option:focused": {
+              backgroundColor: `${dColor} !important`,
+              color: "white",
+            },
+            '& .MuiAutocomplete-option[aria-selected="true"]': {
+              backgroundColor: `${dColor} !important`,
+              color: "white",
+            },
+          },
         },
       },
       MuiInputLabel: {

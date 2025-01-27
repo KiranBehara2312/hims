@@ -1,32 +1,72 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { GlassBG, MyHeading } from "../../../components/custom";
-import {
-  BLOOD_GROUPS,
-  DISABILITY_TYPES,
-  GENDER_LIST,
-  MARITAL_STATUS,
-  SALUTATIONS,
-} from "../../../constants/localDB/MastersDB";
 import F_Input from "../../../components/custom/form/F_Input";
-import F_Select from "../../../components/custom/form/F_Select";
 import F_DatePicker from "../../../components/custom/form/F_DatePicker";
+import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
+import { useSelector } from "react-redux";
+import {
+  c_gender,
+  c_maritalStatus,
+} from "../../../redux/slices/apiCacheSlice";
+import { postData } from "../../../helpers/http";
 
 const Personal = ({ control, errors, readOnly = false }) => {
+  const cachedGender = useSelector(c_gender);
+  const cachedMaritalStatus = useSelector(c_maritalStatus);
+  const [dropdownData, setDropdownData] = useState({
+    salutation: [],
+    gender: cachedGender,
+    bloodGroups: [],
+    maritalStatus: cachedMaritalStatus,
+    disabilityType: [],
+  });
+
+  useEffect(() => {
+    loadMasterItems();
+  }, []);
+
+  const loadMasterItems = async () => {
+    const [res1, res2, res3] = await Promise.all([
+      postData("/masters/data", {
+        type: "disabilityStatus",
+        limit: "Infinity",
+      }),
+      postData("/masters/data", {
+        type: "salutation",
+        limit: "Infinity",
+      }),
+      postData("/masters/data", {
+        type: "bloodGroup",
+        limit: "Infinity",
+      }),
+    ]);
+    setDropdownData((prev) => {
+      return {
+        ...prev,
+        disabilityType: res1?.data ?? [],
+        salutation: res2?.data ?? [],
+        bloodGroups: res3?.data ?? [],
+        gender: cachedGender,
+        maritalStatus: cachedMaritalStatus,
+      };
+    });
+  };
+
   return (
     <>
       <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
-          text="Personal Information"
+          text="Personal"
           variant="h6"
           sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
         />
 
-        <F_Select
+        <F_Autocomplete
           control={control}
           name={"salutation"}
           label={"Salutation"}
-          list={SALUTATIONS}
+          list={dropdownData.salutation}
           rules={{ required: "Salutation is required" }}
           isRequired={true}
           errors={errors}
@@ -72,42 +112,42 @@ const Personal = ({ control, errors, readOnly = false }) => {
           maxDate={new Date().toISOString().split("T")[0]}
         />
 
-        <F_Select
+        <F_Autocomplete
           control={control}
           name={"gender"}
           label={"Gender"}
-          list={GENDER_LIST}
+          list={dropdownData.gender}
           rules={{ required: "Gender is required" }}
           isRequired={true}
           errors={errors}
           readOnly={readOnly}
         />
 
-        <F_Select
+        <F_Autocomplete
           control={control}
           name={"bloodGroup"}
           label={"Blood Group"}
-          list={BLOOD_GROUPS}
+          list={dropdownData.bloodGroups}
           rules={{}}
           errors={errors}
           readOnly={readOnly}
         />
 
-        <F_Select
+        <F_Autocomplete
           control={control}
           name={"maritalStatus"}
           label={"Marital Status"}
-          list={MARITAL_STATUS}
+          list={dropdownData.maritalStatus}
           rules={{}}
           errors={errors}
           readOnly={readOnly}
         />
 
-        <F_Select
+        <F_Autocomplete
           control={control}
           name={"disableType"}
           label={"Disablity Type"}
-          list={DISABILITY_TYPES}
+          list={dropdownData.disabilityType}
           rules={{}}
           errors={errors}
           readOnly={readOnly}

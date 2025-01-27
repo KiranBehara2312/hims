@@ -42,7 +42,6 @@ const Payment = ({
   // Use callback to prevent unnecessary re-renders
   const actionClickHandler = useCallback(
     (action) => {
-      console.log("action" + action);
       switch (action) {
         case "ADD_ANOTHER_SERVICE":
           return (
@@ -227,7 +226,7 @@ const Payment = ({
       <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
-          text="Payment Information"
+          text="Payment"
           variant="h6"
           sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
         />

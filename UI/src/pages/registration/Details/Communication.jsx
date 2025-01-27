@@ -1,34 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { GlassBG, MyHeading } from "../../../components/custom";
-import {
-  BLOOD_GROUPS,
-  GENDER_LIST,
-  MARITAL_STATUS,
-  SALUTATIONS,
-} from "../../../constants/localDB/MastersDB";
 import F_Input from "../../../components/custom/form/F_Input";
-import F_Select from "../../../components/custom/form/F_Select";
 import { REGEX_PATTERNS } from "../../../constants/Regex";
 import { postData } from "../../../helpers/http";
+import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
+import { InputAdornment } from "@mui/material";
+import { FaAngleDoubleDown } from "react-icons/fa";
+import MyTooltip from "../../../components/shared/MyTootlip";
 
-const Communication = ({ control, errors, readOnly = false }) => {
-  const [states, setStates] = useState([]);
+const Communication = ({ control, errors, readOnly = false, formValues, setValue }) => {
+  const [dropdownData, setDropdownData] = useState({
+    country: [],
+    states: [],
+  });
+
   useEffect(() => {
-    fetchStates();
+    loadMasterItems();
   }, []);
-  const fetchStates = async () => {
-    const response = await postData("/masters/states", {
-      page: 1,
-      limit: 100,
+
+  const loadMasterItems = async () => {
+    const [res1, res2, res3] = await Promise.all([
+      postData("/masters/data", {
+        type: "countries",
+        limit: "Infinity",
+      }),
+      postData("/masters/data", {
+        type: "allStates",
+        limit: "Infinity",
+      }),
+    ]);
+    setDropdownData((prev) => {
+      return {
+        ...prev,
+        country: res1?.data?.filter((x) => x.isDefault === 1) ?? [],
+        states: res2?.data ?? [],
+      };
     });
-    setStates(response?.data ?? []);
   };
+
   return (
     <>
       <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
-          text="Communication Information"
+          text="Communication"
           variant="h6"
           sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
         />
@@ -45,6 +60,33 @@ const Communication = ({ control, errors, readOnly = false }) => {
             },
           }}
           label="Contact No"
+          readOnly={readOnly}
+        />
+
+        <F_Input
+          name="whatsAppNo"
+          control={control}
+          errors={errors}
+          rules={{
+            pattern: {
+              value: REGEX_PATTERNS.mobileNumber,
+              message: "Invalid Contact number",
+            },
+          }}
+          label="WhatsApp No"
+          endAdornment={
+            <InputAdornment
+              position="start"
+              sx={{ cursor: "pointer" }}
+              onClick={() =>
+                setValue("whatsAppNo", `${formValues?.contactNumber}`)
+              }
+            >
+              <MyTooltip title="Same as Contact Number">
+                <FaAngleDoubleDown />
+              </MyTooltip>
+            </InputAdornment>
+          }
           readOnly={readOnly}
         />
 
@@ -81,12 +123,23 @@ const Communication = ({ control, errors, readOnly = false }) => {
           readOnly={readOnly}
         />
 
-        <F_Select
+        <F_Autocomplete
           control={control}
           name={"state"}
           label={"State"}
-          list={states}
+          list={dropdownData.states}
           rules={{ required: "State is required" }}
+          isRequired={true}
+          errors={errors}
+          readOnly={readOnly}
+        />
+
+        <F_Autocomplete
+          control={control}
+          name={"country"}
+          label={"Country"}
+          list={dropdownData.country}
+          rules={{ required: "Country is required" }}
           isRequired={true}
           errors={errors}
           readOnly={readOnly}

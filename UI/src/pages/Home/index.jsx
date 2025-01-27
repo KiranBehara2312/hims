@@ -33,18 +33,16 @@ const Home = () => {
       sx={{
         display: "flex",
         gap: 1,
-        mt:1,
+        mt: 1,
         flexWrap: "wrap",
         justifyContent: "center",
       }}
     >
       {cards?.map((x, i) => {
         return (
-          <GlassBG
-            key={i}
-            cardStyles={{minWidth : "200px"}}
-          >
+          <GlassBG key={i} cardStyles={{ minWidth: "200px" }}>
             <Grid
+              container
               spacing={2}
               sx={{
                 display: "flex",

@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GlassBG, MyHeading } from "../../../components/custom";
-import F_Select from "../../../components/custom/form/F_Select";
 import { postData } from "../../../helpers/http";
-import { Box, Typography } from "@mui/material";
-import F_Input from "../../../components/custom/form/F_Input";
 import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
 import DoctorInformationCard from "../../../components/shared/DoctorInformationCard";
 
@@ -47,90 +44,12 @@ const Doctor = ({
     setValue("doctorConsultationFee", selDoc?.fee ?? 0);
   };
 
-  const DocInfoCard = () => {
-    return (
-      <GlassBG cardStyles={{ width: "210px", height: "auto" }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexDirection: "column",
-            mt: 2.5,
-          }}
-        >
-          <Typography variant="caption">
-            Dr.{selectedDoc?.firstName} {selectedDoc?.lastName}
-          </Typography>
-          <Typography variant="caption">Name</Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            mt: 2.5,
-            flexDirection: "column",
-          }}
-        >
-          <Typography variant="caption">{selectedDoc?.designation}</Typography>
-          <Typography variant="caption">Designation:</Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            mt: 2.5,
-            flexDirection: "column",
-          }}
-        >
-          <Typography variant="caption">{selectedDoc?.department}</Typography>
-          <Typography variant="caption">Department:</Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            mt: 2.5,
-            flexDirection: "column",
-          }}
-        >
-          <Typography variant="caption">
-            {selectedDoc?.qualification}
-          </Typography>
-          <Typography variant="caption">Qualification:</Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            mt: 2.5,
-            flexDirection: "column",
-          }}
-        >
-          <Typography variant="caption">
-            {selectedDoc?.specialization}
-          </Typography>
-          <Typography variant="caption">Specialization:</Typography>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            mt: 2.5,
-            flexDirection: "column",
-          }}
-        >
-          <Typography variant="caption">{selectedDoc?.fee}</Typography>
-          <Typography variant="caption">Fees</Typography>
-        </Box>
-      </GlassBG>
-    );
-  };
   return (
     <>
       <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
         <MyHeading
           alignCenter
-          text="Doctor Information"
+          text="Doctor"
           variant="h6"
           sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
         />

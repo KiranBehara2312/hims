@@ -10,6 +10,7 @@ const errorHandler = require("./middlewares/ErrorHandler");
 const initRouter = require("./modules/init/router");
 const masterRouter = require("./modules/masters/router");
 const notificationRouter = require("./modules/notification/router");
+const doctorRouter = require("./modules/doctor/router");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,6 +23,7 @@ app.use("/auth", authRouter);
 app.use("/init", isAuthenticated, initRouter)
 app.use("/notification", isAuthenticated, notificationRouter)
 app.use("/masters", isAuthenticated, masterRouter)
+app.use("/doctor", isAuthenticated, doctorRouter);
 app.use(errorHandler);
 
 const startServer = async () => {

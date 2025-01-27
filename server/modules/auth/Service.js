@@ -63,6 +63,7 @@ async function createNewUser(userData) {
   try {
     const QUERY = SQL1.CREATE_UPDATE_USER_PROC;
     const {
+      userId,
       orgId,
       firstName,
       middleName,
@@ -80,6 +81,7 @@ async function createNewUser(userData) {
       updatedBy,
     } = userData;
     const result = await db.query(QUERY, [
+      userId,
       orgId,
       firstName,
       middleName,
