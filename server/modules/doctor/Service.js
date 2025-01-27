@@ -1,4 +1,5 @@
 const db = require("../../db");
+const { buildAndWhereClause } = require("../../helpers");
 const SQL1 = require("../../mapQueries/QueryMappings1");
 
 async function upsertDoctor(payload) {
@@ -12,9 +13,11 @@ async function upsertDoctor(payload) {
   }
 }
 
-async function getAllDoctorsFromDB(page = 1, pageSize = 10) {
+async function getAllDoctorsFromDB(page = 1, pageSize = 10, filters = null) {
   try {
-    const QUERY = SQL1.GET_ALL_ACTIVE_DOCTORS;
+    const whereClause = buildAndWhereClause(filters);
+    console.log("Where  ----> ", whereClause);
+    const QUERY = `${SQL1.GET_ALL_ACTIVE_DOCTORS} ${whereClause}`;
     let totalPages = 0;
     let totalRecords = 0;
     let result = [];

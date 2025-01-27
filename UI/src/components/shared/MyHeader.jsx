@@ -51,6 +51,7 @@ import MyTooltip from "./MyTootlip";
 import { postData } from "../../helpers/http";
 import DynamicIcon from "./DynamicIcon";
 import {
+  c_org,
   setAllUsers,
   setGenderData,
   setMaritalStatus,
@@ -89,13 +90,13 @@ const MyHeader = () => {
   ];
 
   const loggedInUser = useSelector((state) => state.userDetails.user);
+  const cachedOrgData = useSelector(c_org);
   const [showDialog, setShowDialog] = useState({
     show: false,
     rerender: false,
     modalWidth: "md",
   });
   const [menuItems, setMenuItems] = useState([]);
-  const [localOrgData, setLocalOrgData] = useState(null);
   const [openMenu, setOpenMenu] = useState(null);
   const [selectedMoreAction, setSelectedMoreAction] = useState(null);
   const [notificationDialog, setNotificationDialog] = useState(false);
@@ -119,7 +120,6 @@ const MyHeader = () => {
 
   useEffect(() => {
     loadMenuItems();
-    loadCacheData();
     let inte = setInterval(() => {
       const dateWithTime = formatDate("DD MMM YYYY - hh:mm a");
       const day = WEEK_DAYS_LIST[new Date().getDay()]?.label;
@@ -135,42 +135,6 @@ const MyHeader = () => {
   const loadMenuItems = async () => {
     const response = await postData("/init/menu", {});
     setMenuItems(response?.data ?? []);
-  };
-
-  const loadCacheData = async () => {
-    try {
-      const [res1, res2, res3, res4, res5, res6, res7] = await Promise.all([
-        postData("/masters/data", { type: "gender" }),
-        postData("/masters/data", { type: "salutation" }),
-        postData("/masters/data", { type: "maritalStatus" }),
-        postData("/init/orgData", {}),
-        postData("/masters/data", { type: "roles" }),
-        postData("/masters/data", { type: "notificationPriority" }),
-        postData("/masters/data", { type: "allUsers" }),
-      ]);
-
-      dispatch(setGenderData(res1?.data ?? []));
-      dispatch(setSalutationData(res2?.data ?? []));
-      dispatch(setMaritalStatus(res3?.data ?? []));
-      dispatch(setOrgData(res4?.data ?? []));
-      dispatch(setUserRoles(res5?.data ?? []));
-      dispatch(setNotificationPriority(res6?.data ?? []));
-      dispatch(
-        setAllUsers(
-          res7?.data?.map((x) => {
-            return {
-              ...x,
-              dropdownValue: x?.userId,
-              dropdownLabel: x?.fullName,
-            };
-          }) ?? []
-        )
-      );
-
-      setLocalOrgData(res4?.data ?? []);
-    } catch (error) {
-      console.error("Error loading menu items for cache:", error);
-    }
   };
 
   const closeDialog = () => {
@@ -293,9 +257,11 @@ const MyHeader = () => {
         {children?.length > 0 && (
           <Collapse in={isOpen} timeout="auto" unmountOnExit>
             <List>
-              {children.map((childItem) =>
-                renderListItem(childItem, level + 1)
-              )}
+              {children.map((childItem, i) => (
+                <React.Fragment key={i + crypto.randomUUID()}>
+                  {renderListItem(childItem, level + 1)}
+                </React.Fragment>
+              ))}
             </List>
           </Collapse>
         )}
@@ -374,7 +340,7 @@ const MyHeader = () => {
             onClick={() => setOpen(true)}
           />
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            {localOrgData?.[0]?.orgName}
+            {cachedOrgData?.[0]?.orgName}
           </Typography>
 
           <MyHeading variant="body2" text={currentDateTime} sx={{ pr: 1 }} />

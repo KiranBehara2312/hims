@@ -1,10 +1,19 @@
 import React from "react";
 import { GlassBG, MyHeading } from "../custom";
-import { Box, Button, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Chip, Skeleton, Typography } from "@mui/material";
 import DisplayData from "./DisplayData";
 import { WEEK_DAYS_LIST } from "../../constants/localDB/MastersDB";
+import { useSelector } from "react-redux";
+import {
+  c_doctorDepartments,
+  c_doctorDesignations,
+  c_orgShifts,
+} from "../../redux/slices/apiCacheSlice";
 
 const DoctorInformationCard = ({ selectedDoctor = null }) => {
+  const cachedDoctorDesignations = useSelector(c_doctorDesignations);
+  const cachedDoctorDepartments = useSelector(c_doctorDepartments);
+  const cachedOrgShifts = useSelector(c_orgShifts);
   return (
     <GlassBG cardStyles={{ height: "auto" }}>
       {selectedDoctor === null && (
@@ -35,13 +44,14 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
               width: "100%",
             }}
           >
-            <DisplayData
-              label="Name"
-              value={`Dr.${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`}
-            />
+            <DisplayData label="Name" value={`${selectedDoctor?.fullName}`} />
             <DisplayData
               label="Designation"
-              value={selectedDoctor?.designation}
+              value={
+                cachedDoctorDesignations?.find(
+                  (x) => x.id === selectedDoctor?.designation
+                )?.name
+              }
             />
           </Box>
 
@@ -57,7 +67,11 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
           >
             <DisplayData
               label="Available Shift"
-              value={selectedDoctor?.shiftTimings}
+              value={
+                cachedOrgShifts?.find(
+                  (x) => x.id === selectedDoctor?.shiftTimings
+                )?.name
+              }
             />
             <DisplayData label="Fee" value={selectedDoctor?.fee} />
           </Box>
@@ -74,16 +88,20 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
           >
             <DisplayData
               label="Department"
-              value={selectedDoctor?.department}
+              value={
+                cachedDoctorDepartments?.find(
+                  (x) => x.id === selectedDoctor?.department
+                )?.name
+              }
             />
-            <DisplayData
+            {/* <DisplayData
               label="Qualification"
               value={selectedDoctor?.qualification}
             />
             <DisplayData
               label="Specialization"
               value={selectedDoctor?.specialization}
-            />
+            /> */}
           </Box>
 
           <Box
@@ -107,8 +125,13 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
             >
               {WEEK_DAYS_LIST?.map((x) => {
                 return (
-                  <Button
+                  <Chip
                     size="small"
+                    color={
+                      selectedDoctor?.availableDays?.includes(x.label)
+                        ? "primary"
+                        : "outlined"
+                    }
                     variant={
                       selectedDoctor?.availableDays?.includes(x.label)
                         ? "contained"
@@ -117,6 +140,7 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
                     key={x.label}
                     sx={{
                       height: "25px",
+                      minWidth: "60px",
                       pointerEvents: "none",
                       textDecoration: selectedDoctor?.availableDays?.includes(
                         x.label
@@ -124,18 +148,19 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
                         ? ""
                         : "line-through",
                     }}
-                  >
-                    <MyHeading
-                      text={x.shortName}
-                      sx={{
-                        color: selectedDoctor?.availableDays?.includes(x.label)
-                          ? "white !important"
-                          : "gray !important",
-                      }}
-                      variant="body2"
-                      alignCenter
-                    />
-                  </Button>
+                    label={x.shortName}
+                  />
+                  //   <MyHeading
+                  //     text={x.shortName}
+                  //     sx={{
+                  //       color: selectedDoctor?.availableDays?.includes(x.label)
+                  //         ? "white !important"
+                  //         : "gray !important",
+                  //     }}
+                  //     variant="body2"
+                  //     alignCenter
+                  //   />
+                  // </Chip>
                 );
               })}
             </Box>

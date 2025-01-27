@@ -20,6 +20,7 @@ const MASTER_MAPPER = {
   patientCategory: "GET_PATIENT_CAT_LIST",
   paymentType: "GET_PAYMENT_TYPE",
   disabilityStatus: "GET_DISABILITY_STATUS",
+  visitTypes: "GET_ALL_REG_VISIT_TYPES",
 };
 
 const master = asyncHandler(async (req, res) => {

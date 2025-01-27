@@ -3,6 +3,7 @@ const SQL1 = {
   GET_USERS_LIST: `SELECT userId, orgId, firstName, middleName, lastName, fullName, userPhone, roleId, userAadhar, isActive, isBlocked, isLocked, incorrectPwdAttempts FROM ORG_USR_DETAILS WHERE isActive = '1'`,
   GET_COUNTRY_DATA: `SELECT *, countryId as id, countryName as name FROM GBL_CTRY_DETAILS WHERE isActive = '1'`,
   GET_ALL_STATE_DATA: `SELECT *, stateId as id, stateName as name FROM GBL_STAT_DETAILS WHERE isActive = '1'`,
+  GET_ALL_REG_VISIT_TYPES: `SELECT *, visitTypeId as id, visitTypeName as name FROM GBL_REG_VISITTYPE WHERE isActive = '1'`,
   GET_ROLE_DATA_BY_ROLE_ID: `SELECT * FROM GBL_USR_ROLES WHERE roleId = ?;`,
   GET_USER_BY_USER_PHONE: `SELECT * FROM ORG_USR_DETAILS WHERE userPhone = ?;`,
   UPDATE_INCORRECT_PWD_ATTEMPTS: `UPDATE ORG_USR_DETAILS SET incorrectPwdAttempts = incorrectPwdAttempts + 1 WHERE userId = ?;`,
@@ -11,7 +12,7 @@ const SQL1 = {
   CREATE_UPDATE_USER_PROC:
     "CALL CREATE_UPDATE_USER_PROC(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,?);",
   CREATE_UPDATE_DOC_PROC: `CALL UPSERT_DOC_PROC(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-  GET_ALL_ACTIVE_DOCTORS: `SELECT * FROM ORG_DOC_DETAILS WHERE isActive = 1 `,
+  GET_ALL_ACTIVE_DOCTORS: `SELECT * FROM ORG_DOC_DETAILS  `,
   GET_PARENT_SIDENAV_MENU: `SELECT * FROM ORG_SNV_PRT_ITEMS WHERE isActive = '1';`,
   GET_CHILD_SIDENAV_MENU: `SELECT * FROM ORG_SNV_CHL_ITEMS where parentId = ? AND isActive = '1';`,
   GET_ORG_DETAILS: `SELECT * FROM GBL_ORG_DETAILS`,

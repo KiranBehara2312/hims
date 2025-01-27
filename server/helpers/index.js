@@ -41,4 +41,21 @@ const convertTo12HourFormat = (time) => {
   return `${hours}:${minutesFormatted} ${ampm}`;
 };
 
-module.exports = { calculateAge, convertTo24HourFormat, convertTo12HourFormat };
+const buildAndWhereClause = (obj = null) => {
+  let whereClause = "";
+  if (obj !== null && Object.entries(obj).length > 0) {
+    const conditions = Object.entries(obj).map(([key, value], index) => {
+      value = value.replace(/'/g, "''");
+      return `${key} = '${value}'`;
+    });
+    whereClause = "WHERE " + conditions.join(" AND ");
+  }
+  return whereClause;
+};
+
+module.exports = {
+  calculateAge,
+  convertTo24HourFormat,
+  convertTo12HourFormat,
+  buildAndWhereClause,
+};

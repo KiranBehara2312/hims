@@ -4,8 +4,8 @@ const { upsertDoctor, getAllDoctorsFromDB } = require("./Service");
 const bcrypt = require("bcrypt");
 
 const getAllDocs = asyncHandler(async (req, res) => {
-  const { page, limit } = req.body;
-  const result = await getAllDoctorsFromDB(page, limit);
+  const { page, limit, filters } = req.body;
+  const result = await getAllDoctorsFromDB(page, limit, filters);
   res.status(200).json({
     message: "Doctor's fetched successfully",
     ...result,

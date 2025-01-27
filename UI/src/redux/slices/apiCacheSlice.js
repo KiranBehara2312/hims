@@ -16,6 +16,8 @@ export const apiCacheSlice = createSlice({
     userRoles: [],
     notificationPriority: [],
     allUsers: [],
+    doctorDepartments: [],
+    doctorDesignations: [],
   },
   reducers: {
     setOrgData: createDataReducer("orgData"),
@@ -25,6 +27,9 @@ export const apiCacheSlice = createSlice({
     setUserRoles: createDataReducer("userRoles"),
     setNotificationPriority: createDataReducer("notificationPriority"),
     setAllUsers: createDataReducer("allUsers"),
+    setDoctorDesignations: createDataReducer("doctorDesignations"),
+    setDoctorDepartments: createDataReducer("doctorDepartments"),
+    setOrgShifts: createDataReducer("orgShifts"),
   },
 });
 
@@ -35,6 +40,9 @@ export const c_maritalStatus = (state) => state.apiCache.maritalStatus;
 export const c_userRoles = (state) => state.apiCache.userRoles;
 export const c_notificationPriority = (state) => state.apiCache.notificationPriority;
 export const c_allUsers = (state) => state.apiCache.allUsers;
+export const c_doctorDepartments = (state) => state.apiCache.doctorDepartments;
+export const c_doctorDesignations = (state) => state.apiCache.doctorDesignations;
+export const c_orgShifts = (state) => state.apiCache.orgShifts;
 
 export const {
   setOrgData,
@@ -43,7 +51,10 @@ export const {
   setMaritalStatus,
   setUserRoles,
   setNotificationPriority,
-  setAllUsers
+  setAllUsers,
+  setDoctorDesignations,
+  setDoctorDepartments,
+  setOrgShifts,
 } = apiCacheSlice.actions;
 
 export default apiCacheSlice.reducer;

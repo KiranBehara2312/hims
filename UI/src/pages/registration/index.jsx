@@ -27,6 +27,7 @@ const DEFAULT_VAL = {
   bloodGroup: "",
   contactNumber: "",
   dateOfBirth: "",
+  doctorDepartment: "",
   doctor: "",
   firstName: "",
   gender: "",
@@ -65,6 +66,7 @@ const Registration = ({
     control,
     setValue,
     watch,
+    getValues,
     reset,
     formState: { errors },
   } = useForm({
@@ -248,6 +250,7 @@ const Registration = ({
               control={control}
               errors={errors}
               formValues={formValues}
+              getValues={getValues}
               readOnly={action === "VIEW" || action === "EDIT"}
               setValue={setValue}
             />

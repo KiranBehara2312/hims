@@ -4,7 +4,11 @@ import { Outlet } from "react-router-dom";
 import MyHeader from "../../components/shared/MyHeader";
 import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { setUserDetails } from "../../redux/slices/userDetailsSlice";
+import {
+  emptyUserDetails,
+  setUserDetails,
+} from "../../redux/slices/userDetailsSlice";
+import CachedComponent from "../../components/shared/CachedComponent";
 
 const PagesLayout = () => {
   const dispatch = useDispatch();
@@ -15,12 +19,15 @@ const PagesLayout = () => {
       localStorage.getItem("authToken") === ""
     ) {
       window.location.href = window.location.origin + "/auth/login";
+      dispatch(emptyUserDetails());
+      localStorage.removeItem("authToken");
     } else {
       dispatch(setUserDetails(localStorage.getItem("authToken")));
     }
   }, []);
   return (
     <BaseLayout>
+      <CachedComponent />
       <MyHeader />
       <Box sx={{ p: 0.5 }}>
         <Outlet />

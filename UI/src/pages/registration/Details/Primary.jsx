@@ -28,7 +28,7 @@ const Primary = ({ control, errors, readOnly = "", formValues }) => {
   }, []);
 
   const loadInitData = async () => {
-    const [res1, res2] = await Promise.all([
+    const [res1, res2, res3] = await Promise.all([
       postData("/masters/data", {
         type: "patientTypes",
         limit: "Infinity",
@@ -37,12 +37,17 @@ const Primary = ({ control, errors, readOnly = "", formValues }) => {
         type: "patientCategory",
         limit: "Infinity",
       }),
+      postData("/masters/data", {
+        type: "visitTypes",
+        limit: "Infinity",
+      }),
     ]);
     setDropdownData((prevv) => {
       return {
         ...prevv,
         patientType: res1?.data ?? [],
         patientCategory: res2?.data ?? [],
+        visitType: res3?.data ?? [],
       };
     });
   };
@@ -88,26 +93,12 @@ const Primary = ({ control, errors, readOnly = "", formValues }) => {
           isDisabled={readOnly === "VIEW"}
           readOnly={readOnly === "VIEW"}
         />
-
         <F_Autocomplete
-          control={control}
-          name={"registrationType"}
-          label={"Registration Type"}
-          list={dropdownData.registrationType}
-          rules={{ required: "Registration Type is required" }}
-          defaultValue={"New" ?? ""}
-          isRequired={true}
-          errors={errors}
-          isDisabled={readOnly === "VIEW"}
-          readOnly={readOnly === "VIEW"}
-        />
-        <F_Select
           control={control}
           name={"visitType"}
           label={"Visit Type"}
-          list={VISIT_TYPES}
+          list={dropdownData.visitType}
           rules={{ required: "Visit Type is required" }}
-          defaultValue={"New Case" ?? ""}
           isRequired={true}
           errors={errors}
           isDisabled={readOnly === "VIEW"}
