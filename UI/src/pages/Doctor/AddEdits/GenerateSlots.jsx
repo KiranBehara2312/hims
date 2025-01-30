@@ -10,11 +10,9 @@ import F_TimeSelect from "../../../components/custom/form/F_TimeSelect";
 import F_Input from "../../../components/custom/form/F_Input";
 import F_DatePicker from "../../../components/custom/form/F_DatePicker";
 import { errorAlert, successAlert } from "../../../helpers";
-import {
-  DAILY_SHIFT,
-  WEEK_DAYS_LIST,
-} from "../../../constants/localDB/MastersDB";
-import DisplayData from "../../../components/shared/DisplayData";
+import { WEEK_DAYS_LIST } from "../../../constants/localDB/MastersDB";
+import { c_orgShifts } from "../../../redux/slices/apiCacheSlice";
+import { useSelector } from "react-redux";
 
 const DEFAULT_VAL = {};
 
@@ -26,6 +24,7 @@ const GenerateSlots = ({
   action = null,
 }) => {
   const theme = useTheme();
+  const cachedOrgShifts = useSelector(c_orgShifts);
   const {
     register,
     handleSubmit,
@@ -149,10 +148,10 @@ const GenerateSlots = ({
               }}
               maxWidth="100%"
               label="From Time"
-              minTime={
-                DAILY_SHIFT?.find((x) => x?.value === selectedRow?.shiftTimings)
-                  ?.shiftTimingsFrom
-              }
+              // minTime={
+              //   DAILY_SHIFT?.find((x) => x?.value === selectedRow?.shiftTimings)
+              //     ?.shiftTimingsFrom
+              // }
             />
 
             <F_TimeSelect
@@ -164,10 +163,10 @@ const GenerateSlots = ({
               }}
               maxWidth="100%"
               label="To Time"
-              maxTime={
-                DAILY_SHIFT?.find((y) => y?.value === selectedRow?.shiftTimings)
-                  ?.shiftTimingsTo
-              }
+              // maxTime={
+              //   DAILY_SHIFT?.find((y) => y?.value === selectedRow?.shiftTimings)
+              //     ?.shiftTimingsTo
+              // }
             />
             <F_Input
               name="slotDuration"

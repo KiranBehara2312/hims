@@ -44,14 +44,15 @@ const F_Autocomplete = ({
         render={({ field: { onChange, ref, value } }) => (
           <Fragment>
             <Autocomplete
+              disablePortal
               multiple={multiple}
               value={
                 multiple
                   ? list.filter((option) =>
                       value.includes(option.dropdownValue)
                     )
-                  : list.find((option) => option.dropdownValue === value) ||
-                    null
+                  : list.find((option) => option.dropdownValue === value)
+                      ?.dropdownValue || null
               }
               onChange={(event, newValue) => {
                 const selectedValue = multiple
@@ -61,16 +62,19 @@ const F_Autocomplete = ({
                 onSelect(selectedValue);
               }}
               options={list}
-              getOptionLabel={(option) => option?.dropdownLabel || ""}
-              isOptionEqualToValue={(option, val) =>
-                option.dropdownValue === val
-              }
+              getOptionLabel={(option) => {
+                const obj =
+                  list.find((item) => item.dropdownValue === option) ?? null;
+                return obj?.dropdownLabel ?? option?.dropdownLabel;
+              }}
+              isOptionEqualToValue={(option, val) => {
+                return option.dropdownValue === val;
+              }}
               disableCloseOnSelect={multiple}
               disabled={isDisabled}
               readOnly={readOnly}
               renderInput={(params) => (
                 <TextField
-                  {...params}
                   label={label}
                   inputRef={ref}
                   error={!!errors?.[name]}
@@ -82,6 +86,7 @@ const F_Autocomplete = ({
                       fontSize: "13px",
                     },
                   }}
+                  {...params}
                 />
               )}
               disableClearable={false}

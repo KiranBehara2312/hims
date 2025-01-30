@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { GlassBG, MyHeading } from "../../../components/custom";
-import {
-  PAYMENT_STATUSES,
-  PAYMENT_TYPES,
-} from "../../../constants/localDB/MastersDB";
+import { PAYMENT_STATUSES } from "../../../constants/localDB/MastersDB";
 import F_Input from "../../../components/custom/form/F_Input";
 import F_Select from "../../../components/custom/form/F_Select";
 import {
@@ -21,6 +18,9 @@ import HeaderWithSearch from "../../../components/custom/HeaderWithSearch";
 import WorkInProgress from "../../../components/shared/WorkInProgress";
 import { FaPencilAlt } from "react-icons/fa";
 import MyTooltip from "../../../components/shared/MyTootlip";
+import { useSelector } from "react-redux";
+import { c_paymentTypes } from "../../../redux/slices/apiCacheSlice";
+import { NEVER_CHANGING_VALS } from "../../../constants/localDB/neverChanging";
 
 const Payment = ({
   control,
@@ -29,6 +29,7 @@ const Payment = ({
   setValue,
   setPaymentChargeDetails = () => {},
 }) => {
+  const cachedPaymentTypes = useSelector(c_paymentTypes);
   const [paymentCharges, setPaymentCharges] = useState([]);
   const [selectedAction, setSelectedAction] = useState("");
   const [totalAmtStr, setTotalAmtStr] = useState("");
@@ -92,15 +93,14 @@ const Payment = ({
 
   const closeDialog = () => {
     setShowDialog((prev) => ({ ...prev, show: false }));
-    setSelectedAction("");
-    setComponent(null);
+    setSelectedAction(() => "");
+    setComponent(() => null);
   };
 
   // Fetch payment details
   const fetchPaymentDetails = async () => {
-    const response = await postData("/payment/registrationCharges", {
-      serviceLocation: "REGISTRATION",
-      doctor: formValues?.doctor,
+    const response = await postData("/paymentServices/registrationServices", {
+      doctorId: formValues?.doctor,
     });
     const charges = response?.data ?? [];
     if (!charges.length) return;
@@ -108,26 +108,25 @@ const Payment = ({
     calculateTotalAmount(charges);
   };
 
-  // Calculate total amount from charges
   const calculateTotalAmount = (charges) => {
     const totalAmount = charges?.reduce(
-      (acc, cur) => acc + cur.serviceAmount,
+      (acc, cur) => acc + +cur.serviceAmount,
       0
     );
+    const roundedTotalAmount = totalAmount ? totalAmount.toFixed(2) : "0.00";
     setPaymentChargeDetails(charges);
-    setTotalAmtStr(`${totalAmount}`);
+    setTotalAmtStr(`${roundedTotalAmount}`);
   };
 
   // Side effects to handle dialog and selectedAction
   useEffect(() => {
     if (!selectedAction) return;
-    console.log("1 " + selectedAction);
     const componentToRender = actionClickHandler(selectedAction);
     setComponent(componentToRender);
 
     return () => {
-      setSelectedAction("");
-      setComponent(null);
+      setSelectedAction(() => "");
+      setComponent(() => null);
       setShowDialog((prev) => ({
         rerender: false,
         show: false,
@@ -165,59 +164,31 @@ const Payment = ({
   // Payment Summary component
   const PaymentSummary = () => {
     return (
-      <GlassBG cardStyles={{ width: "190px", mt: 2, height: "auto" }}>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <>
+        {paymentCharges?.map((x, i) => (
           <span
+            key={i}
             style={{
               display: "flex",
+              flexDirection: "row",
               justifyContent: "space-between",
-              borderBottom: "0.5px solid gray",
+              alignItems: "center",
+              borderTop: "0.25px solid gray",
             }}
           >
-            <Typography variant="caption">Service</Typography>
-            <Typography variant="caption">Amount</Typography>
-          </span>
-          {paymentCharges?.map((x, i) => (
-            <span
-              key={i}
-              style={{
-                display: "flex",
-                marginTop: "8px",
-                justifyContent: "space-between",
-              }}
+            <MyTooltip
+              title={x.serviceName?.length > 30 ? x.serviceName : null}
             >
-              <Typography variant="caption" sx={{ fontSize: "10px" }}>
+              <Typography variant="caption" sx={{ fontSize: "9px" }}>
                 {x.serviceName}
               </Typography>
-              <Typography variant="caption">{x.serviceAmount}</Typography>
-            </span>
-          ))}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              borderTop: "0.5px solid gray",
-              mt: 1,
-              pt: 1,
-            }}
-          >
-            <Typography variant="caption" sx={{ fontSize: "10px" }}>
-              Total in INR
+            </MyTooltip>
+            <Typography variant="caption" sx={{ pr: 1 }}>
+              {x.serviceAmount}
             </Typography>
-            <Typography variant="caption" sx={{ fontSize: "12px" }}>
-              {totalAmtStr ?? ""}
-            </Typography>
-          </Box>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{ mt: 1 }}
-            onClick={() => setSelectedAction("ADD_ANOTHER_SERVICE")}
-          >
-            Add another service
-          </Button>
-        </Box>
-      </GlassBG>
+          </span>
+        ))}
+      </>
     );
   };
 
@@ -244,7 +215,15 @@ const Payment = ({
           control={control}
           name={"paymentType"}
           label={"Payment Type"}
-          list={PAYMENT_TYPES}
+          list={
+            formValues?.patientCategory === NEVER_CHANGING_VALS.PAT_CAT_PAYER
+              ? cachedPaymentTypes?.filter(
+                  (x) => x.id === NEVER_CHANGING_VALS.PAY_TYPE_INSURANCE
+                )
+              : cachedPaymentTypes?.filter(
+                  (x) => x.id !== NEVER_CHANGING_VALS.PAY_TYPE_INSURANCE
+                )
+          }
           rules={{ required: "Payment Type is required" }}
           isRequired={true}
           errors={errors}
@@ -284,8 +263,45 @@ const Payment = ({
         />
         {paymentCharges?.length > 0 && (
           <>
-            <PaymentSummary />
-            <PaymentStatus sx={{ mt: 2 }} status={formValues?.paymentStatus} />
+            <span
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: "10px",
+              }}
+            >
+              <Typography variant="caption">Service</Typography>
+              <Typography variant="caption">Amount</Typography>
+            </span>
+
+            <Box sx={{ maxHeight: "245px", overflowY: "auto",  }}>
+              <PaymentSummary />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                pt: 0.5,
+                borderTop: "0.25px solid gray",
+              }}
+            >
+              <Typography variant="caption" sx={{ fontSize: "10px" }}>
+                Total in INR
+              </Typography>
+              <Typography variant="caption" sx={{ fontSize: "12px", pr: 1 }}>
+                {totalAmtStr ?? ""}
+              </Typography>
+            </Box>
+            <Button
+              variant="outlined"
+              size="small"
+              fullWidth
+              sx={{ mt: 2, mb: 1 }}
+              onClick={() => setSelectedAction("ADD_ANOTHER_SERVICE")}
+            >
+              Add another service
+            </Button>
+            <PaymentStatus sx={{ mt: 1 }} status={formValues?.paymentStatus} />
           </>
         )}
       </GlassBG>

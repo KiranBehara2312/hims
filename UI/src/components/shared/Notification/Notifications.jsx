@@ -59,7 +59,6 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
 
   const GetPriorityCardDetails = ({ pri = "PRI0005" }) => {
     const priority = cachedNotiPriority?.find((x) => x.id === pri)?.name;
-    console.log(priority, pri, cachedNotiPriority);
     return <MyHeading variant="caption" text={priority} />;
   };
 

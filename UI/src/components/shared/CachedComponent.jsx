@@ -1,14 +1,20 @@
 import React, { useEffect } from "react";
 import {
   setAllUsers,
+  setBloodGroups,
   setDoctorDepartments,
   setDoctorDesignations,
   setGenderData,
+  setIdTypes,
+  setKinRelations,
+  setKnownUsBy,
   setMaritalStatus,
   setNotificationPriority,
   setOrgData,
   setOrgShifts,
+  setPaymentTypes,
   setSalutationData,
+  setSponsorGroups,
   setUserRoles,
 } from "../../redux/slices/apiCacheSlice";
 import { postData } from "../../helpers/http";
@@ -32,6 +38,12 @@ const CachedComponent = () => {
         doctorDEsignation,
         doctorDepartment,
         orgShifts,
+        paymentTypes,
+        bloodGroups,
+        sponsorGroups,
+        knownusBy,
+        kinRelation,
+        idTypes
       ] = await Promise.all([
         postData("/masters/data", { type: "gender", limit: "Infinity" }),
         postData("/masters/data", { type: "salutation", limit: "Infinity" }),
@@ -53,6 +65,30 @@ const CachedComponent = () => {
         }),
         postData("/masters/data", {
           type: "orgShifts",
+          limit: "Infinity",
+        }),
+        postData("/masters/data", {
+          type: "paymentType",
+          limit: "Infinity",
+        }),
+        postData("/masters/data", {
+          type: "bloodGroup",
+          limit: "Infinity",
+        }),
+        postData("/masters/data", {
+          type: "sponsorGroups",
+          limit: "Infinity",
+        }),
+        postData("/masters/data", {
+          type: "knownusBy",
+          limit: "Infinity",
+        }),
+        postData("/masters/data", {
+          type: "kinRelation",
+          limit: "Infinity",
+        }),
+        postData("/masters/data", {
+          type: "idTypes",
           limit: "Infinity",
         }),
       ]);
@@ -77,6 +113,12 @@ const CachedComponent = () => {
       dispatch(setDoctorDesignations(doctorDEsignation?.data ?? []));
       dispatch(setDoctorDepartments(doctorDepartment?.data ?? []));
       dispatch(setOrgShifts(orgShifts?.data ?? []));
+      dispatch(setPaymentTypes(paymentTypes?.data ?? []));
+      dispatch(setBloodGroups(bloodGroups?.data ?? []));
+      dispatch(setSponsorGroups(sponsorGroups?.data ?? []));
+      dispatch(setKnownUsBy(knownusBy?.data ?? []));
+      dispatch(setKinRelations(kinRelation?.data ?? []));
+      dispatch(setIdTypes(idTypes?.data ?? []));
     } catch (error) {
       console.error("Error loading menu items for cache:", error);
     }

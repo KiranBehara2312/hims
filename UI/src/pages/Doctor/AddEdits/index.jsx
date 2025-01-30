@@ -9,10 +9,6 @@ import {
   InputAdornment,
 } from "@mui/material";
 import {
-  DAILY_SHIFT,
-  DOCTOR_DEPARTMENTS,
-  DOCTOR_DESIGNATIONS,
-  GENDER_LIST,
   WEEK_DAYS_LIST,
 } from "../../../constants/localDB/MastersDB";
 import { REGEX_PATTERNS } from "../../../constants/Regex";

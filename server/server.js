@@ -11,6 +11,9 @@ const initRouter = require("./modules/init/router");
 const masterRouter = require("./modules/masters/router");
 const notificationRouter = require("./modules/notification/router");
 const doctorRouter = require("./modules/doctor/router");
+const paymentServicesRouter = require("./modules/paymentServices/router");
+const commonRouter = require("./modules/common/router");
+const sponsorRouter = require("./modules/sponsor/router");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,10 +23,13 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/auth", authRouter);
+app.use("/common", commonRouter);
 app.use("/init", isAuthenticated, initRouter)
 app.use("/notification", isAuthenticated, notificationRouter)
 app.use("/masters", isAuthenticated, masterRouter)
 app.use("/doctor", isAuthenticated, doctorRouter);
+app.use("/paymentServices", isAuthenticated, paymentServicesRouter);
+app.use("/sponsor", isAuthenticated, sponsorRouter);
 app.use(errorHandler);
 
 const startServer = async () => {

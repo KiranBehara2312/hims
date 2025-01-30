@@ -72,7 +72,7 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
       MuiFormHelperText: {
         styleOverrides: {
           root: {
-            fontSize: "11px",
+            fontSize: "0.55rem",
             marginTop: "-1px",
           },
         },
@@ -81,7 +81,7 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
         styleOverrides: {
           root: {
             "& p": {
-              fontSize: "12px",
+              fontSize: "0.7rem",
             },
           },
         },
@@ -112,18 +112,18 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
         styleOverrides: {
           head: {
             fontWeight: "bold !important",
-            fontSize: "14px",
+            fontSize: "0.9rem",
           },
           root: {
             background: "transparent !important",
-            fontSize: "13px",
+            fontSize: "0.8rem",
           },
         },
       },
       MuiMenuItem: {
         styleOverrides: {
           root: {
-            fontSize: "13px",
+            fontSize: "0.8rem",
             "&.Mui-selected": {
               background: dColor,
               color: curmode === "dark" ? "#fff" : "white",
@@ -158,31 +158,12 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
       MuiAutocomplete: {
         styleOverrides: {
           listbox: {
-            fontSize: "13px",
+            fontSize: "0.8rem",
           },
           popper: {
-            // "& .MuiAutocomplete-option": {
-            //   padding: "8px 12px",
-            //   "&:hover": {
-            //     backgroundColor: `${dColor} !important`,
-            //     color: "white",
-            //   },
-            //   '&[aria-selected="true"]': {
-            //     backgroundColor: `${dColor} !important`,
-            //     color: "white",
-            //   },
-            //   "&.Mui-focused": {
-            //     backgroundColor: `${dColor} !important`,
-            //     color: "white",
-            //   },
-            //   "&.Mui-selected": {
-            //     backgroundColor: `${dColor} !important`,
-            //     color: "white",
-            //   },
-            // },
             "& .MuiAutocomplete-option:hover": {
-              backgroundColor: `${dColor} !important`,
-              color: "white",
+              backgroundColor: `${dColor}85 !important`,
+              color: "black",
             },
             "& .MuiAutocomplete-option:focused": {
               backgroundColor: `${dColor} !important`,
@@ -198,14 +179,23 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
       MuiInputLabel: {
         styleOverrides: {
           root: {
-            fontSize: "0.875rem",
+            fontSize: "0.775rem !important",
+            marginTop: "-1px",
+          },
+          shrink: {
+            fontSize: "0.775rem !important",
+            lineHeight: "2.2 !important",
+            letterSpacing: "0.5px",
           },
         },
       },
       MuiInputBase: {
         styleOverrides: {
           root: {
-            height: "40px !important",
+            height: "35px !important",
+          },
+          input: {
+            marginTop: "-1px",
           },
         },
       },

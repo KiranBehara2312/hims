@@ -1,6 +1,6 @@
 import React from "react";
 import { GlassBG, MyHeading } from "../custom";
-import { Box, Button, Chip, Skeleton, Typography } from "@mui/material";
+import { Box, Chip, Skeleton } from "@mui/material";
 import DisplayData from "./DisplayData";
 import { WEEK_DAYS_LIST } from "../../constants/localDB/MastersDB";
 import { useSelector } from "react-redux";
@@ -49,8 +49,8 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
               label="Designation"
               value={
                 cachedDoctorDesignations?.find(
-                  (x) => x.id === selectedDoctor?.designation
-                )?.name
+                  (x) => x.designationId === selectedDoctor?.designation
+                )?.designationName
               }
             />
           </Box>
@@ -69,8 +69,8 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
               label="Available Shift"
               value={
                 cachedOrgShifts?.find(
-                  (x) => x.id === selectedDoctor?.shiftTimings
-                )?.name
+                  (x) => x.shiftId === selectedDoctor?.shiftTimings
+                )?.shiftName
               }
             />
             <DisplayData label="Fee" value={selectedDoctor?.fee} />
@@ -90,8 +90,8 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
               label="Department"
               value={
                 cachedDoctorDepartments?.find(
-                  (x) => x.id === selectedDoctor?.department
-                )?.name
+                  (x) => x.departmentId === selectedDoctor?.department
+                )?.departmentName
               }
             />
             {/* <DisplayData

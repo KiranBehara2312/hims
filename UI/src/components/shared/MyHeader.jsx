@@ -37,7 +37,7 @@ import { emptyUserDetails } from "../../redux/slices/userDetailsSlice";
 import { FaHome, FaUserAlt, FaUserCog, FaUserNurse } from "react-icons/fa";
 import MyHeading from "../custom/MyHeading";
 import { FaUserDoctor } from "react-icons/fa6";
-import { formatDate } from "../../helpers";
+import { formatDate, infoAlert } from "../../helpers";
 import { WEEK_DAYS_LIST } from "../../constants/localDB/MastersDB";
 import Notifications from "./Notification/Notifications";
 import { MdMore } from "react-icons/md";
@@ -50,16 +50,7 @@ import WorkInProgress from "./WorkInProgress";
 import MyTooltip from "./MyTootlip";
 import { postData } from "../../helpers/http";
 import DynamicIcon from "./DynamicIcon";
-import {
-  c_org,
-  setAllUsers,
-  setGenderData,
-  setMaritalStatus,
-  setNotificationPriority,
-  setOrgData,
-  setSalutationData,
-  setUserRoles,
-} from "../../redux/slices/apiCacheSlice";
+import { c_org } from "../../redux/slices/apiCacheSlice";
 
 const MyHeader = () => {
   const MORE_ACTIONS = [
@@ -91,6 +82,7 @@ const MyHeader = () => {
 
   const loggedInUser = useSelector((state) => state.userDetails.user);
   const cachedOrgData = useSelector(c_org);
+  const [notificationCount, setNotificationCount] = useState(0);
   const [showDialog, setShowDialog] = useState({
     show: false,
     rerender: false,
@@ -106,7 +98,6 @@ const MyHeader = () => {
   const [moreActionsEl, setMoreActionsEl] = useState(null);
   const navigate = useNavigate();
   const theme = useTheme();
-  const [showNotiBadge, setShowNotiBadge] = useState(false);
   const dispatch = useDispatch();
   const [selectedMenuItem, setSelectedMenuItem] = useState("");
   const { DialogComponent, openDialog } = useConfirmation();
@@ -118,14 +109,35 @@ const MyHeader = () => {
     localStorage.removeItem("authToken");
   };
 
+  // for getting the live notification count from the server
+  // useEffect(() => {
+  //   const eventSource = new EventSource(
+  //     "http://localhost:3000/common/events?token=" +
+  //       localStorage.getItem("authToken")
+  //   );
+  //   eventSource.onmessage = (event) => {
+  //     const eventData = JSON.parse(event.data);
+  //     setNotificationCount((prev) => {
+  //       return eventData.notiCount;
+  //     });
+  //   };
+  //   eventSource.onerror = (error) => {
+  //     console.error("EventSource failed:", error);
+  //     eventSource.close();
+  //   };
+  //   return () => {
+  //     eventSource.close();
+  //   };
+  // }, []);
+
   useEffect(() => {
     loadMenuItems();
     let inte = setInterval(() => {
-      const dateWithTime = formatDate("DD MMM YYYY - hh:mm a");
-      const day = WEEK_DAYS_LIST[new Date().getDay()]?.label;
+      const dateWithTime = formatDate("DD MMM YYYY - hh:mm A");
+      const day = WEEK_DAYS_LIST[new Date().getDay()]?.shortName;
       const currentURL = window.location.pathname.split("/pages/")[1];
       setSelectedMenuItem(`/pages/${currentURL}`);
-      setCurrentDateTime(`${dateWithTime} | ${day}`);
+      setCurrentDateTime(`${day} - ${dateWithTime}`);
     }, 1000);
     return () => {
       clearInterval(inte);
@@ -258,7 +270,7 @@ const MyHeader = () => {
           <Collapse in={isOpen} timeout="auto" unmountOnExit>
             <List>
               {children.map((childItem, i) => (
-                <React.Fragment key={i + crypto.randomUUID()}>
+                <React.Fragment key={i}>
                   {renderListItem(childItem, level + 1)}
                 </React.Fragment>
               ))}
@@ -353,10 +365,7 @@ const MyHeader = () => {
             color="inherit"
             onClick={() => setNotificationDialog(true)}
           >
-            <Badge
-              color="secondary"
-              variant={showNotiBadge ? "dot" : "standard"}
-            >
+            <Badge color="secondary" badgeContent={notificationCount}>
               <IoNotificationsSharp size={20} />
             </Badge>
           </IconButton>

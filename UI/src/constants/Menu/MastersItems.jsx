@@ -4,6 +4,7 @@ import {
   FaCashRegister,
   FaHandshake,
   FaPeopleArrows,
+  FaPeopleCarry,
   FaServicestack,
   FaTransgenderAlt,
   FaUserGraduate,
@@ -11,19 +12,21 @@ import {
   FaUsersCog,
   FaWheelchair,
 } from "react-icons/fa";
-import { IoMaleFemale } from "react-icons/io5";
 import { HiMiniBuildingLibrary } from "react-icons/hi2";
 import { BsGlobeCentralSouthAsia } from "react-icons/bs";
 import { VscTypeHierarchy } from "react-icons/vsc";
+import { MdBloodtype, MdNotificationImportant } from "react-icons/md";
+import { GrMoney } from "react-icons/gr";
 import {
-  MdBloodtype,
-  MdNotificationImportant,
-  MdOutlineAccessTimeFilled,
-} from "react-icons/md";
-import { FaArrowsDownToPeople } from "react-icons/fa6";
-import { GiPlayerTime } from "react-icons/gi";
-import { PATIENT_TYPES, PAYMENT_TYPES } from "../localDB/MastersDB";
-import { SERVICE_LOCATIONS } from "../localDB/PaymentServices";
+  FaArrowsDownToPeople,
+  FaBuildingUser,
+  FaIdCard,
+} from "react-icons/fa6";
+import {
+  GiPlayerTime,
+  GiRelationshipBounds,
+  GiTakeMyMoney,
+} from "react-icons/gi";
 import { FaLocationDot } from "react-icons/fa6";
 
 const MASTERS_ITEMS = [
@@ -101,7 +104,7 @@ const MASTERS_ITEMS = [
   },
   {
     label: "Payment Service Locations",
-    collection: SERVICE_LOCATIONS,
+    collection: "paymentServiceLocations",
     icon: <FaLocationDot size={25} />,
     category: null,
   },
@@ -145,6 +148,36 @@ const MASTERS_ITEMS = [
     label: "Doctor Departments",
     collection: "doctorDepartments",
     icon: <FaBuilding size={25} />,
+    category: null,
+  },
+  {
+    label: "Sponsors",
+    collection: "sponsors",
+    icon: <GiTakeMyMoney size={25} />,
+    category: null,
+  },
+  {
+    label: "Sponsor Groups",
+    collection: "sponsorGroups",
+    icon: <GrMoney size={25} />,
+    category: null,
+  },
+  {
+    label: "Known Us By",
+    collection: "knownusBy",
+    icon: <FaBuildingUser size={25} />,
+    category: null,
+  },
+  {
+    label: "Kin Relation",
+    collection: "kinRelation",
+    icon: <GiRelationshipBounds size={25} />,
+    category: null,
+  },
+  {
+    label: "Id Types",
+    collection: "idTypes",
+    icon: <FaIdCard size={25} />,
     category: null,
   },
 ];

@@ -35,14 +35,14 @@ const Doctor = ({
       response?.data?.map((x) => {
         return {
           ...x,
-          dropdownValue: x.userId,
+          dropdownValue: x.doctorId,
           dropdownLabel: x.fullName,
         };
       }) ?? []
     );
   };
   const docSelectionHandler = (doc) => {
-    const selDoc = doctors.find((x) => x.userId === doc) ?? null;
+    const selDoc = doctors.find((x) => x.doctorId === doc) ?? null;
     setSelectedDoc(selDoc);
     setValue("doctorConsultationFee", selDoc?.fee ?? 0);
   };

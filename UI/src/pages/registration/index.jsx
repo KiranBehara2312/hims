@@ -17,9 +17,12 @@ import { useNavigate } from "react-router-dom";
 import useConfirmation from "../../hooks/useConfirmation";
 import PDFGenerator from "../../components/pdf/PDFGenerator";
 import BillReceiptTemplate from "../../components/pdf/templates/BillReceipt";
+import { NEVER_CHANGING_VALS } from "../../constants/localDB/neverChanging";
 
 const DEFAULT_VAL = {
   UHID: "",
+  patientType: NEVER_CHANGING_VALS.PAT_TYPE_OP,
+  patientCategory: NEVER_CHANGING_VALS.PAT_CAT_GENERAL,
   registrationDate: formatDate("DD/MM/YYYY HH:mm"),
   addressLineOne: "",
   addressLineTwo: "",
@@ -36,7 +39,6 @@ const DEFAULT_VAL = {
   salutation: "",
   middleName: "",
   patientNo: "",
-  patientType: "",
   payeeName: "",
   paymentType: "",
   pinCode: "",
@@ -222,9 +224,8 @@ const Registration = ({
               flexWrap: "wrap",
               height: "calc(100vh - 120px)",
               overflow: "auto",
-              gap: 1,
+              gap: 2,
               pb: 1,
-              pt: 0.5,
             }}
           >
             <Primary

@@ -8,7 +8,6 @@ import { REGEX_PATTERNS } from "../../../constants/Regex";
 import F_Input from "../../../components/custom/form/F_Input";
 import F_Checkbox from "../../../components/custom/form/F_Checkbox";
 import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
-import { SERVICE_LOCATIONS } from "../../../constants/localDB/PaymentServices";
 import IconWrapper from "../../../components/custom/IconWrapper";
 import { postData } from "../../../helpers/http";
 import { successAlert } from "../../../helpers";
@@ -69,7 +68,7 @@ const PaymentService = ({
       <Box sx={{ display: "flex", gap: 1, m: 1 }}>
         <GlassBG cardStyles={{ width: "100%", height: "auto" }}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <F_Autocomplete
+            {/* <F_Autocomplete
               control={control}
               name={"serviceLocation"}
               label={"Service Location"}
@@ -77,7 +76,7 @@ const PaymentService = ({
               rules={{ required: "Service Location is required" }}
               isRequired={true}
               errors={errors}
-            />
+            /> */}
             <F_Input
               name="serviceName"
               control={control}

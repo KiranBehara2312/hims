@@ -6,6 +6,7 @@ import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
 import { useSelector } from "react-redux";
 import {
   c_gender,
+  c_idTypes,
   c_maritalStatus,
 } from "../../../redux/slices/apiCacheSlice";
 import { postData } from "../../../helpers/http";
@@ -13,12 +14,14 @@ import { postData } from "../../../helpers/http";
 const Personal = ({ control, errors, readOnly = false }) => {
   const cachedGender = useSelector(c_gender);
   const cachedMaritalStatus = useSelector(c_maritalStatus);
+  const cachedIdTypes = useSelector(c_idTypes);
   const [dropdownData, setDropdownData] = useState({
     salutation: [],
     gender: cachedGender,
     bloodGroups: [],
     maritalStatus: cachedMaritalStatus,
     disabilityType: [],
+    idTypes: cachedIdTypes,
   });
 
   useEffect(() => {
@@ -150,6 +153,27 @@ const Personal = ({ control, errors, readOnly = false }) => {
           list={dropdownData.disabilityType}
           rules={{}}
           errors={errors}
+          readOnly={readOnly}
+        />
+
+        <F_Autocomplete
+          control={control}
+          name={"idType"}
+          label={"Identity Type"}
+          list={dropdownData.idTypes}
+          rules={{ required: "Identity Type is required" }}
+          errors={errors}
+          isRequired={true}
+          readOnly={readOnly}
+        />
+
+        <F_Input
+          name="idNo"
+          control={control}
+          errors={errors}
+          rules={{ required: "ID Number is required" }}
+          label="Identity Number"
+          isRequired={true}
           readOnly={readOnly}
         />
       </GlassBG>

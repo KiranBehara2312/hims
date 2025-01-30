@@ -21,11 +21,18 @@ const MASTER_MAPPER = {
   paymentType: "GET_PAYMENT_TYPE",
   disabilityStatus: "GET_DISABILITY_STATUS",
   visitTypes: "GET_ALL_REG_VISIT_TYPES",
+  paymentServiceLocations: "GET_MASTERS_ALL_PAYMENT_SER_LOC",
+  paymentServices: "GET_MASTERS_ALL_PAYMENT_SER",
+  sponsors: "GET_ALL_SPONSORS",
+  sponsorGroups: "GET_ALL_SPONSOR_GROUPS",
+  knownusBy: "GET_KNOWNUS_BY",
+  kinRelation: "GET_KIN_RELATION",
+  idTypes: "GET_ID_TYPES",
 };
 
 const master = asyncHandler(async (req, res) => {
   const { type, page, limit } = req.body;
-  const queryFinder = MASTER_MAPPER[type]
+  const queryFinder = MASTER_MAPPER[type];
   const result = await getMasterData(queryFinder, page, limit);
   res.status(200).json({
     message: `${req.body.type} fetched successfully`,

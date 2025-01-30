@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import React from "react";
 import "../../styles/glassmorphism.css";
 import PropTypes from "prop-types";
@@ -8,11 +8,11 @@ const GlassBG = ({
   styles = {},
   children,
 }) => {
+  const theme = useTheme();
   const defaultStyles = {
-    p: 2,
+    p: "16px 8px !important",
     borderRadius: "10px",
-    // boxShadow:
-    //   "rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset",
+    border: `0.5px dotted ${theme.palette.primary.main} !important`,
   };
   return (
     <Box

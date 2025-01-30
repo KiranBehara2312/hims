@@ -8,7 +8,6 @@ import { postData } from "../../helpers/http";
 import { SiCashapp } from "react-icons/si";
 import { useForm } from "react-hook-form";
 import F_Select from "../../components/custom/form/F_Select";
-import { SERVICE_LOCATIONS } from "../../constants/localDB/PaymentServices";
 import NoDataFound from "../../components/shared/NoDataFound";
 import F_Autocomplete from "../../components/custom/form/F_AutoComplete";
 import { MyHeading } from "../../components/custom";
@@ -238,7 +237,7 @@ const PaymentLedger = () => {
                 isRequired={true}
                 errors={errors}
               />
-              <F_Autocomplete
+              {/* <F_Autocomplete
                 control={control}
                 name={"serviceLocation"}
                 label={"Service Location"}
@@ -247,7 +246,7 @@ const PaymentLedger = () => {
                 maxWidth="140px"
                 isRequired={true}
                 errors={errors}
-              />
+              /> */}
               <Box
                 sx={{
                   display: "flex",

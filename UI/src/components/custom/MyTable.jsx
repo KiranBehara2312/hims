@@ -105,7 +105,7 @@ export default function ({
     let string = "";
     const startRecord = (currentPage - 1) * 10 + 1;
     const endRecord = Math.min(currentPage * 10, totalRecords);
-    string += `${startRecord} - ${endRecord} rows of ${totalRecords}`;
+    string += `${startRecord} - ${endRecord} of ${totalRecords}`;
     return string;
   };
 

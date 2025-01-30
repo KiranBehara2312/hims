@@ -9,8 +9,6 @@ import F_Select from "../../components/custom/form/F_Select";
 import {
   APPT_SOURCE_TYPES,
   APPT_VISIT_FOR,
-  BLOOD_GROUPS,
-  SALUTATIONS,
 } from "../../constants/localDB/MastersDB";
 import { GlassBG, MyHeading } from "../../components/custom";
 import F_DatePicker from "../../components/custom/form/F_DatePicker";
@@ -20,6 +18,8 @@ import { formatDate, successAlert } from "../../helpers";
 import { useSelector } from "react-redux";
 import { postData } from "../../helpers/http";
 import { ApptContext } from "./ApptContext";
+import { c_bloodGroups, c_salutation } from "../../redux/slices/apiCacheSlice";
+import F_Autocomplete from "../../components/custom/form/F_AutoComplete";
 
 const DEFAULT_VALUES = {
   firstName: "",
@@ -49,6 +49,8 @@ const AppointmentForm = ({
   action = null,
 }) => {
   const theme = useTheme();
+  const cachedSalutations = useSelector(c_salutation);
+  const cachedBloodGroups = useSelector(c_bloodGroups);
   const { doctors, loadSlotsHandler, selectedPatient } =
     useContext(ApptContext);
   const {
@@ -204,12 +206,12 @@ const AppointmentForm = ({
               variant="h6"
               sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
             />
-            <F_Select
+            <F_Autocomplete
               control={control}
               readOnly={selectedPatient !== null}
               name={"salutation"}
               label={"Salutation"}
-              list={SALUTATIONS}
+              list={cachedSalutations}
               rules={{ required: "Salutation is required" }}
               isRequired={true}
               errors={errors}
@@ -252,12 +254,12 @@ const AppointmentForm = ({
               }}
               label="Date Of birth"
             />
-            <F_Select
+            <F_Autocomplete
               control={control}
               readOnly={selectedPatient !== null}
               name={"bloodGroup"}
               label={"Blood Group"}
-              list={BLOOD_GROUPS}
+              list={cachedBloodGroups}
               rules={{}}
               isRequired={true}
               errors={errors}

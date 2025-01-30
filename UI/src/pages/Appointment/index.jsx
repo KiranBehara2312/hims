@@ -36,7 +36,6 @@ import {
   WEEK_DAYS_LIST,
 } from "../../constants/localDB/MastersDB";
 import SlotSelection from "./SlotSelection";
-import { useDispatch } from "react-redux";
 import { MyHeading } from "../../components/custom";
 import { ADMIN, STAFF } from "../../constants/roles";
 import WorkInProgress from "../../components/shared/WorkInProgress";

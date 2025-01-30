@@ -19,16 +19,8 @@ async function getMasterData(SQL_MAPPING_NAME, page = 1, pageSize = 10) {
       totalRecords = Object.values(countResult[0])?.[0];
       totalPages = Math.ceil(totalRecords / pageSize);
     }
-    const finalArr =
-      result?.map((x) => {
-        return {
-          ...x,
-          dropdownLabel: x.name,
-          dropdownValue: x.id,
-        };
-      }) ?? [];
     return {
-      data: finalArr,
+      data: result,
       pagination:
         pageSize === "Infinity"
           ? null

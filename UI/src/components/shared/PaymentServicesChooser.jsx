@@ -10,6 +10,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Pagination,
 } from "@mui/material";
 import { GlassBG, MyHeading } from "../custom";
 import Grid from "@mui/material/Grid2";
@@ -43,29 +44,43 @@ const PaymentServicesChooser = ({
     reValidateMode: "onBlur",
   });
   const formValues = watch();
+  const [paginationObj, setPaginationObj] = useState({
+    totalPages: 0,
+    totalRecords: 0,
+    page: 0,
+  });
   const [addButtonClicked, setAddButtonClicked] = useState(false);
   const [paymentServices, setPaymentServices] = useState([]);
   const [incomingPaymentCharges, setIncomingPaymentCharges] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
     setIncomingPaymentCharges(paymentCharges);
   }, [paymentCharges]);
 
-  const fetchPaymentServices = async () => {
+  const fetchPaymentServices = async (page = 1, limit = 15) => {
     if (formValues?.searchString?.length < 3) {
       return errorAlert("Please enter service name or code to fetch details", {
         autoClose: 1500,
       });
     }
-    if (formValues?.searchString?.length > 15) {
+    if (formValues?.searchString?.length > 20) {
       return errorAlert("Length Exceeded, please check the search input", {
         autoClose: 1500,
       });
     }
-    const response = await postData("/payment/paymentServices", {
-      page: 1,
-      limit: 20,
+    const response = await postData("/paymentServices/search", {
+      page: page,
+      limit: limit,
       searchString: formValues?.searchString ?? "",
+    });
+    setPaginationObj((prev) => {
+      return {
+        ...prev,
+        totalPages: response?.pagination?.totalPages,
+        totalRecords: response?.pagination?.totalRecords,
+        page: response?.pagination?.currentPage,
+      };
     });
     setPaymentServices(
       response?.data?.map((x) => {
@@ -77,37 +92,35 @@ const PaymentServicesChooser = ({
     );
   };
 
-  const removeCheckedItem = (val, serviceCode) => {
+  const removeCheckedItem = (val, serviceId) => {
     if (!val) {
       setIncomingPaymentCharges((prev) =>
-        prev.filter((x) => x.serviceCode !== serviceCode)
+        prev.filter((x) => x.serviceId !== serviceId)
       );
     }
   };
 
-  const markItemAsChecked = (val, serviceCode) => {
+  const markItemAsChecked = (val, serviceId) => {
     if (!val) {
-      removeCheckedItem(val, serviceCode);
+      removeCheckedItem(val, serviceId);
       setPaymentServices(
         (prev) =>
           prev?.map((x) => {
             return {
               ...x,
-              checked: x.serviceCode === serviceCode ? false : x.checked,
+              checked: x.serviceId === serviceId ? false : x.checked,
             };
           }) ?? []
       );
       return;
     }
     const alreadyAdded = incomingPaymentCharges?.find(
-      (x) => x.serviceCode === serviceCode
+      (x) => x.serviceId === serviceId
     );
     if (alreadyAdded) {
       return warnAlert("Service is already in user, can not add...");
     }
-    const newService = paymentServices?.find(
-      (x) => x.serviceCode === serviceCode
-    );
+    const newService = paymentServices?.find((x) => x.serviceId === serviceId);
     if (newService) {
       newService.checked = val;
       newService.canUncheck = true;
@@ -131,10 +144,20 @@ const PaymentServicesChooser = ({
     if (addButtonClicked) {
       addButtonHandler();
     }
+    const totalAmount = incomingPaymentCharges?.reduce(
+      (acc, cur) => acc + +cur.serviceAmount,
+      0
+    );
+    const roundedTotalAmount = totalAmount ? totalAmount.toFixed(2) : "0.00";
+    setTotalAmount(roundedTotalAmount);
   }, [incomingPaymentCharges, addButtonClicked]);
 
+  const paginationChangeHandler = (event, newPage) => {
+    fetchPaymentServices(newPage, 15);
+  };
+
   return (
-    <Box>
+    <Box sx={{ minHeight: "500px" }}>
       <HeaderWithSearch
         hideSearchBar
         notScrollable
@@ -142,25 +165,41 @@ const PaymentServicesChooser = ({
           <IconWrapper defaultColor icon={<FaServicestack size={20} />} />
         }
         headerText={headerText}
-        html={<>{dialogCloseBtn}</>}
+        html={
+          <>
+            <Button
+              variant="outlined"
+              size="small"
+              sx={{ mr: 1 }}
+              onClick={() => setAddButtonClicked(() => true)}
+            >
+              Submit
+            </Button>
+            {dialogCloseBtn}
+          </>
+        }
       />
-      <Grid container spacing={1} sx={{ m: 1 }}>
+      <Grid container spacing={1} sx={{ m: 0.5 }}>
         <Grid size={6}>
-          <GlassBG cardStyles={{ height: "100%" }}>
-            <MyHeading
-              alignCenter
-              text={`Service's in use (${incomingPaymentCharges?.length})`}
-              variant="body1"
-              sx={{ mt: -1 }}
-            />
+          <GlassBG>
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <MyHeading
+                text={`Service's in use (${incomingPaymentCharges?.length})`}
+                variant="body1"
+                sx={{ mt: -1 }}
+              />
+              <MyHeading text={totalAmount} variant="body1" sx={{ mt: -1 }} />
+            </Box>
             {incomingPaymentCharges?.length === 0 && (
               <NoDataFound headingVariant="body2" />
             )}
-            <Box sx={{ maxHeight: "180px", overflowY: "auto" }}>
+            <Box
+              sx={{ minHeight: "360px", maxHeight: "360px", overflowY: "auto" }}
+            >
               {incomingPaymentCharges?.map((x, i) => {
                 return (
                   <Box
-                    key={x.serviceCode}
+                    key={x.serviceId}
                     sx={{
                       display: "flex",
                       justifyContent: "space-between",
@@ -176,12 +215,12 @@ const PaymentServicesChooser = ({
                           x.canUncheck === undefined ? true : !x.canUncheck
                         }
                         onChange={(event) =>
-                          removeCheckedItem(event.target.checked, x.serviceCode)
+                          removeCheckedItem(event.target.checked, x.serviceId)
                         }
                       />
                       <MyHeading
                         variant="caption"
-                        text={`${x.serviceName} (${x.serviceCode})`}
+                        text={`${x.serviceName} (${x.serviceId})`}
                       />
                     </span>
                     <MyHeading variant="caption" text={x.serviceAmount} />
@@ -192,7 +231,7 @@ const PaymentServicesChooser = ({
           </GlassBG>
         </Grid>
         <Grid size={6}>
-          <GlassBG cardStyles={{ height: "100%" }}>
+          <GlassBG>
             <MyHeading
               alignCenter
               text="Service's that can be opted"
@@ -219,17 +258,20 @@ const PaymentServicesChooser = ({
                   size="small"
                   variant="outlined"
                   fullWidth
-                  onClick={fetchPaymentServices}
+                  onClick={() => fetchPaymentServices(1, 15)}
                 >
                   Search
                 </Button>
               </Grid>
             </Grid>
-            <Box sx={{ maxHeight: "120px", overflowY: "auto" }}>
+            <Box
+              sx={{ minHeight: "280px", maxHeight: "300px", overflowY: "auto" }}
+            >
+              {paymentServices?.length === 0 && <NoDataFound sx={{ mt: 10 }} />}
               {paymentServices?.map((x) => {
                 return (
                   <Box
-                    key={x.serviceCode}
+                    key={x.serviceId}
                     sx={{
                       display: "flex",
                       justifyContent: "space-between",
@@ -242,12 +284,12 @@ const PaymentServicesChooser = ({
                         size="small"
                         checked={x?.checked ?? false}
                         onChange={(event) =>
-                          markItemAsChecked(event.target.checked, x.serviceCode)
+                          markItemAsChecked(event.target.checked, x.serviceId)
                         }
                       />
                       <MyHeading
                         variant="caption"
-                        text={`${x.serviceName} (${x.serviceCode})`}
+                        text={`${x.serviceName} (${x.serviceId})`}
                       />
                     </span>
                     <MyHeading variant="caption" text={x.serviceAmount} />
@@ -255,17 +297,19 @@ const PaymentServicesChooser = ({
                 );
               })}
             </Box>
+            <Pagination
+              sx={{ pt: 3, mb: -2, float: "right" }}
+              variant="outlined"
+              color="primary"
+              size="small"
+              shape="rounded"
+              count={paginationObj?.totalPages}
+              page={paginationObj?.page ?? 1}
+              onChange={paginationChangeHandler}
+            />
           </GlassBG>
         </Grid>
       </Grid>
-      <Button
-        variant="outlined"
-        fullWidth
-        onClick={() => setAddButtonClicked(() => true)}
-        sx={{ mt: 5 }}
-      >
-        Add
-      </Button>
     </Box>
   );
 };
