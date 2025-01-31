@@ -61,8 +61,8 @@ const Personal = ({ control, errors, readOnly = false }) => {
         <MyHeading
           alignCenter
           text="Personal"
-          variant="h6"
-          sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+          variant="rem095"
+          sx={{ mt: "-10px" }}
         />
 
         <F_Autocomplete

@@ -22,7 +22,7 @@ const Pnf = () => {
             height: 500,
           }}
         />
-        <MyHeading alignCenter variant="h6" text="Page Not Found..." />
+        <MyHeading alignCenter variant="rem1" text="Page Not Found..." />
       </Box>
     </>
   );

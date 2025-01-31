@@ -36,7 +36,7 @@ export default function HeaderWithSearch({
         p: "0 10px",
         mb: 1.7,
         mt: notScrollable ? 0 : 1,
-        zIndex: notScrollable ? 2 : 'auto',
+        zIndex: notScrollable ? 2 : "auto",
         display: "flex",
         alignItems: "center",
         minHeight: "40px",
@@ -48,11 +48,7 @@ export default function HeaderWithSearch({
       }}
     >
       {headerIcon || null}
-      <MyHeading
-        text={headerText}
-        variant="body1"
-        sx={{ fontWeight: "bold", pl: 1 }}
-      />
+      <MyHeading text={headerText} variant="rem095" sx={{ pl: 1 }} />
       <Box sx={{ flex: 1 }}></Box>
       {html ?? null}
       {!hideSearchBar && (
@@ -64,7 +60,7 @@ export default function HeaderWithSearch({
               ml: 1,
               width: "200px",
               "& input::placeholder": {
-                fontSize: "13px",
+                fontSize: "0.8rem",
               },
             }}
             autoFocus

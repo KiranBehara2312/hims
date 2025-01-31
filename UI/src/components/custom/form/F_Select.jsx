@@ -53,7 +53,7 @@ const F_Select = ({
               labelId={`${name}-select-label`}
               id={`${name}_select`}
               sx={{
-                fontSize: "13px",
+                fontSize: "0.75rem",
                 width: "100%",
               }}
               onChange={(event) => {

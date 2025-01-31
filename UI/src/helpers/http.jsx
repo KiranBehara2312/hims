@@ -50,6 +50,7 @@ apiClient.interceptors.response.use(
         setTimeout(() => {
           window.location.href = window.location.origin + "/auth/login";
           localStorage.removeItem("authToken");
+          localStorage.removeItem("ls_org");
         }, 1000);
       }
       console.error("Network Error:", error.message);

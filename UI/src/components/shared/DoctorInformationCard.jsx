@@ -7,13 +7,17 @@ import { useSelector } from "react-redux";
 import {
   c_doctorDepartments,
   c_doctorDesignations,
+  c_doctorQualifications,
   c_orgShifts,
 } from "../../redux/slices/apiCacheSlice";
+import PDFGenerator from "../pdf/PDFGenerator";
+import DoctorLetterhead from "../pdf/templates/DoctorLetterHead";
 
 const DoctorInformationCard = ({ selectedDoctor = null }) => {
   const cachedDoctorDesignations = useSelector(c_doctorDesignations);
   const cachedDoctorDepartments = useSelector(c_doctorDepartments);
   const cachedOrgShifts = useSelector(c_orgShifts);
+  const cachedDoctorQualifications = useSelector(c_doctorQualifications);
   return (
     <GlassBG cardStyles={{ height: "auto" }}>
       {selectedDoctor === null && (
@@ -31,8 +35,8 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
           <MyHeading
             alignCenter
             text="Doctor Information"
-            variant="h6"
-            sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+            variant="rem095"
+            sx={{ mt: "-10px" }}
           />
           <Box
             sx={{
@@ -103,14 +107,14 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
               value={selectedDoctor?.specialization}
             /> */}
           </Box>
-
           <Box
             sx={{
               display: "flex",
               flexDirection: "row",
               flexWrap: "wrap",
               gap: 1.5,
-              mt: 3,
+              mt: 2,
+              pb: 1,
               justifyContent: "space-between",
               width: "100%",
             }}
@@ -150,6 +154,7 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
                     }}
                     label={x.shortName}
                   />
+
                   //   <MyHeading
                   //     text={x.shortName}
                   //     sx={{
@@ -165,6 +170,24 @@ const DoctorInformationCard = ({ selectedDoctor = null }) => {
               })}
             </Box>
           </Box>
+          <PDFGenerator
+            document={
+              <DoctorLetterhead
+                fullName={selectedDoctor?.fullName}
+                qualification={
+                  cachedDoctorQualifications?.find(
+                    (x) => x.qualificationId === selectedDoctor?.qualification
+                  )?.shortName
+                }
+                designation={
+                  cachedDoctorDesignations?.find(
+                    (x) => x.designationId === selectedDoctor?.designation
+                  )?.designationName
+                }
+              />
+            }
+            fileName="Doctor_Letterhead"
+          />
         </>
       )}
     </GlassBG>

@@ -30,7 +30,7 @@ const BaseLayout = ({ children }) => {
         >
           <CircularProgress sx={{ color: "whitesmoke" }} size={50} />
           <MyHeading
-            variant="h6"
+            variant="rem075"
             sx={{ pl: 2, color: "white" }}
             text={loader?.message}
           />

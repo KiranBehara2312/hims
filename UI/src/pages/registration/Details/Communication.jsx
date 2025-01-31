@@ -44,8 +44,8 @@ const Communication = ({ control, errors, readOnly = false, formValues, setValue
         <MyHeading
           alignCenter
           text="Communication"
-          variant="h6"
-          sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+          variant="rem095"
+          sx={{ mt: "-10px"}}
         />
 
         <F_Input

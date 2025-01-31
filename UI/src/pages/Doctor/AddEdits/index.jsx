@@ -8,9 +8,7 @@ import {
   Alert,
   InputAdornment,
 } from "@mui/material";
-import {
-  WEEK_DAYS_LIST,
-} from "../../../constants/localDB/MastersDB";
+import { WEEK_DAYS_LIST } from "../../../constants/localDB/MastersDB";
 import { REGEX_PATTERNS } from "../../../constants/Regex";
 import { GlassBG, MyHeading } from "../../../components/custom";
 import F_Select from "../../../components/custom/form/F_Select";
@@ -178,8 +176,8 @@ const DoctorInformation = ({
             <MyHeading
               alignCenter
               text="Doctor Information"
-              variant="h6"
-              sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+              variant="rem095"
+              sx={{ mt: "-10px" }}
             />
             <F_Autocomplete
               control={control}
@@ -271,8 +269,8 @@ const DoctorInformation = ({
             <MyHeading
               alignCenter
               text="Professional Information"
-              variant="h6"
-              sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+              variant="rem095"
+              sx={{ mt: "-10px" }}
             />
             <F_Autocomplete
               control={control}
@@ -336,8 +334,8 @@ const DoctorInformation = ({
             <MyHeading
               alignCenter
               text="Shift & Fee Information"
-              variant="h6"
-              sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+              variant="rem095"
+              sx={{ mt: "-10px" }}
             />
 
             <F_Autocomplete

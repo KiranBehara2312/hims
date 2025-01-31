@@ -32,7 +32,7 @@ const ICON_MAP = {
   SiCashapp: SiCashapp,
 };
 
-const DynamicIcon = ({ icon, size = 25, defaultColor, color = null }) => {
+const DynamicIcon = ({ icon, size = '1.25rem', defaultColor, color = null }) => {
   const IconComponent = ICON_MAP[icon];
   if (!IconComponent) {
     return <MdHome size={size} color={color} />;

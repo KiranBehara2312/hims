@@ -60,7 +60,7 @@ const Login = () => {
         <MyHeading
           alignCenter
           text="Login"
-          variant="h5"
+          variant="rem095"
           sx={{ mb: 1, mt: -1 }}
         />
         <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>

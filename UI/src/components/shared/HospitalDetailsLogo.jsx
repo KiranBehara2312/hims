@@ -26,7 +26,7 @@ const HospitalDetailsLogo = () => {
           height: 50,
         }}
       />
-      <MyHeading text={cachedOrgData?.[0]?.orgName} variant="body1" />
+      <MyHeading text={cachedOrgData?.[0]?.orgName} variant="rem1" />
     </Box>
   );
 };

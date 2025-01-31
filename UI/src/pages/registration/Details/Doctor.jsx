@@ -60,8 +60,8 @@ const Doctor = ({
         <MyHeading
           alignCenter
           text="Doctor"
-          variant="h6"
-          sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+          variant="rem095"
+          sx={{ mt: "-10px" }}
         />
 
         <F_Autocomplete

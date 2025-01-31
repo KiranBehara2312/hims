@@ -58,8 +58,8 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
   };
 
   const GetPriorityCardDetails = ({ pri = "PRI0005" }) => {
-    const priority = cachedNotiPriority?.find((x) => x.id === pri)?.name;
-    return <MyHeading variant="caption" text={priority} />;
+    const priority = cachedNotiPriority?.find((x) => x.priorityId === pri)?.priorityName;
+    return <MyHeading variant="rem065" text={priority} />;
   };
 
   const getColorBasedOnPriority = (priority) => {
@@ -81,7 +81,7 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
 
   const getUserBgColor = (userID) => {
     const role = cachedAllUsers?.find((x) => x.userId === userID)?.roleId;
-    let color = cacheduserRoles?.find((x) => x.id === role)?.color;
+    let color = cacheduserRoles?.find((x) => x.roleId === role)?.color;
     return color;
   };
 
@@ -130,7 +130,7 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
             return (
               <GlassBG>
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <MyHeading variant="caption" text={x.ntfHeader} />
+                  <MyHeading variant="rem085" text={x.ntfHeader} />
                   <span
                     style={{ display: "flex", gap: 1, alignItems: "center" }}
                   >
@@ -149,7 +149,7 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
                             sx={{
                               width: 24,
                               height: 24,
-                              ml:1,
+                              ml: 1,
                               fontSize: "10px",
                               background: getUserBgColor(x.ntfTaggedUserId),
                             }}
@@ -160,7 +160,7 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
                     )}
                   </span>
                 </Box>
-                <MyHeading variant="body2" text={x.ntfMessage} />
+                <MyHeading variant="rem075" text={x.ntfMessage} />
 
                 <Box
                   sx={{
@@ -170,13 +170,11 @@ const Notifications = ({ setNotificationDialog = () => {} }) => {
                   }}
                 >
                   <MyHeading
-                    variant="caption"
-                    sx={{ fontSize: "11px" }}
+                    variant="rem055"
                     text={`Sent by: ${x.ntfSentByName} (${x.ntfSentById})`}
                   />
                   <MyHeading
-                    variant="caption"
-                    sx={{ fontSize: "11px" }}
+                    variant="rem055"
                     text={`Sent on: ${formatDate(
                       "DD/MM/YYYY hh:mm a",
                       new Date(x.ntfSentOn)

@@ -54,8 +54,8 @@ const Home = () => {
                 <IconWrapper defaultColor icon={x.icon} />
               </Grid>
               <Grid size={8}>
-                <MyHeading text={x.count} variant="h4" alignCenter />
-                <MyHeading text={x.label} variant="body2" sx={{ pt: 0.5 }} />
+                <MyHeading text={x.count} variant="rem2" alignCenter />
+                <MyHeading text={x.label} variant="rem1" sx={{ pt: 0.5 }} />
               </Grid>
             </Grid>
           </GlassBG>

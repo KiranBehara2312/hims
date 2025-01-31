@@ -57,7 +57,7 @@ const MyHeader = () => {
     {
       name: "Send Notifications",
       privilege: "SEND_NOTIFICATION",
-      icon: <IconWrapper defaultColor icon={<AiFillMessage size={18} />} />,
+      icon: <IconWrapper defaultColor icon={<AiFillMessage size={'1.15rem'} />} />,
       disabled: false,
       access: [ADMIN, STAFF, NURSE, DOCTOR],
       modalWidth: "xs",
@@ -65,7 +65,7 @@ const MyHeader = () => {
     {
       name: "Reports",
       privilege: "REPORTS",
-      icon: <IconWrapper defaultColor icon={<TbReport size={18} />} />,
+      icon: <IconWrapper defaultColor icon={<TbReport size={'1.15rem'} />} />,
       disabled: false,
       access: [ADMIN, STAFF, NURSE, DOCTOR],
       modalWidth: "md",
@@ -73,7 +73,7 @@ const MyHeader = () => {
     {
       name: "Hypnotizer",
       privilege: "HYPNOTIZER",
-      icon: <IconWrapper defaultColor icon={<BsHypnotize size={18} />} />,
+      icon: <IconWrapper defaultColor icon={<BsHypnotize size={'1.15rem'} />} />,
       disabled: false,
       access: [ADMIN, STAFF, NURSE, DOCTOR],
       modalWidth: "md",
@@ -107,6 +107,7 @@ const MyHeader = () => {
     navigate("/auth/login");
     dispatch(emptyUserDetails());
     localStorage.removeItem("authToken");
+    localStorage.removeItem("ls_org");
   };
 
   // for getting the live notification count from the server
@@ -258,8 +259,7 @@ const MyHeader = () => {
               />
             </ListItemIcon>
             <ListItemText
-              sx={{ fontSize: "0.5rem !important" }}
-              primary={menuName}
+              primary={<MyHeading variant="rem085" text={menuName} />}
             />
             {children?.length > 0 &&
               (openMenu ? <MdExpandLess /> : <MdExpandMore />)}
@@ -284,7 +284,7 @@ const MyHeader = () => {
   const DrawerList = () => {
     return (
       <Box
-        sx={{ width: 300, display: "flex", flexDirection: "column" }}
+        sx={{ width: 270, display: "flex", flexDirection: "column" }}
         role="presentation"
       >
         <Box sx={{ m: 1, maxHeight: "50px" }}>
@@ -343,7 +343,7 @@ const MyHeader = () => {
       <AppBar position="static" sx={{ height: "40px" }}>
         <Toolbar sx={{ minHeight: "40px !important", height: "40px" }}>
           <MdMenu
-            size={30}
+            size={"1.5rem"}
             style={{
               paddingRight: "15px",
               marginLeft: "-10px",
@@ -351,14 +351,17 @@ const MyHeader = () => {
             }}
             onClick={() => setOpen(true)}
           />
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            {cachedOrgData?.[0]?.orgName}
-          </Typography>
 
-          <MyHeading variant="body2" text={currentDateTime} sx={{ pr: 1 }} />
+          <MyHeading
+            variant="rem1"
+            text={cachedOrgData?.[0]?.orgName}
+            sx={{ flexGrow: 1 }}
+          />
+
+          <MyHeading variant="rem075" text={currentDateTime} sx={{ pr: 1 }} />
 
           <IconButton color="inherit" onClick={() => navigate("/pages/home")}>
-            <FaHome size={20} />
+            <FaHome size={"1.25rem"} />
           </IconButton>
 
           <IconButton
@@ -366,18 +369,18 @@ const MyHeader = () => {
             onClick={() => setNotificationDialog(true)}
           >
             <Badge color="secondary" badgeContent={notificationCount}>
-              <IoNotificationsSharp size={20} />
+              <IoNotificationsSharp size={"1.25rem"} />
             </Badge>
           </IconButton>
 
           <MyTooltip title="More Actions">
             <IconButton color="inherit" onClick={moreActionClickHandler}>
-              <MdMore size={20} />
+              <MdMore size={"1.25rem"} />
             </IconButton>
           </MyTooltip>
 
           <IconButton color="inherit" onClick={accountClickHandler}>
-            {getIconByRole(loggedInUser?.iconName, 25)}
+            {getIconByRole(loggedInUser?.iconName, "1.25rem")}
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -418,34 +421,34 @@ const MyHeader = () => {
           <MyHeading
             alignCenter
             sx={{ pt: 1 }}
-            variant="h6"
+            variant="rem15"
             text={loggedInUser?.fullName}
           />
           <Box sx={{ display: "flex", justifyContent: "space-between", pt: 2 }}>
-            <MyHeading alignCenter variant="caption" text={"Contact"} />
+            <MyHeading alignCenter variant="rem065" text={"Contact"} />
             <MyHeading
               alignCenter
-              variant="caption"
+              variant="rem075"
               text={loggedInUser?.userPhone}
             />
           </Box>
           <Box
             sx={{ display: "flex", justifyContent: "space-between", pt: 0.5 }}
           >
-            <MyHeading alignCenter variant="caption" text={"User ID"} />
+            <MyHeading alignCenter variant="rem065" text={"User ID"} />
             <MyHeading
               alignCenter
-              variant="caption"
+              variant="rem075"
               text={loggedInUser?.userId}
             />
           </Box>
           <Box
             sx={{ display: "flex", justifyContent: "space-between", pt: 0.5 }}
           >
-            <MyHeading alignCenter variant="caption" text={"Role"} />
+            <MyHeading alignCenter variant="rem065" text={"Role"} />
             <MyHeading
               alignCenter
-              variant="caption"
+              variant="rem075"
               text={loggedInUser?.roleName}
             />
           </Box>
@@ -457,8 +460,8 @@ const MyHeader = () => {
               pb: 1,
             }}
           >
-            <MyHeading alignCenter variant="caption" text={"Last Login at"} />
-            <MyHeading alignCenter variant="caption" text={loggedInUser?.iat} />
+            <MyHeading alignCenter variant="rem065" text={"Last Login at"} />
+            <MyHeading alignCenter variant="rem075" text={loggedInUser?.iat} />
           </Box>
           <Divider />
           <Box
@@ -567,7 +570,7 @@ const MyHeader = () => {
                   }
                 >
                   <span style={{ flexBasis: "15%" }}>{x.icon}</span>
-                  <MyHeading variant="body2" text={x.name} />
+                  <MyHeading variant="rem075" text={x.name} />
                 </Box>
               );
             })}

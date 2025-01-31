@@ -3,7 +3,7 @@ import NoDataSVG from "../../assets/generic/noData.svg";
 import { MyHeading } from "../custom";
 import { Box } from "@mui/material";
 
-const NoDataFound = ({ sx = {}, imgHeight = 130, imgWidth = 130, headingVariant = "h6" }) => {
+const NoDataFound = ({ sx = {}, imgHeight = 130, imgWidth = 130, headingVariant = "rem1" }) => {
   return (
     <>
       <Box
@@ -22,7 +22,7 @@ const NoDataFound = ({ sx = {}, imgHeight = 130, imgWidth = 130, headingVariant 
           text={
             <img
               src={NoDataSVG}
-              alt="No Data FOund"
+              alt="No Data Found"
               style={{
                 width: imgWidth,
                 height: imgHeight,

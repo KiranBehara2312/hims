@@ -91,11 +91,9 @@ const GenerateSlots = ({
       <MyHeading
         alignCenter
         text="Doctor Avialable Days"
-        variant="h6"
+        variant="rem095"
         sx={{
           mt: "-10px",
-          fontSize: "15px",
-          fontWeight: "bold",
           pt: "60px",
           pb: "10px",
         }}
@@ -119,7 +117,7 @@ const GenerateSlots = ({
                   : "line-through",
               }}
             >
-              <MyHeading text={x.shortName} variant="body2" alignCenter />
+              <MyHeading text={x.shortName} variant="rem075" alignCenter />
             </Button>
           );
         })}
@@ -197,7 +195,7 @@ const GenerateSlots = ({
               endAdornment={
                 <InputAdornment
                   position="start"
-                  sx={{ cursor: "pointer", fontSize: "13px !important" }}
+                  sx={{ cursor: "pointer", fontSize: "0.8rem !important" }}
                 >
                   Min
                 </InputAdornment>

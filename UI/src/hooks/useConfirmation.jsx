@@ -59,7 +59,7 @@ const useConfirmation = () => {
 
   const DialogComponent = (
     <Dialog open={open} onClose={closeDialog} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontSize: "13px" }}>
+      <DialogTitle sx={{ fontSize: "0.7rem" }}>
         Message from {META.PROJECT_TITLE}
       </DialogTitle>
       <DialogContent sx={{ padding: "4px 20px !important" }}>

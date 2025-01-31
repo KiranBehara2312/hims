@@ -85,18 +85,18 @@ const SubmitPayment = ({
         <MyHeading
           alignCenter
           text="Service Details"
-          variant="h6"
-          sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+          variant="rem1"
+          sx={{ mt: "-10px" }}
         />
         <Grid container spacing={1} sx={{ borderBottom: "0.5px solid gray" }}>
-          <Grid size={2} sx={{ fontSize: "13px" }}>
-            Code
+          <Grid size={2}>
+            <MyHeading variant="rem075" text="Code" />
           </Grid>
-          <Grid size={8} sx={{ fontSize: "13px" }}>
-            Name
+          <Grid size={8}>
+            <MyHeading variant="rem075" text="Name" />
           </Grid>
-          <Grid size={2} sx={{ fontSize: "13px", textAlign: "right" }}>
-            Amount
+          <Grid size={2} sx={{ textAlign: "right" }}>
+            <MyHeading variant="rem075" text="Amount" />
           </Grid>
         </Grid>
         <Box sx={{ maxHeight: "180px", overflowY: "auto" }}>
@@ -106,7 +106,7 @@ const SubmitPayment = ({
               direction={"row"}
               key={i}
               style={{
-                fontSize: "13px",
+                fontSize: "0.8rem",
                 marginTop: "8px",
               }}
             >
@@ -131,12 +131,8 @@ const SubmitPayment = ({
               bottom: "0px",
             }}
           >
-            <Typography variant="caption" sx={{ fontSize: "10px" }}>
-              Total in INR
-            </Typography>
-            <Typography variant="caption" sx={{ fontSize: "12px" }}>
-              {totalAmtStr ?? ""}
-            </Typography>
+            <MyHeading variant="rem075" text="Total in INR" />
+            <MyHeading variant="rem075" text={totalAmtStr ?? ""} />
           </Box>
         </Box>
       </GlassBG>
@@ -173,8 +169,8 @@ const SubmitPayment = ({
               <MyHeading
                 alignCenter
                 text="Submit Payment"
-                variant="h6"
-                sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+                variant="rem095"
+                sx={{ mt: "-10px" }}
               />
 
               <F_Select

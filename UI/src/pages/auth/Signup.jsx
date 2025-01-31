@@ -37,7 +37,7 @@ const SignUp = () => {
       }}
     >
       <GlassBG cardStyles={{ width: "300px", height: "auto" }}>
-        <MyHeading alignCenter text="Signup/ Register" variant="h5" sx={{mb:1, mt:-1}} />
+        <MyHeading alignCenter text="Signup/ Register" variant="rem095" sx={{mb:1, mt:-1}} />
 
         <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
           <TextField

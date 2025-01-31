@@ -296,8 +296,8 @@ const SlotSelection = () => {
                 <MyHeading
                   alignCenter
                   text="Appointment Visit History"
-                  variant="h6"
-                  sx={{ mt: 2, fontSize: "15px", fontWeight: "bold" }}
+                  variant="rem095"
+                  sx={{ mt: 2 }}
                 />
                 <Box
                   sx={{
@@ -316,17 +316,17 @@ const SlotSelection = () => {
                       >
                         <MyHeading
                           alignCenter
-                          variant="body2"
+                          variant="rem075"
                           text={x.appointmentDate}
                         />
                         <MyHeading
                           alignCenter
-                          variant="caption"
+                          variant="rem075"
                           text={x.doctorName}
                         />
                         <MyHeading
                           alignCenter
-                          sx={{fontSize : "10px"}}
+                          variant="rem065"
                           text={x.apptCode}
                         />
                       </GlassBG>
@@ -363,12 +363,13 @@ const SlotSelection = () => {
                   <MyHeading
                     alignCenter
                     text={slot?.slotNo}
-                    sx={{ mt: 1, fontSize: "16px", fontWeight: "bold" }}
+                    variant="rem095"
+                    sx={{ mt: 1 }}
                   />
                   <MyHeading
                     alignCenter
                     text={`${slot?.startTime} - ${slot?.endTime}`}
-                    variant="caption"
+                    variant="rem065"
                   />
                 </Box>
               );
@@ -394,7 +395,7 @@ const SlotSelection = () => {
           }}
         >
           <MyHeading
-            variant="h6"
+            variant="rem1"
             alignCenter
             text={selectedSlot?.data?.slotNo ?? ""}
           />
@@ -420,7 +421,7 @@ const SlotSelection = () => {
                   }}
                 >
                   <span style={{ flexBasis: "17%" }}>{x.icon}</span>
-                  <MyHeading variant="caption" text={x.name} />
+                  <MyHeading variant="rem075" text={x.name} />
                 </Box>
               );
             })}

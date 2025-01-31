@@ -36,6 +36,7 @@ export const apiCacheSlice = createSlice({
     setKnownUsBy: createDataReducer("knownUsBy"),
     setKinRelations: createDataReducer("kinRelations"),
     setIdTypes: createDataReducer("idTypes"),
+    setDoctorQualifications: createDataReducer("doctorQualifications"),
   },
 });
 
@@ -57,6 +58,7 @@ export const c_sponsorGroups = (state) => state.apiCache.sponsorGroups;
 export const c_knownUsBy = (state) => state.apiCache.knownUsBy;
 export const c_kinRelations = (state) => state.apiCache.kinRelations;
 export const c_idTypes = (state) => state.apiCache.idTypes;
+export const c_doctorQualifications = (state) => state.apiCache.doctorQualifications;
 
 export const {
   setOrgData,
@@ -75,6 +77,7 @@ export const {
   setKnownUsBy,
   setKinRelations,
   setIdTypes,
+  setDoctorQualifications,
 } = apiCacheSlice.actions;
 
 export default apiCacheSlice.reducer;

@@ -191,7 +191,7 @@ const Registration = ({
             headerIcon={
               <IconWrapper
                 icon={
-                  <FaUserPlus size={20} color={theme.palette.primary.main} />
+                  <FaUserPlus size={'1.15rem'} color={theme.palette.primary.main} />
                 }
               />
             }

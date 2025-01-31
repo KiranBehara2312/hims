@@ -4,6 +4,7 @@ import {
   setBloodGroups,
   setDoctorDepartments,
   setDoctorDesignations,
+  setDoctorQualifications,
   setGenderData,
   setIdTypes,
   setKinRelations,
@@ -43,7 +44,8 @@ const CachedComponent = () => {
         sponsorGroups,
         knownusBy,
         kinRelation,
-        idTypes
+        idTypes,
+        doctorQualifications,
       ] = await Promise.all([
         postData("/masters/data", { type: "gender", limit: "Infinity" }),
         postData("/masters/data", { type: "salutation", limit: "Infinity" }),
@@ -91,8 +93,15 @@ const CachedComponent = () => {
           type: "idTypes",
           limit: "Infinity",
         }),
+        postData("/masters/data", {
+          type: "doctorQualifications",
+          limit: "Infinity",
+        }),
       ]);
-
+      localStorage.setItem(
+        "ls_org",
+        JSON.stringify(organisation?.data?.[0] ?? null)
+      );
       dispatch(setGenderData(gender?.data ?? []));
       dispatch(setSalutationData(salutation?.data ?? []));
       dispatch(setMaritalStatus(maritalStatus?.data ?? []));
@@ -119,6 +128,7 @@ const CachedComponent = () => {
       dispatch(setKnownUsBy(knownusBy?.data ?? []));
       dispatch(setKinRelations(kinRelation?.data ?? []));
       dispatch(setIdTypes(idTypes?.data ?? []));
+      dispatch(setDoctorQualifications(doctorQualifications?.data ?? []));
     } catch (error) {
       console.error("Error loading menu items for cache:", error);
     }

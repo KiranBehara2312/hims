@@ -132,6 +132,7 @@ export default function ({
                     whiteSpace: "nowrap",
                     textOverflow: "ellipsis",
                     overflow: "hidden",
+                    fontSize: "0.85rem"
                   }}
                 >
                   {camelToTitle(column.label)}
@@ -166,6 +167,7 @@ export default function ({
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
+                          fontSize : "0.75rem"
                         }}
                       >
                         {column.colorCoded && (
@@ -195,16 +197,20 @@ export default function ({
           alignItems: "center",
         }}
       >
-        <Typography
-          variant="body2"
-          sx={{ pl: 1, color: "red", fontSize: "12px" }}
-        >
-          {helperNote ?? ""}
-        </Typography>
+        <MyHeading
+          variant="rem065"
+          text={helperNote ?? ""}
+          sx={{ pl: 1, color: "red" }}
+        />
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          <Typography variant="body2" sx={{ fontSize: "12px" }}>
+          <MyHeading
+            variant="rem065"
+            text={getCountInformation()}
+            sx={{ pl: 1, color: "red" }}
+          />
+          {/* <Typography variant="body2" sx={{ fontSize: "12px" }}>
             {getCountInformation()}
-          </Typography>
+          </Typography> */}
           <Pagination
             sx={{ m: 1, float: "right" }}
             variant="outlined"
@@ -255,7 +261,7 @@ export default function ({
                 onClick={() => actionClickHandler(x.privilege, x.modalWidth)}
               >
                 <span style={{ flexBasis: "17%" }}>{x.icon}</span>
-                <MyHeading variant="caption" text={x.name} />
+                <MyHeading variant="rem085" text={x.name} />
               </Box>
             );
           })}

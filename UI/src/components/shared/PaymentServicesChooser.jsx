@@ -118,7 +118,7 @@ const PaymentServicesChooser = ({
       (x) => x.serviceId === serviceId
     );
     if (alreadyAdded) {
-      return warnAlert("Service is already in user, can not add...");
+      return warnAlert("Service is already in use..");
     }
     const newService = paymentServices?.find((x) => x.serviceId === serviceId);
     if (newService) {
@@ -162,7 +162,10 @@ const PaymentServicesChooser = ({
         hideSearchBar
         notScrollable
         headerIcon={
-          <IconWrapper defaultColor icon={<FaServicestack size={20} />} />
+          <IconWrapper
+            defaultColor
+            icon={<FaServicestack size={"1.15rem"} />}
+          />
         }
         headerText={headerText}
         html={
@@ -185,13 +188,17 @@ const PaymentServicesChooser = ({
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <MyHeading
                 text={`Service's in use (${incomingPaymentCharges?.length})`}
-                variant="body1"
-                sx={{ mt: -1 }}
+                variant="rem095"
+                sx={{ mt: -1, pl: 1 }}
               />
-              <MyHeading text={totalAmount} variant="body1" sx={{ mt: -1 }} />
+              <MyHeading
+                text={totalAmount}
+                variant="rem095"
+                sx={{ mt: -1, pr: 2 }}
+              />
             </Box>
             {incomingPaymentCharges?.length === 0 && (
-              <NoDataFound headingVariant="body2" />
+              <NoDataFound headingVariant="rem1" />
             )}
             <Box
               sx={{ minHeight: "360px", maxHeight: "360px", overflowY: "auto" }}
@@ -219,11 +226,11 @@ const PaymentServicesChooser = ({
                         }
                       />
                       <MyHeading
-                        variant="caption"
+                        variant="rem075"
                         text={`${x.serviceName} (${x.serviceId})`}
                       />
                     </span>
-                    <MyHeading variant="caption" text={x.serviceAmount} />
+                    <MyHeading variant="rem075" text={x.serviceAmount} />
                   </Box>
                 );
               })}
@@ -235,7 +242,7 @@ const PaymentServicesChooser = ({
             <MyHeading
               alignCenter
               text="Service's that can be opted"
-              variant="body1"
+              variant="rem095"
               sx={{ mt: -1 }}
             />
             <Grid
@@ -288,11 +295,11 @@ const PaymentServicesChooser = ({
                         }
                       />
                       <MyHeading
-                        variant="caption"
+                        variant="rem075"
                         text={`${x.serviceName} (${x.serviceId})`}
                       />
                     </span>
-                    <MyHeading variant="caption" text={x.serviceAmount} />
+                    <MyHeading variant="rem075" text={x.serviceAmount} />
                   </Box>
                 );
               })}

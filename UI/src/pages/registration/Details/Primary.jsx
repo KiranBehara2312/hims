@@ -71,8 +71,8 @@ const Primary = ({ control, errors, readOnly = "", formValues }) => {
         <MyHeading
           alignCenter
           text="Primary"
-          variant="h6"
-          sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+          variant="rem095"
+          sx={{ mt: "-10px" }}
         />
 
         <F_Input

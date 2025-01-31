@@ -160,8 +160,8 @@ const AppointmentForm = ({
             <MyHeading
               alignCenter
               text="Slot & Doctor"
-              variant="h6"
-              sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+              variant="rem095"
+              sx={{ mt: "-10px" }}
             />
             <Box
               sx={{
@@ -176,13 +176,14 @@ const AppointmentForm = ({
             >
               <MyHeading
                 alignCenter
+                variant="rem095"
                 text={`${selectedSlot?.slotNo} | ${selectedSlot?.bookingStatus}`}
-                sx={{ mt: 1, fontSize: "16px", fontWeight: "bold" }}
+                sx={{ mt: 1 }}
               />
               <MyHeading
                 alignCenter
                 text={`${selectedSlot?.startTime} - ${selectedSlot?.endTime}`}
-                variant="caption"
+                variant="rem075"
               />
             </Box>
             <Box sx={{ display: "flex", gap: 2, flexDirection: "column" }}>
@@ -203,8 +204,8 @@ const AppointmentForm = ({
               text={`Patient ${selectedPatient?.UHID ?? ""} ${
                 selectedPatient?.patientNo ?? ""
               }`}
-              variant="h6"
-              sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+              variant="rem095"
+              sx={{ mt: "-10px" }}
             />
             <F_Autocomplete
               control={control}
@@ -283,8 +284,8 @@ const AppointmentForm = ({
             <MyHeading
               alignCenter
               text="Others"
-              variant="h6"
-              sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+              variant="rem095"
+              sx={{ mt: "-10px" }}
             />
             <F_Select
               control={control}

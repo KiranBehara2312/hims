@@ -245,8 +245,9 @@ const Masters = () => {
                             x.label
                           )
                         }
+                        sx={{mt:0.5}}
                         alignCenter
-                        variant="caption"
+                        variant="rem075"
                       />
                     </GlassBG>
                   </Box>

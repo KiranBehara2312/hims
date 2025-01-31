@@ -47,7 +47,7 @@ const ACTIONS = [
   {
     name: "Doctor's Instruction",
     privilege: "DOCTORS_INSTRUCTION",
-    icon: <IconWrapper defaultColor icon={<FaNotesMedical size={18} />} />,
+    icon: <IconWrapper defaultColor icon={<FaNotesMedical size={'1.15rem'} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
     modalWidth: "md",
@@ -55,7 +55,7 @@ const ACTIONS = [
   {
     name: "Delete Elapsed Slots",
     privilege: "DELETE_ELAPSED_SLOTS",
-    icon: <IconWrapper color={"darkred"} icon={<FaTrash size={18} />} />,
+    icon: <IconWrapper color={"darkred"} icon={<FaTrash size={'1.15rem'} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
     modalWidth: "md",
@@ -63,7 +63,7 @@ const ACTIONS = [
   {
     name: "Delete Slots",
     privilege: "DELETE_SLOTS",
-    icon: <IconWrapper color={"darkred"} icon={<FaTrash size={18} />} />,
+    icon: <IconWrapper color={"darkred"} icon={<FaTrash size={'1.15rem'} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
     modalWidth: "md",
@@ -71,7 +71,7 @@ const ACTIONS = [
   {
     name: "Generate Extra Slots",
     privilege: "GENERATE_EXTRA_SLOTS",
-    icon: <IconWrapper defaultColor icon={<FaCalendarPlus size={18} />} />,
+    icon: <IconWrapper defaultColor icon={<FaCalendarPlus size={'1.15rem'} />} />,
     disabled: false,
     access: [ADMIN, STAFF],
     modalWidth: "md",
@@ -407,7 +407,7 @@ const Appointment = () => {
             <List key={x.color} dense>
               <ListItem>
                 <FaCircle style={{ color: x.color, paddingRight: "10px" }} />
-                <MyHeading variant="caption" text={x.label} />
+                <MyHeading variant="rem075" text={x.label} />
               </ListItem>
             </List>
           );
@@ -446,7 +446,7 @@ const Appointment = () => {
               }}
             >
               <span style={{ flexBasis: "17%" }}>{x.icon}</span>
-              <MyHeading variant="caption" text={x.name} />
+              <MyHeading variant="rem075" text={x.name} />
             </Box>
           );
         })}

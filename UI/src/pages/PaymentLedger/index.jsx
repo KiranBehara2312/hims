@@ -227,7 +227,7 @@ const PaymentLedger = () => {
                 maxWidth: "350px",
               }}
             >
-              <MyHeading alignCenter variant="body1" text="Filters" />
+              <MyHeading alignCenter variant="rem095" text="Filters" />
               <F_Input
                 control={control}
                 name={"searchString"}
@@ -294,7 +294,7 @@ const PaymentLedger = () => {
             <MyHeading
               alignCenter
               text="Report Options"
-              variant="body1"
+              variant="rem095"
               sx={{ mb: 2 }}
             />
             <PDFGenerator

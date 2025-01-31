@@ -169,8 +169,8 @@ const PatientVitals = ({
           <MyHeading
             alignCenter
             text="Vital Information"
-            variant="h6"
-            sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+            variant="rem095"
+            sx={{ mt: "-10px" }}
           />
           <form onSubmit={handleSubmit(onSubmit)}>
             <F_Input
@@ -190,7 +190,7 @@ const PatientVitals = ({
               endAdornment={
                 <InputAdornment
                   position="start"
-                  sx={{ cursor: "pointer", fontSize: "13px !important" }}
+                  sx={{ cursor: "pointer", fontSize: "0.8rem !important" }}
                 >
                   Kg
                 </InputAdornment>
@@ -213,7 +213,7 @@ const PatientVitals = ({
               endAdornment={
                 <InputAdornment
                   position="start"
-                  sx={{ cursor: "pointer", fontSize: "13px !important" }}
+                  sx={{ cursor: "pointer", fontSize: "0.8rem !important" }}
                 >
                   cm
                 </InputAdornment>
@@ -235,7 +235,7 @@ const PatientVitals = ({
               endAdornment={
                 <InputAdornment
                   position="start"
-                  sx={{ cursor: "pointer", fontSize: "13px !important" }}
+                  sx={{ cursor: "pointer", fontSize: "0.8rem !important" }}
                 >
                   °F
                 </InputAdornment>
@@ -257,7 +257,7 @@ const PatientVitals = ({
               endAdornment={
                 <InputAdornment
                   position="start"
-                  sx={{ cursor: "pointer", fontSize: "13px !important" }}
+                  sx={{ cursor: "pointer", fontSize: "0.8rem !important" }}
                 >
                   sys/dia
                 </InputAdornment>
@@ -280,7 +280,7 @@ const PatientVitals = ({
               endAdornment={
                 <InputAdornment
                   position="start"
-                  sx={{ cursor: "pointer", fontSize: "13px !important" }}
+                  sx={{ cursor: "pointer", fontSize: "0.8rem !important" }}
                 >
                   BPM
                 </InputAdornment>

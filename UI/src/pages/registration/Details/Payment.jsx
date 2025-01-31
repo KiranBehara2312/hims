@@ -179,13 +179,9 @@ const Payment = ({
             <MyTooltip
               title={x.serviceName?.length > 30 ? x.serviceName : null}
             >
-              <Typography variant="caption" sx={{ fontSize: "9px" }}>
-                {x.serviceName}
-              </Typography>
+              <MyHeading variant="rem055" text={x.serviceName} />
             </MyTooltip>
-            <Typography variant="caption" sx={{ pr: 1 }}>
-              {x.serviceAmount}
-            </Typography>
+            <MyHeading variant="rem075" text={x.serviceAmount} sx={{ pr: 1 }} />
           </span>
         ))}
       </>
@@ -198,8 +194,8 @@ const Payment = ({
         <MyHeading
           alignCenter
           text="Payment"
-          variant="h6"
-          sx={{ mt: "-10px", fontSize: "15px", fontWeight: "bold" }}
+          variant="rem095"
+          sx={{ mt: "-10px" }}
         />
 
         <F_Select
@@ -270,11 +266,11 @@ const Payment = ({
                 marginTop: "10px",
               }}
             >
-              <Typography variant="caption">Service</Typography>
-              <Typography variant="caption">Amount</Typography>
+              <MyHeading variant="rem065" text="Service" />
+              <MyHeading variant="rem065" text="Amount" sx={{pr:1}} />
             </span>
 
-            <Box sx={{ maxHeight: "245px", overflowY: "auto",  }}>
+            <Box sx={{ maxHeight: "245px", overflowY: "auto" }}>
               <PaymentSummary />
             </Box>
             <Box
@@ -285,12 +281,8 @@ const Payment = ({
                 borderTop: "0.25px solid gray",
               }}
             >
-              <Typography variant="caption" sx={{ fontSize: "10px" }}>
-                Total in INR
-              </Typography>
-              <Typography variant="caption" sx={{ fontSize: "12px", pr: 1 }}>
-                {totalAmtStr ?? ""}
-              </Typography>
+              <MyHeading variant="rem065" text="Total in INR" />
+              <MyHeading variant="rem075" text={totalAmtStr ?? ""} sx={{pr:1}} />
             </Box>
             <Button
               variant="outlined"

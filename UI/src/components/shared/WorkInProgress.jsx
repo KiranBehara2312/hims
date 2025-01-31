@@ -30,7 +30,7 @@ const WorkInProgress = ({ sx = {}, imgHeight = 130, imgWidth = 130 }) => {
             />
           }
         />
-        <MyHeading alignCenter text="Work in Progress...!" />
+        <MyHeading alignCenter variant="rem1" text="Work in Progress...!" />
       </Box>
     </>
   );

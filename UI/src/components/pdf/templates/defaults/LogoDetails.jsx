@@ -55,6 +55,9 @@ const styles = StyleSheet.create({
 });
 
 const PdfLogoDetails = () => {
+  const org = localStorage.getItem("ls_org")
+    ? JSON.parse(localStorage.getItem("ls_org"))
+    : null;
   return (
     <View style={[styles.table, styles.mb]}>
       <View style={[styles.table]}>
@@ -74,15 +77,13 @@ const PdfLogoDetails = () => {
                 gap: 1,
               }}
             >
-              <Text style={styles.boldText}>{META.HOSPITAL_DETAILS.NAME}</Text>
+              <Text style={styles.boldText}>{org?.orgName}</Text>
+              <Text style={styles.details}>{org?.orgAddress1}</Text>
               <Text style={styles.details}>
-                {META.HOSPITAL_DETAILS.ADDRESS_LINE_1}
+                {org?.orgAddress2} {org?.orgAddress3}
               </Text>
               <Text style={styles.details}>
-                {META.HOSPITAL_DETAILS.ADDRESS_LINE_2}
-              </Text>
-              <Text style={styles.details}>
-                Phone: {META.HOSPITAL_DETAILS.PHONE}
+                Phone: {org?.orgPhone1} Email: {org?.orgEmail}
               </Text>
             </View>
           </View>

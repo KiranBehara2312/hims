@@ -3,6 +3,7 @@ import { BiSolidErrorAlt } from "react-icons/bi";
 import React from "react";
 import { PiSealCheckFill } from "react-icons/pi";
 import { IoIosWarning } from "react-icons/io";
+import MyHeading from "./MyHeading";
 
 const STATUS = {
   1: "Success",
@@ -24,26 +25,32 @@ const PaymentStatus = ({ status = STATUS[1], sx = {} }) => {
       {status === STATUS[1] && (
         <>
           <PiSealCheckFill size={60} style={{ color: "green" }} />
-          <Typography variant="caption" style={{ color: "green" }}>
-            Payment Received
-          </Typography>
+          <MyHeading
+            variant="rem1"
+            text="Payment Received"
+            sx={{ color: "green" }}
+          />
         </>
       )}
       {status === STATUS[2] && (
         <>
           <BiSolidErrorAlt size={60} style={{ color: "red" }} />
-          <Typography variant="caption" style={{ color: "red" }}>
-            Amount not received
-          </Typography>
+          <MyHeading
+            variant="rem1"
+            text="Amount not received"
+            sx={{ color: "red" }}
+          />
         </>
       )}
 
       {status === STATUS[3] && (
         <>
           <IoIosWarning size={60} style={{ color: "orange" }} />
-          <Typography variant="caption" style={{ color: "orange" }}>
-            Pending transaction
-          </Typography>
+          <MyHeading
+            variant="rem1"
+            text="Pending transaction"
+            sx={{ color: "orange" }}
+          />
         </>
       )}
     </Box>
