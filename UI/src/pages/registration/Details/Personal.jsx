@@ -5,9 +5,11 @@ import F_DatePicker from "../../../components/custom/form/F_DatePicker";
 import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
 import { useSelector } from "react-redux";
 import {
+  c_bloodGroups,
   c_gender,
   c_idTypes,
   c_maritalStatus,
+  c_salutation,
 } from "../../../redux/slices/apiCacheSlice";
 import { postData } from "../../../helpers/http";
 
@@ -15,13 +17,10 @@ const Personal = ({ control, errors, readOnly = false }) => {
   const cachedGender = useSelector(c_gender);
   const cachedMaritalStatus = useSelector(c_maritalStatus);
   const cachedIdTypes = useSelector(c_idTypes);
+  const cachedBloodGroup = useSelector(c_bloodGroups);
+  const cachedSalutation = useSelector(c_salutation);
   const [dropdownData, setDropdownData] = useState({
-    salutation: [],
-    gender: cachedGender,
-    bloodGroups: [],
-    maritalStatus: cachedMaritalStatus,
     disabilityType: [],
-    idTypes: cachedIdTypes,
   });
 
   useEffect(() => {
@@ -29,17 +28,9 @@ const Personal = ({ control, errors, readOnly = false }) => {
   }, []);
 
   const loadMasterItems = async () => {
-    const [res1, res2, res3] = await Promise.all([
+    const [res1] = await Promise.all([
       postData("/masters/data", {
         type: "disabilityStatus",
-        limit: "Infinity",
-      }),
-      postData("/masters/data", {
-        type: "salutation",
-        limit: "Infinity",
-      }),
-      postData("/masters/data", {
-        type: "bloodGroup",
         limit: "Infinity",
       }),
     ]);
@@ -47,10 +38,6 @@ const Personal = ({ control, errors, readOnly = false }) => {
       return {
         ...prev,
         disabilityType: res1?.data ?? [],
-        salutation: res2?.data ?? [],
-        bloodGroups: res3?.data ?? [],
-        gender: cachedGender,
-        maritalStatus: cachedMaritalStatus,
       };
     });
   };
@@ -69,7 +56,7 @@ const Personal = ({ control, errors, readOnly = false }) => {
           control={control}
           name={"salutation"}
           label={"Salutation"}
-          list={dropdownData.salutation}
+          list={cachedSalutation}
           rules={{ required: "Salutation is required" }}
           isRequired={true}
           errors={errors}
@@ -119,7 +106,7 @@ const Personal = ({ control, errors, readOnly = false }) => {
           control={control}
           name={"gender"}
           label={"Gender"}
-          list={dropdownData.gender}
+          list={cachedGender}
           rules={{ required: "Gender is required" }}
           isRequired={true}
           errors={errors}
@@ -130,7 +117,7 @@ const Personal = ({ control, errors, readOnly = false }) => {
           control={control}
           name={"bloodGroup"}
           label={"Blood Group"}
-          list={dropdownData.bloodGroups}
+          list={cachedBloodGroup}
           rules={{}}
           errors={errors}
           readOnly={readOnly}
@@ -140,7 +127,7 @@ const Personal = ({ control, errors, readOnly = false }) => {
           control={control}
           name={"maritalStatus"}
           label={"Marital Status"}
-          list={dropdownData.maritalStatus}
+          list={cachedMaritalStatus}
           rules={{}}
           errors={errors}
           readOnly={readOnly}
@@ -160,7 +147,7 @@ const Personal = ({ control, errors, readOnly = false }) => {
           control={control}
           name={"idType"}
           label={"Identity Type"}
-          list={dropdownData.idTypes}
+          list={cachedIdTypes}
           rules={{ required: "Identity Type is required" }}
           errors={errors}
           isRequired={true}

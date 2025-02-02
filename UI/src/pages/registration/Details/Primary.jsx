@@ -95,6 +95,7 @@ const Primary = ({ control, errors, readOnly = "", formValues, setValue }) => {
           rules={{ required: "Patient Type is required" }}
           isRequired={true}
           errors={errors}
+          onSelect={() => setValue("patientCategory", "")}
           isDisabled={readOnly === "VIEW"}
           readOnly={readOnly === "VIEW"}
         />

@@ -154,7 +154,11 @@ const Payment = ({
     // } else {
     //   setPaymentCharges([]);
     // }
-    fetchPaymentDetails();
+    if (formValues?.doctor?.length > 0) {
+      fetchPaymentDetails();
+    } else {
+      setPaymentCharges(() => []);
+    }
   }, [formValues.doctor, formValues?.patientType, formValues?.patientCategory]);
 
   useEffect(() => {

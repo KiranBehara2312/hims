@@ -1,4 +1,4 @@
-const { NEVER_CHANGING_VALS } = require("../../constants");
+const NEVER_CHANGING_VALS = require("../../constants");
 const asyncHandler = require("../../middlewares/AsyncHandler");
 const { getAllDoctorsFromDB } = require("../doctor/Service");
 const {
@@ -38,32 +38,35 @@ const registrationServicesNew = asyncHandler(async (req, res) => {
     serviceLocationId = "PSERL0001",
   } = req.body;
   let uhidCharges = null;
-  let doctorConsultCharges = null;
+  let doctorConsultCharges = 0;
   let allServicesForRegn = null;
 
-
-
+  if (doctor) {
+    const docResult = await getAllDoctorsFromDB(1, 5, { doctorId: doctor });
+    const dbDoctor = docResult?.data?.[0] ?? null;
+    if (dbDoctor === null) {
+      return res.status(400).json({ message: "Doctor not found" });
+    }
+    doctorConsultCharges = dbDoctor?.fee ?? 0;
+  }
   allServicesForRegn = await getAllServicesForRegn(
     serviceLocationId,
     patientType
   );
 
-  if (!uhid) {
-    uhidCharges = await getUHIDFee();
-  }
+  const finalServices = allServicesForRegn?.map((x) => {
+    return {
+      ...x,
+      serviceAmount:
+        x.id === NEVER_CHANGING_VALS.DR_CONSULT_PAY_SER_CODE
+          ? doctorConsultCharges
+          : x.serviceAmount,
+    };
+  });
 
-  if (doctor) {
-    const docResult = await getAllDoctorsFromDB(1, 10, { doctorId: doctor });
-    const dbDoctor = docResult?.data?.[0] ?? null;
-    if (dbDoctor === null) {
-      return res.status(400).json({ message: "Doctor not found" });
-    }
-    doctorConsultCharges = await getDrConsultFee();
-    doctorConsultCharges.serviceAmount = dbDoctor?.fee ?? 0;
-  }
   res.status(200).json({
     message: `Payment services fetched successfully`,
-    data: allServicesForRegn,
+    data: finalServices,
   });
 });
 
