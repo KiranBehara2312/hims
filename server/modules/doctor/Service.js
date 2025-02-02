@@ -16,7 +16,6 @@ async function upsertDoctor(payload) {
 async function getAllDoctorsFromDB(page = 1, pageSize = 10, filters = null) {
   try {
     const whereClause = buildAndWhereClause(filters);
-    console.log("Where  ----> ", whereClause);
     const QUERY = `${SQL1.GET_ALL_ACTIVE_DOCTORS} ${whereClause}`;
     let totalPages = 0;
     let totalRecords = 0;

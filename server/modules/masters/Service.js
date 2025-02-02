@@ -7,7 +7,11 @@ async function getMasterData(SQL_MAPPING_NAME, page = 1, pageSize = 10) {
     let totalPages = 0;
     let totalRecords = 0;
     let result = [];
-    if (pageSize === "Infinity") {
+    if (
+      pageSize === "Infinity" ||
+      pageSize === "infinity" ||
+      pageSize === "all"
+    ) {
       const paginatedQuery = `${QUERY}`;
       result = await db.query(paginatedQuery);
     } else {
@@ -22,7 +26,7 @@ async function getMasterData(SQL_MAPPING_NAME, page = 1, pageSize = 10) {
     return {
       data: result,
       pagination:
-        pageSize === "Infinity"
+        pageSize === "Infinity" || pageSize === "infinity" || pageSize === "all"
           ? null
           : {
               totalRecords,

@@ -18,6 +18,7 @@ import useConfirmation from "../../hooks/useConfirmation";
 import PDFGenerator from "../../components/pdf/PDFGenerator";
 import BillReceiptTemplate from "../../components/pdf/templates/BillReceipt";
 import { NEVER_CHANGING_VALS } from "../../constants/localDB/neverChanging";
+import { MdPersonAdd } from "react-icons/md";
 
 const DEFAULT_VAL = {
   UHID: "",
@@ -191,7 +192,10 @@ const Registration = ({
             headerIcon={
               <IconWrapper
                 icon={
-                  <FaUserPlus size={'1.15rem'} color={theme.palette.primary.main} />
+                  <MdPersonAdd
+                    size={"1.15rem"}
+                    color={theme.palette.primary.main}
+                  />
                 }
               />
             }
@@ -232,6 +236,7 @@ const Registration = ({
               control={control}
               errors={errors}
               formValues={formValues}
+              setValue={setValue}
               readOnly={action}
             />
             <Personal

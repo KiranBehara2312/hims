@@ -57,7 +57,7 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
         lineHeight: 1.6,
       },
       body1: {
-        fontSize: "0.4rem",
+        fontSize: "0.75rem",
         fontWeight: 400,
         lineHeight: 1.5,
       },
@@ -154,6 +154,13 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
       borderRadius: 8,
     },
     components: {
+      MuiPaginationItem: {
+        styleOverrides: {
+          root: {
+            fontSize: "0.65rem", 
+          },
+        },
+      },
       MuiBadge: {
         styleOverrides: {
           badge: {
@@ -167,7 +174,7 @@ const useCustomTheme = (curmode = "light", dColor = "#0d6986") => {
           tooltip: {
             backgroundColor: dColor,
             color: "#fff",
-            fontSize: "0.65rem",
+            fontSize: "0.75rem",
             borderRadius: "8px",
             padding: "8px 12px",
             boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",

@@ -4,12 +4,12 @@ const paymenServiceController = require("./Controller");
 
 paymentServicesRouter.post(
   "/registrationServices",
-  paymenServiceController.registrationServices
+  paymenServiceController.registrationServicesNew
 );
 paymentServicesRouter.post(
   "/search",
   paymenServiceController.searchPaymentService
 );
-// paymentServicesRouter.post("/create", registrationController.createNotification);
+paymentServicesRouter.post("/add", paymenServiceController.addPaymentService);
 
 module.exports = paymentServicesRouter;

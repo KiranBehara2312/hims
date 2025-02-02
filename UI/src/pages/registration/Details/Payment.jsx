@@ -21,6 +21,7 @@ import MyTooltip from "../../../components/shared/MyTootlip";
 import { useSelector } from "react-redux";
 import { c_paymentTypes } from "../../../redux/slices/apiCacheSlice";
 import { NEVER_CHANGING_VALS } from "../../../constants/localDB/neverChanging";
+import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
 
 const Payment = ({
   control,
@@ -100,7 +101,9 @@ const Payment = ({
   // Fetch payment details
   const fetchPaymentDetails = async () => {
     const response = await postData("/paymentServices/registrationServices", {
-      doctorId: formValues?.doctor,
+      doctor: formValues?.doctor,
+      uhid: null,
+      patientType: formValues?.patientType,
     });
     const charges = response?.data ?? [];
     if (!charges.length) return;
@@ -146,12 +149,13 @@ const Payment = ({
   }, [component]);
 
   useEffect(() => {
-    if (formValues?.doctor?.length > 0) {
-      fetchPaymentDetails();
-    } else {
-      setPaymentCharges([]);
-    }
-  }, [formValues.doctor]);
+    // if (formValues?.doctor?.length > 0) {
+    //   fetchPaymentDetails();
+    // } else {
+    //   setPaymentCharges([]);
+    // }
+    fetchPaymentDetails();
+  }, [formValues.doctor, formValues?.patientType, formValues?.patientCategory]);
 
   useEffect(() => {
     if (showDialog.rerender) {
@@ -188,6 +192,17 @@ const Payment = ({
     );
   };
 
+  const fillPayeeNameHanlder = () => {
+    if (formValues?.patientCategory !== NEVER_CHANGING_VALS.PAT_CAT_PAYER) {
+      setValue(
+        "payeeName",
+        `${formValues?.firstName} ${formValues?.middleName} ${formValues?.lastName}`
+      );
+    } else {
+      setValue("payeeName", `${formValues?.sponsorName}`);
+    }
+  };
+
   return (
     <>
       <GlassBG cardStyles={{ width: "230px", height: "auto" }}>
@@ -207,17 +222,19 @@ const Payment = ({
           isRequired={true}
           errors={errors}
         />
-        <F_Select
+        <F_Autocomplete
           control={control}
           name={"paymentType"}
           label={"Payment Type"}
           list={
             formValues?.patientCategory === NEVER_CHANGING_VALS.PAT_CAT_PAYER
               ? cachedPaymentTypes?.filter(
-                  (x) => x.id === NEVER_CHANGING_VALS.PAY_TYPE_INSURANCE
+                  (x) =>
+                    x.dropdownValue === NEVER_CHANGING_VALS.PAY_TYPE_INSURANCE
                 )
               : cachedPaymentTypes?.filter(
-                  (x) => x.id !== NEVER_CHANGING_VALS.PAY_TYPE_INSURANCE
+                  (x) =>
+                    x.dropdownValue !== NEVER_CHANGING_VALS.PAY_TYPE_INSURANCE
                 )
           }
           rules={{ required: "Payment Type is required" }}
@@ -236,12 +253,7 @@ const Payment = ({
             <InputAdornment
               position="start"
               sx={{ cursor: "pointer" }}
-              onClick={() =>
-                setValue(
-                  "payeeName",
-                  `${formValues?.firstName} ${formValues?.middleName} ${formValues?.lastName}`
-                )
-              }
+              onClick={() => fillPayeeNameHanlder()}
             >
               <MyTooltip title="Click to fill Payee Name">
                 <FaPencilAlt />
@@ -267,7 +279,7 @@ const Payment = ({
               }}
             >
               <MyHeading variant="rem065" text="Service" />
-              <MyHeading variant="rem065" text="Amount" sx={{pr:1}} />
+              <MyHeading variant="rem065" text="Amount" sx={{ pr: 1 }} />
             </span>
 
             <Box sx={{ maxHeight: "245px", overflowY: "auto" }}>
@@ -282,7 +294,11 @@ const Payment = ({
               }}
             >
               <MyHeading variant="rem065" text="Total in INR" />
-              <MyHeading variant="rem075" text={totalAmtStr ?? ""} sx={{pr:1}} />
+              <MyHeading
+                variant="rem075"
+                text={totalAmtStr ?? ""}
+                sx={{ pr: 1 }}
+              />
             </Box>
             <Button
               variant="outlined"

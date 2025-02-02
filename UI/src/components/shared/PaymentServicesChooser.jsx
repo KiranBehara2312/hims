@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import F_Input from "../custom/form/F_Input";
 import { errorAlert, warnAlert } from "../../helpers";
 import NoDataFound from "./NoDataFound";
+import { REGEX_PATTERNS } from "../../constants/Regex";
 
 const PaymentServicesChooser = ({
   dialogCloseBtn = null,
@@ -59,10 +60,15 @@ const PaymentServicesChooser = ({
   }, [paymentCharges]);
 
   const fetchPaymentServices = async (page = 1, limit = 15) => {
-    if (formValues?.searchString?.length < 3) {
-      return errorAlert("Please enter service name or code to fetch details", {
-        autoClose: 1500,
-      });
+    if (isNaN(formValues?.searchString)) {
+      if (formValues?.searchString?.length < 3) {
+        return errorAlert(
+          "Please enter service name or code to fetch details",
+          {
+            autoClose: 1500,
+          }
+        );
+      }
     }
     if (formValues?.searchString?.length > 20) {
       return errorAlert("Length Exceeded, please check the search input", {
@@ -256,7 +262,12 @@ const PaymentServicesChooser = ({
                   placeholder="Enter 3 characters"
                   control={control}
                   errors={errors}
-                  rules={{}}
+                  rules={{
+                    pattern: {
+                      value: REGEX_PATTERNS.alphaNumeric,
+                      message: "Invalid Service Code / Service Name",
+                    },
+                  }}
                   label="Service Code / Service Name"
                 />
               </Grid>

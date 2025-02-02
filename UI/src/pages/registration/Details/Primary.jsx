@@ -10,9 +10,12 @@ import { postData } from "../../../helpers/http";
 import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
 import { NEVER_CHANGING_VALS } from "../../../constants/localDB/neverChanging";
 import { useSelector } from "react-redux";
-import { c_knownUsBy, c_sponsorGroups } from "../../../redux/slices/apiCacheSlice";
+import {
+  c_knownUsBy,
+  c_sponsorGroups,
+} from "../../../redux/slices/apiCacheSlice";
 
-const Primary = ({ control, errors, readOnly = "", formValues }) => {
+const Primary = ({ control, errors, readOnly = "", formValues, setValue }) => {
   const cachedSponsorGroups = useSelector(c_sponsorGroups);
   const cachedKnownUsBy = useSelector(c_knownUsBy);
   const [dropdownData, setDropdownData] = useState({
@@ -165,6 +168,19 @@ const Primary = ({ control, errors, readOnly = "", formValues }) => {
               label={"Sponsor"}
               list={dropdownData.sponsors}
               rules={{ required: "Sponsor is required" }}
+              onSelect={(sponsor) => {
+                setValue(
+                  "sponsorName",
+                  dropdownData.sponsors.find((x) => x.dropdownValue === sponsor)
+                    ?.dropdownLabel
+                );
+                setValue("paymentType", NEVER_CHANGING_VALS.PAY_TYPE_INSURANCE);
+                setValue(
+                  "payeeName",
+                  dropdownData.sponsors.find((x) => x.dropdownValue === sponsor)
+                    ?.dropdownLabel
+                );
+              }}
               isRequired={true}
               errors={errors}
               isDisabled={readOnly === "VIEW"}

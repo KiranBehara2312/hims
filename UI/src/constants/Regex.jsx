@@ -19,6 +19,8 @@ const REGEX_PATTERNS = {
   BODY_TEMPERATURE:
     /^(9[5-9]\.\d{1,2}|[1][0-9]{2}\.\d{1,2}|[9][5-9]{1}\d{0,1})$/,
   HH_MM: /^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$/,
+  alphaNumeric: /^[a-zA-Z0-9]+$/,
+  decimalNumber: /^\d+(\.\d{1,2})?$/
 };
 
 export { REGEX_PATTERNS };

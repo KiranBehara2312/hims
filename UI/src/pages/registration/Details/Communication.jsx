@@ -4,11 +4,22 @@ import F_Input from "../../../components/custom/form/F_Input";
 import { REGEX_PATTERNS } from "../../../constants/Regex";
 import { postData } from "../../../helpers/http";
 import F_Autocomplete from "../../../components/custom/form/F_AutoComplete";
-import { InputAdornment } from "@mui/material";
-import { FaAngleDoubleDown } from "react-icons/fa";
+import { Box, InputAdornment } from "@mui/material";
+import { FaAngleDoubleDown, FaPencilAlt } from "react-icons/fa";
 import MyTooltip from "../../../components/shared/MyTootlip";
+import { useSelector } from "react-redux";
+import { c_kinRelations } from "../../../redux/slices/apiCacheSlice";
+import IconWrapper from "../../../components/custom/IconWrapper";
+import { FaCircleInfo } from "react-icons/fa6";
 
-const Communication = ({ control, errors, readOnly = false, formValues, setValue }) => {
+const Communication = ({
+  control,
+  errors,
+  readOnly = false,
+  formValues,
+  setValue,
+}) => {
+  const cachedKinRelations = useSelector(c_kinRelations);
   const [dropdownData, setDropdownData] = useState({
     country: [],
     states: [],
@@ -45,7 +56,7 @@ const Communication = ({ control, errors, readOnly = false, formValues, setValue
           alignCenter
           text="Communication"
           variant="rem095"
-          sx={{ mt: "-10px"}}
+          sx={{ mt: "-10px" }}
         />
 
         <F_Input
@@ -70,7 +81,7 @@ const Communication = ({ control, errors, readOnly = false, formValues, setValue
           rules={{
             pattern: {
               value: REGEX_PATTERNS.mobileNumber,
-              message: "Invalid Contact number",
+              message: "Invalid WhatsApp number",
             },
           }}
           label="WhatsApp No"
@@ -156,6 +167,49 @@ const Communication = ({ control, errors, readOnly = false, formValues, setValue
             },
           }}
           label="Pin Code"
+          readOnly={readOnly}
+        />
+
+        <Box sx={{ display: "flex", justifyContent: "space-between",m :"4px 0" }}>
+          <MyHeading text="Next of Kin Details" variant="rem095" />
+          <MyTooltip
+            title={`"Next of kin" refers to a person's closest living relative, who should be contacted in case of an emergency or after death. `}
+          >
+            <IconWrapper defaultColor icon={<FaCircleInfo />} />
+          </MyTooltip>
+        </Box>
+
+        <F_Input
+          name="nextOfKinName"
+          control={control}
+          errors={errors}
+          rules={{ required: "Name is required" }}
+          label="Person Name"
+          isRequired={true}
+        />
+        <F_Autocomplete
+          control={control}
+          name={"kinRelation"}
+          label={"Relation"}
+          list={cachedKinRelations}
+          rules={{ required: "Relation is required" }}
+          isRequired={true}
+          errors={errors}
+          readOnly={readOnly}
+        />
+
+        <F_Input
+          name="kinContactNo"
+          control={control}
+          errors={errors}
+          rules={{
+            required: "Kin Contact No is required",
+            pattern: {
+              value: REGEX_PATTERNS.mobileNumber,
+              message: "Invalid Contact number",
+            },
+          }}
+          label="Kin Contact No"
           readOnly={readOnly}
         />
       </GlassBG>
