@@ -20,11 +20,77 @@ import BillReceiptTemplate from "../../components/pdf/templates/BillReceipt";
 import { NEVER_CHANGING_VALS } from "../../constants/localDB/neverChanging";
 import { MdPersonAdd } from "react-icons/md";
 
+// {
+//   "UHID": null,
+//   "patientNo": null,
+//   "patientType": "PATTYPE01",
+//   "patientCategory": "PATCAT002",
+//   "registrationDate": "06/02/2025 18:31",
+//   "addressLineOne": "kNkj",
+//   "addressLineTwo": "",
+//   "alternateMobileNo": "",
+//   "bloodGroup": "BLDG001",
+//   "contactNumber": "8823723972",
+//   "dateOfBirth": "1987-01-10",
+//   "doctorDepartment": "DEPT0026",
+//   "doctor": "DOC0001",
+//   "firstName": "Test",
+//   "gender": "GEND001",
+//   "lastName": "Test",
+//   "maritalStatus": "MRTL001",
+//   "salutation": "SAL0001",
+//   "middleName": "Test",
+//   "payeeName": "VivaMed Diagnostics",
+//   "paymentType": "PAYTYPE003",
+//   "pinCode": "540021",
+//   "registrationType": "",
+//   "state": "STAT0001",
+//   "transactionId": "",
+//   "doctorConsultationFee": "1250.00",
+//   "visitType": "VISTYP02",
+//   "paymentStatus": "Success",
+//   "knownusBy": "KNUS0008",
+//   "disableType": "DIS0001",
+//   "idType": "UID0001",
+//   "idNo": "Testtv",
+//   "whatsAppNo": "8823723972",
+//   "country": "COUN0007",
+//   "nextOfKinName": "Neq test",
+//   "kinRelation": "KINR006",
+//   "kinContactNo": "8293848294",
+//   "isMlc": true,
+//   "sponsorGroup": "SPGR000001",
+//   "sponsor": "SPON000008",
+//   "sponsorName": "VivaMed Diagnostics",
+//   "payments": [
+//     {
+//       "serviceAmount": "100.00",
+//       "serviceName": "UHID Fee",
+//       "discountAppliedinPercent": 0,
+//       "payeeName": "VivaMed Diagnostics",
+//       "paymentType": "PAYTYPE003",
+//       "transactionId": "",
+//       "paymentDate": "06/02/2025 06:31:46"
+//     },
+//     {
+//       "serviceAmount": "350.00",
+//       "serviceName": "Registration Charges - IP",
+//       "discountAppliedinPercent": 0,
+//       "payeeName": "VivaMed Diagnostics",
+//       "paymentType": "PAYTYPE003",
+//       "transactionId": "",
+//       "paymentDate": "06/02/2025 06:31:46"
+//     }
+//   ]
+// }
+
+
 const DEFAULT_VAL = {
   UHID: "",
   patientType: NEVER_CHANGING_VALS.PAT_TYPE_OP,
   patientCategory: NEVER_CHANGING_VALS.PAT_CAT_GENERAL,
   registrationDate: formatDate("DD/MM/YYYY HH:mm"),
+  country: NEVER_CHANGING_VALS.COUNTRY_CODE_INDIA,
   addressLineOne: "",
   addressLineTwo: "",
   alternateMobileNo: "",
@@ -49,6 +115,15 @@ const DEFAULT_VAL = {
   doctorConsultationFee: 0,
   visitType: "",
   paymentStatus: "",
+  knownusBy: "",
+  disableType: "",
+  idType: "",
+  idNo: "",
+  whatsAppNo: "",
+  nextOfKinName: "",
+  kinRelation: "",
+  kinContactNo: "",
+  isMlc: false,
 };
 
 const Registration = ({
@@ -137,6 +212,7 @@ const Registration = ({
       ...formData,
       payments: payments,
     };
+    console.log(payload);
     const response = await postData("/registration/create", payload);
     openDialog({
       message: `${response?.message} \n UHID \t\t ${response?.UHID} \n Patient No ${response?.patientNo}`,
